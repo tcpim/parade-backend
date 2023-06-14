@@ -1,0 +1,149 @@
+type CollectionPostCreatedTsKey = record {
+  post_id : text;
+  canister_id : text;
+  created_ts : nat64;
+};
+type CreatePostRequest = record {
+  post_id : text;
+  club_ids : vec text;
+  nfts : vec NftToken;
+  created_by : text;
+  created_ts : nat64;
+  words : text;
+  in_public : bool;
+};
+type CreatePostResponse = record { post : Post; error : opt ServerError };
+type DeletePostResponse = record { error : opt ServerError };
+type GetCollectionPostsRequest = record {
+  cursor : opt CollectionPostCreatedTsKey;
+  canister_id : text;
+  limit : opt int32;
+};
+type GetCollectionPostsResponse = record {
+  error : opt ServerError;
+  next_cursor : opt CollectionPostCreatedTsKey;
+  posts : vec Post;
+};
+type GetPostByIdResponse = record { post : vec Post; error : opt ServerError };
+type GetPostRepliesRequest = record {
+  post_id : text;
+  offset : int32;
+  limit : opt int32;
+};
+type GetPostRepliesResponse = record {
+  offset : int32;
+  error : opt ServerError;
+  post_replies : vec PostReply;
+};
+type GetPostsRequest = record {
+  cursor : opt PostCreatedTsKey;
+  limit : opt int32;
+};
+type GetPostsResponse = record {
+  error : opt ServerError;
+  next_cursor : opt PostCreatedTsKey;
+  posts : vec Post;
+};
+type GetTrendingCollectionPostRequest = record {
+  cursor : opt TrendingPostCollectionKey;
+  canister_id : text;
+  limit : opt int32;
+};
+type GetTrendingCollectionPostResponse = record {
+  error : opt ServerError;
+  next_cursor : opt TrendingPostCollectionKey;
+  posts : vec Post;
+};
+type GetTrendingPostRequest = record {
+  cursor : opt TrendingPostKey;
+  limit : opt int32;
+};
+type GetTrendingPostResponse = record {
+  error : opt ServerError;
+  next_cursor : opt TrendingPostKey;
+  posts : vec Post;
+};
+type NftToken = record {
+  token_index : nat16;
+  token_id : text;
+  canister_id : text;
+  collection_name : text;
+  original_image_url : text;
+  original_thumbnail_url : text;
+};
+type Post = record {
+  id : text;
+  updated_ts : opt nat64;
+  club_ids : vec text;
+  emoji_reactions : vec record { text; nat32 };
+  nfts : vec NftToken;
+  created_by : text;
+  created_ts : nat64;
+  replies : vec text;
+  words : text;
+  in_public : bool;
+  trending_score : opt nat32;
+};
+type PostCreatedTsKey = record { post_id : text; created_ts : nat64 };
+type PostReply = record {
+  id : text;
+  post_id : text;
+  emoji_reactions : vec record { text; nat32 };
+  nfts : vec NftToken;
+  created_by : text;
+  created_ts : nat64;
+  words : text;
+};
+type ReactEmojiRequest = record {
+  post_id : opt text;
+  reply_id : opt text;
+  user : text;
+  created_ts : nat64;
+  emoji : text;
+};
+type ReplyPostRequest = record {
+  post_id : text;
+  reply_id : text;
+  nfts : vec NftToken;
+  user : text;
+  created_ts : nat64;
+  words : text;
+};
+type ReplyPostResponse = record { error : opt ServerError; reply : PostReply };
+type ServerError = variant {
+  GetPostError : text;
+  ReactEmojiError : text;
+  CreatePostGeneralError : text;
+  ReplyPostError : text;
+  GetPostRepliesError : text;
+  DeletePostError : text;
+};
+type TrendingPostCollectionKey = record {
+  trending_info : TrendingPostKey;
+  canister_id : text;
+};
+type TrendingPostKey = record {
+  updated_ts : nat64;
+  post_id : text;
+  created_ts : nat64;
+  trending_score : nat32;
+};
+service : {
+  create_post : (CreatePostRequest) -> (CreatePostResponse);
+  delete_all_post : () -> ();
+  delete_post : (text) -> (DeletePostResponse);
+  get_post_by_id : (text) -> (GetPostByIdResponse) query;
+  get_post_replies : (GetPostRepliesRequest) -> (GetPostRepliesResponse) query;
+  get_posts : (GetPostsRequest) -> (GetPostsResponse) query;
+  get_posts_by_collection : (GetCollectionPostsRequest) -> (
+      GetCollectionPostsResponse,
+    ) query;
+  get_trending_collection_posts : (GetTrendingCollectionPostRequest) -> (
+      GetTrendingCollectionPostResponse,
+    ) query;
+  get_trending_posts : (GetTrendingPostRequest) -> (
+      GetTrendingPostResponse,
+    ) query;
+  react_emoji : (ReactEmojiRequest) -> (DeletePostResponse);
+  reply_post : (ReplyPostRequest) -> (ReplyPostResponse);
+}

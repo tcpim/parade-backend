@@ -1,12 +1,12 @@
 {
   "canisters": {
     "main_server": {
-      "candid": "main_server.did",
+      "candid": "main_server/main_server.did",
       "package": "main_server",
       "type": "rust"
     },
     "club_server": {
-      "candid": "club_server.did",
+      "candid": "club_server/club_server.did",
       "package": "club_server",
       "type": "rust"
     }
