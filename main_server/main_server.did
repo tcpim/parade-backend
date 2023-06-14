@@ -1,0 +1,184 @@
+type AddClubPostToStreetRequest = record {
+  post_id : text;
+  nfts : vec NftToken;
+  created_by : text;
+  created_ts : nat64;
+  club_id : text;
+};
+type ClubPost = record { post_id : text; club_id : text };
+type CollectionPostCreatedTsKey = record {
+  post_id : text;
+  canister_id : text;
+  created_ts : nat64;
+  club_id : opt text;
+};
+type CreateStreetPostRequest = record {
+  post_id : text;
+  nfts : vec NftToken;
+  created_by : text;
+  created_ts : nat64;
+  words : text;
+};
+type CreateStreetPostResponse = record { post : Post; error : opt ServerError };
+type DeletePostResponse = record { error : opt ServerError };
+type GetCollectionPostsRequest = record {
+  cursor : opt CollectionPostCreatedTsKey;
+  canister_id : text;
+  limit : opt int32;
+};
+type GetCollectionPostsResponse = record {
+  error : opt ServerError;
+  next_cursor : opt CollectionPostCreatedTsKey;
+  posts : vec PostType;
+};
+type GetPostByIdResponse = record { post : opt Post; error : opt ServerError };
+type GetPostRepliesRequest = record {
+  post_id : text;
+  offset : int32;
+  limit : opt int32;
+};
+type GetPostRepliesResponse = record {
+  offset : int32;
+  error : opt ServerError;
+  post_replies : vec PostReply;
+};
+type GetStreetPostsRequest = record {
+  cursor : opt PostCreatedTsKey;
+  limit : opt int32;
+};
+type GetStreetPostsResponse = record {
+  error : opt ServerError;
+  next_cursor : opt PostCreatedTsKey;
+  posts : vec PostType;
+};
+type GetTrendingCollectionPostRequest = record {
+  cursor : opt TrendingPostCollectionKey;
+  canister_id : text;
+  limit : opt int32;
+};
+type GetTrendingCollectionPostResponse = record {
+  error : opt ServerError;
+  next_cursor : opt TrendingPostCollectionKey;
+  posts : vec PostType;
+};
+type GetTrendingStreetPostRequest = record {
+  cursor : opt TrendingPostKey;
+  limit : opt int32;
+};
+type GetTrendingStreetPostResponse = record {
+  error : opt ServerError;
+  next_cursor : opt TrendingPostKey;
+  posts : vec PostType;
+};
+type GetUserPostsRequest = record {
+  cursor : opt UserPostCreatedTsKey;
+  user_id : text;
+  limit : opt int32;
+};
+type GetUserPostsResponse = record {
+  error : opt ServerError;
+  next_cursor : opt UserPostCreatedTsKey;
+  posts : vec PostType;
+};
+type NftToken = record {
+  token_index : nat16;
+  token_id : text;
+  canister_id : text;
+  collection_name : text;
+  original_image_url : text;
+  original_thumbnail_url : text;
+};
+type Post = record {
+  id : text;
+  updated_ts : opt nat64;
+  emoji_reactions : vec record { text; nat32 };
+  nfts : vec NftToken;
+  created_by : text;
+  created_ts : nat64;
+  replies : vec text;
+  words : text;
+  trending_score : opt nat32;
+};
+type PostCreatedTsKey = record {
+  post_id : text;
+  created_ts : nat64;
+  club_id : opt text;
+};
+type PostReply = record {
+  id : text;
+  post_id : text;
+  emoji_reactions : vec record { text; nat32 };
+  nfts : vec NftToken;
+  created_by : text;
+  created_ts : nat64;
+  words : text;
+};
+type PostType = record { post : opt Post; club_post : opt ClubPost };
+type ReactEmojiRequest = record {
+  post_id : opt text;
+  reply_id : opt text;
+  user : text;
+  created_ts : nat64;
+  emoji : text;
+};
+type ReplyPostRequest = record {
+  post_id : text;
+  reply_id : text;
+  nfts : vec NftToken;
+  user : text;
+  created_ts : nat64;
+  words : text;
+};
+type ReplyPostResponse = record { error : opt ServerError; reply : PostReply };
+type ServerError = variant {
+  GetPostError : text;
+  GetTrendingPostsError : text;
+  ReactEmojiError : text;
+  CreatePostGeneralError : text;
+  GetPostByCollectionError : text;
+  ReplyPostError : text;
+  GetStreetPostsError : text;
+  GetPostRepliesError : text;
+  DeletePostError : text;
+  GetPostByUserError : text;
+};
+type TrendingPostCollectionKey = record {
+  trending_info : TrendingPostKey;
+  canister_id : text;
+};
+type TrendingPostKey = record {
+  updated_ts : nat64;
+  post_id : text;
+  created_ts : nat64;
+  club_id : opt text;
+  trending_score : nat32;
+};
+type UserPostCreatedTsKey = record {
+  post_id : text;
+  created_ts : nat64;
+  user_id : text;
+  club_id : opt text;
+};
+service : {
+  add_club_post_to_street : (AddClubPostToStreetRequest) -> ();
+  create_street_post : (CreateStreetPostRequest) -> (CreateStreetPostResponse);
+  delete_all_post : () -> ();
+  delete_post : (text) -> (DeletePostResponse);
+  get_post_replies : (GetPostRepliesRequest) -> (GetPostRepliesResponse) query;
+  get_posts_by_collection : (GetCollectionPostsRequest) -> (
+      GetCollectionPostsResponse,
+    ) query;
+  get_posts_by_user : (GetUserPostsRequest) -> (GetUserPostsResponse) query;
+  get_street_post_by_id : (text) -> (GetPostByIdResponse) query;
+  get_street_posts : (GetStreetPostsRequest) -> (GetStreetPostsResponse) query;
+  get_trending_collection_posts : (GetTrendingCollectionPostRequest) -> (
+      GetTrendingCollectionPostResponse,
+    ) query;
+  get_trending_street_posts : (GetTrendingStreetPostRequest) -> (
+      GetTrendingStreetPostResponse,
+    ) query;
+  react_emoji : (ReactEmojiRequest) -> (DeletePostResponse);
+  reply_post : (ReplyPostRequest) -> (ReplyPostResponse);
+  update_club_post_trending_score : () -> ();
+  user_add_post : (UserPostCreatedTsKey) -> ();
+}

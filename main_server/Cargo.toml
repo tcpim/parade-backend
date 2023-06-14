@@ -1,0 +1,16 @@
+[package]
+name = "main_server"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+path = "src/lib.rs"
+crate-type = ["cdylib"]
+
+[dependencies]
+candid = "0.8.3"
+ic-cdk = "0.8.1"
+ic-cdk-macros = "0.6.10"
+ic-stable-structures = "0.5.3"
+prost = "0.11.9"
+serde = "1.0.160"
