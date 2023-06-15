@@ -15,3 +15,6 @@ mod post_trending_test;
 
 #[cfg(test)]
 mod helpers;
+
+#[cfg(test)]
+mod post_user_test;

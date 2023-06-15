@@ -12,6 +12,7 @@ use crate::api_interface::posts::*;
 use crate::models::post::*;
 use crate::models::post_collection::CollectionPostCreatedTsKey;
 use crate::models::post_street::PostCreatedTsKey;
+use crate::models::post_user::UserPostCreatedTsKey;
 use crate::models::trending_post::TrendingPostKey;
 use crate::models::trending_post_collection::TrendingPostCollectionKey;
 
@@ -106,7 +107,7 @@ pub fn create_street_post(request: CreateStreetPostRequest) -> CreateStreetPostR
         });
     }
 
-    user_add_post(UserAddPostRequest {
+    user_add_post(UserPostCreatedTsKey {
         user_id: post.created_by.clone(),
         post_id: post.id.0.clone(),
         created_ts: post.created_ts,
@@ -120,7 +121,6 @@ pub fn create_street_post(request: CreateStreetPostRequest) -> CreateStreetPostR
 Add a club post to the street storage with post id and club id
 1. Add to street storage and trending
 2. If there is nft, add to collection storage and trending
-3. Add to user post storage
 */
 #[update]
 #[candid_method(update)]
@@ -173,13 +173,6 @@ pub fn add_club_post_to_street(request: AddClubPostToStreetRequest) {
             );
         });
     }
-
-    user_add_post(UserAddPostRequest {
-        user_id: request.created_by,
-        post_id: request.post_id,
-        created_ts: request.created_ts,
-        club_id: Some(request.club_id),
-    });
 }
 
 #[query]

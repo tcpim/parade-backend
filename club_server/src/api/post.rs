@@ -13,7 +13,7 @@ use crate::models::post::*;
 use crate::models::post_collection::CollectionPostCreatedTsKey;
 use crate::models::trending_post_collection::TrendingPostCollectionKey;
 
-use crate::api_interface::inter_canister::{AddClubPostToStreetRequest, UserAddPostRequest};
+use crate::api_interface::inter_canister::{AddClubPostToStreetRequest, UserPostCreatedTsKey};
 
 // ######################
 // APIs
@@ -88,7 +88,7 @@ pub async fn create_post(request: CreatePostRequest) -> CreatePostResponse {
     });
 
     // Add posts to posts by collection
-    if !post.nfts.is_empty() && post.in_public {
+    if !post.nfts.is_empty() {
         // currently only support one NFT per post
         let canister_id = post.nfts[0].clone().canister_id;
 
@@ -116,6 +116,20 @@ pub async fn create_post(request: CreatePostRequest) -> CreatePostResponse {
 
     if is_within_canister() {
         //Async inter-canister calls
+        // TODO: handle error and possible roll back
+        ic_cdk::api::call::call::<(UserPostCreatedTsKey,), ()>(
+            Principal::from_text(MAIN_SERVER_CANISTER_ID).unwrap(),
+            "user_add_post",
+            (UserPostCreatedTsKey {
+                user_id: request.created_by.clone(),
+                post_id: request.post_id.clone(),
+                club_id: Some(request.club_ids[0].clone()),
+                created_ts: request.created_ts,
+            },),
+        )
+        .await
+        .expect("Failed to call user_add_post");
+
         if post.in_public {
             // async call to main server
             // TODO: handle error and possible roll back
@@ -133,20 +147,6 @@ pub async fn create_post(request: CreatePostRequest) -> CreatePostResponse {
             .await
             .expect("Failed to call add_club_post_to_street");
         }
-
-        // TODO: handle error and possible roll back
-        ic_cdk::api::call::call::<(UserAddPostRequest,), ()>(
-            Principal::from_text(MAIN_SERVER_CANISTER_ID).unwrap(),
-            "user_add_post",
-            (UserAddPostRequest {
-                user_id: request.created_by.clone(),
-                post_id: request.post_id.clone(),
-                club_id: Some(request.club_ids[0].clone()),
-                created_ts: request.created_ts,
-            },),
-        )
-        .await
-        .expect("Failed to call user_add_post");
     }
 
     CreatePostResponse { post, error }

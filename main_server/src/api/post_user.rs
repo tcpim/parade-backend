@@ -26,6 +26,7 @@ pub fn get_posts_by_user(request: GetUserPostsRequest) -> GetUserPostsResponse {
             club_id: None,
         };
         let limit = request.limit.unwrap_or(DEFAULT_PAGE_SIZE) as usize;
+        println!("!!! size: {}", max_heap.len());
 
         let (posts, next_cursor) = get_page_from_btree(max_heap, start, end, limit);
 
@@ -42,14 +43,8 @@ Add (club) post to the user storage
 */
 #[query]
 #[candid_method(update)]
-pub fn user_add_post(request: UserAddPostRequest) {
+pub fn user_add_post(request: UserPostCreatedTsKey) {
     with_user_posts_created_mut(|max_heap| {
-        let key = UserPostCreatedTsKey {
-            user_id: request.user_id,
-            created_ts: request.created_ts,
-            post_id: request.post_id,
-            club_id: request.club_id,
-        };
-        max_heap.insert(key, ());
+        max_heap.insert(request.clone(), ());
     })
 }

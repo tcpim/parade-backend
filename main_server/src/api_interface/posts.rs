@@ -2,7 +2,7 @@ use super::common::ServerError;
 use crate::api_interface::common::Cursor;
 use crate::models::nft::NftToken;
 use crate::models::post::Post;
-use crate::models::post_club::{ClubPost};
+use crate::models::post_club::ClubPost;
 use crate::models::post_collection::CollectionPostCreatedTsKey;
 use crate::models::post_street::PostCreatedTsKey;
 use crate::models::post_user::UserPostCreatedTsKey;
@@ -40,7 +40,6 @@ pub struct AddClubPostToStreetRequest {
     pub created_by: String,
 }
 
-
 #[derive(Debug, CandidType, Deserialize)]
 pub struct GetStreetPostsRequest {
     pub limit: Option<i32>,
@@ -72,14 +71,6 @@ pub struct GetUserPostsResponse {
     pub posts: Vec<PostType>,
     pub next_cursor: Cursor<UserPostCreatedTsKey>,
     pub error: Option<ServerError>,
-}
-
-#[derive(Debug, CandidType, Deserialize)]
-pub struct UserAddPostRequest {
-    pub user_id: String, // the user principal
-    pub post_id: String,
-    pub club_id: Option<String>,
-    pub created_ts: u64,
 }
 
 #[derive(Debug, CandidType, Deserialize)]

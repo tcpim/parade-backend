@@ -21,9 +21,9 @@ pub struct NftToken {
 }
 
 #[derive(Debug, CandidType, Deserialize)]
-pub struct UserAddPostRequest {
-    pub user_id: String, // the user principal
+pub struct UserPostCreatedTsKey {
+    pub user_id: String,
+    pub created_ts: u64,
     pub post_id: String,
     pub club_id: Option<String>,
-    pub created_ts: u64,
 }
