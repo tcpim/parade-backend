@@ -1,5 +1,4 @@
-use crate::models::post::HasPostId;
-use candid::{CandidType};
+use candid::CandidType;
 
 use serde::Deserialize;
 

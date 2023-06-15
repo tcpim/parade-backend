@@ -30,11 +30,10 @@ Create a new street post
 #[candid_method(update)]
 pub fn create_street_post(request: CreateStreetPostRequest) -> CreateStreetPostResponse {
     let post_id = PostIdString(request.post_id);
-    let user: String = request.created_by.clone();
 
     let post = Post {
         id: post_id.clone(),
-        created_by: user.clone(),
+        created_by: request.created_by.clone(),
         nfts: request.nfts,
         words: request.words,
         created_ts: request.created_ts,

@@ -148,8 +148,7 @@ pub fn update_trending_post_indexes(old_post: Post, new_trending_score: &Trendin
 pub fn convert_to_main_server_nfttoken(
     a: Vec<NftToken>,
 ) -> Vec<crate::api_interface::inter_canister::NftToken> {
-    return a
-        .into_iter()
+    a.into_iter()
         .map(|x| crate::api_interface::inter_canister::NftToken {
             canister_id: x.canister_id,
             token_index: x.token_index,
@@ -158,19 +157,14 @@ pub fn convert_to_main_server_nfttoken(
             original_image_url: x.original_image_url,
             original_thumbnail_url: x.original_thumbnail_url,
         })
-        .collect();
+        .collect()
 }
 
 pub fn is_within_canister() -> bool {
     let result = panic::catch_unwind(|| {
         // If panic, then it is run by unit test (not within canister)
-        println!("Current canister ID is : {}",ic_cdk::api::id().to_string());
+        println!("Current canister ID is : {}", ic_cdk::api::id());
     });
 
-    if let Err(_) = result {
-        // this is a unit test!
-        return false;
-    }
-
-    return true;
+    result.is_ok()
 }

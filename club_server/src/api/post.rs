@@ -14,8 +14,6 @@ use crate::models::post_collection::CollectionPostCreatedTsKey;
 use crate::models::trending_post_collection::TrendingPostCollectionKey;
 
 use crate::api_interface::inter_canister::{AddClubPostToStreetRequest, UserAddPostRequest};
-use ic_cdk::api::call::CallResult;
-
 
 // ######################
 // APIs
@@ -116,7 +114,6 @@ pub async fn create_post(request: CreatePostRequest) -> CreatePostResponse {
         });
     }
 
-
     if is_within_canister() {
         //Async inter-canister calls
         if post.in_public {
@@ -132,7 +129,9 @@ pub async fn create_post(request: CreatePostRequest) -> CreatePostResponse {
                     created_ts: request.created_ts,
                     created_by: request.created_by.clone(),
                 },),
-            ).await.expect("Failed to call add_club_post_to_street");
+            )
+            .await
+            .expect("Failed to call add_club_post_to_street");
         }
 
         // TODO: handle error and possible roll back
@@ -145,7 +144,9 @@ pub async fn create_post(request: CreatePostRequest) -> CreatePostResponse {
                 club_id: Some(request.club_ids[0].clone()),
                 created_ts: request.created_ts,
             },),
-        ).await.expect("Failed to call user_add_post");
+        )
+        .await
+        .expect("Failed to call user_add_post");
     }
 
     CreatePostResponse { post, error }
