@@ -74,7 +74,7 @@ pub fn create_street_post(request: CreateStreetPostRequest) -> CreateStreetPostR
     });
 
     with_trending_posts_street_mut(|trending_posts_street| {
-        trending_posts_street.insert(get_trending_post_key(&post), ());
+        trending_posts_street.insert(get_trending_post_key(&post, None), ());
     });
 
     // Add posts to posts by collection and trending
@@ -98,7 +98,7 @@ pub fn create_street_post(request: CreateStreetPostRequest) -> CreateStreetPostR
             max_heap.insert(
                 TrendingPostCollectionKey {
                     canister_id: canister_id.clone(),
-                    trending_info: get_trending_post_key(&post),
+                    trending_info: get_trending_post_key(&post, None),
                 },
                 (),
             );

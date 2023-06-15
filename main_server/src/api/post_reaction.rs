@@ -41,7 +41,7 @@ pub fn react_emoji(request: ReactEmojiRequest) -> ReactEmojiResponse {
             storage.insert(post_id_string.clone(), new_post.clone());
 
             // Update trending score in btrees
-            helpers::update_trending_post_indexes(&post, &new_post);
+            helpers::update_trending_post_indexes(&post, &new_post, None);
         })
     }
 

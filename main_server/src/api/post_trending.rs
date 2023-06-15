@@ -1,15 +1,18 @@
 use crate::api::constants::DEFAULT_PAGE_SIZE;
+use crate::api::helpers;
 use crate::api::helpers::get_page_from_btree;
 use crate::api_interface::post_trending::*;
 use crate::models::trending_post::TrendingPostKey;
 use crate::models::trending_post_collection::TrendingPostCollectionKey;
 use crate::stable_structure::access_helper::*;
 use candid::candid_method;
-use ic_cdk_macros::query;
+use ic_cdk_macros::{query, update};
 
-#[query]
+#[update]
 #[candid_method(update)]
-pub fn update_club_post_trending_score() {}
+pub fn update_club_post_trending_score(request: UpdateClubPostStreetTrendingScoreRequest) {
+    helpers::update_trending_post_indexes(&request.old, &request.new, Some(request.club_id));
+}
 
 #[query]
 #[candid_method(query)]

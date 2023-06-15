@@ -56,7 +56,7 @@ pub fn reply_post(request: ReplyPostRequest) -> ReplyPostResponse {
         storage.insert(post.id.clone(), new_post.clone());
 
         // Update trending score btree indexes
-        helpers::update_trending_post_indexes(&post, &new_post);
+        helpers::update_trending_post_indexes(&post, &new_post, None);
     });
 
     ReplyPostResponse {

@@ -1,10 +1,11 @@
 use crate::api_interface::common::{Cursor, ServerError};
 
+use crate::api_interface::posts::PostType;
+use crate::models::post::Post;
 use crate::models::trending_post::TrendingPostKey;
 use crate::models::trending_post_collection::TrendingPostCollectionKey;
 use candid::CandidType;
 use serde::Deserialize;
-use crate::api_interface::posts::PostType;
 
 #[derive(Debug, CandidType, Deserialize)]
 pub struct GetTrendingStreetPostRequest {
@@ -31,4 +32,11 @@ pub struct GetTrendingCollectionPostResponse {
     pub posts: Vec<PostType>,
     pub next_cursor: Cursor<TrendingPostCollectionKey>,
     pub error: Option<ServerError>,
+}
+
+#[derive(Debug, CandidType, Deserialize)]
+pub struct UpdateClubPostStreetTrendingScoreRequest {
+    pub old: Post,
+    pub new: Post,
+    pub club_id: String,
 }

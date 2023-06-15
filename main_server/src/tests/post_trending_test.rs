@@ -2,14 +2,19 @@ use super::helpers::*;
 use crate::api::post::*;
 use crate::api::post_reaction::react_emoji;
 use crate::api::post_reply::reply_post;
-use crate::api::post_trending::{get_trending_collection_posts, get_trending_street_posts};
+use crate::api::post_trending::{
+    get_trending_collection_posts, get_trending_street_posts, update_club_post_trending_score,
+};
 use crate::api_interface::common::Cursor;
 use crate::api_interface::post_reaction::ReactEmojiRequest;
 use crate::api_interface::post_reply::ReplyPostRequest;
 use crate::api_interface::post_trending::{
     GetTrendingCollectionPostRequest, GetTrendingStreetPostRequest,
+    UpdateClubPostStreetTrendingScoreRequest,
 };
+use crate::api_interface::posts::AddClubPostToStreetRequest;
 use crate::models::nft::NftToken;
+use crate::models::post::{Post, PostIdString, PostReplyIdString};
 
 #[test]
 fn get_trending_street_posts_pagination() {
@@ -100,6 +105,116 @@ fn get_trending_collection_posts_pagination() {
     assert_eq!(response.next_cursor, Cursor(None));
 }
 
+#[test]
+fn update_club_post_street_trending_score() {
+    // set up
+    // Add 2 club post to street
+    let nfts = vec![NftToken {
+        canister_id: "canister_1".to_string(),
+        token_index: 1,
+        token_id: "".to_string(),
+        collection_name: "".to_string(),
+        original_image_url: "".to_string(),
+        original_thumbnail_url: "".to_string(),
+    }];
+    let request_1 = AddClubPostToStreetRequest {
+        post_id: "1".to_string(),
+        club_id: "club_1".to_string(),
+        nfts: nfts.clone(),
+        created_ts: 1,
+        created_by: "tim".to_string(),
+    };
+    let request_2 = AddClubPostToStreetRequest {
+        post_id: "2".to_string(),
+        club_id: "club_1".to_string(),
+        nfts: nfts.clone(),
+        created_ts: 2,
+        created_by: "tim".to_string(),
+    };
+    add_club_post_to_street(request_1);
+    add_club_post_to_street(request_2);
+
+    // Act
+    let street_response_before = get_trending_street_posts(GetTrendingStreetPostRequest {
+        limit: None,
+        cursor: Cursor(None),
+    });
+    let collection_response_before =
+        get_trending_collection_posts(GetTrendingCollectionPostRequest {
+            canister_id: "canister_1".to_string(),
+            limit: None,
+            cursor: Cursor(None),
+        });
+    // Update trending score of the first post
+    update_club_post_trending_score(UpdateClubPostStreetTrendingScoreRequest {
+        old: Post {
+            id: PostIdString("1".to_string()),
+            created_by: "tim".to_string(),
+            nfts: nfts.clone(),
+            words: "".to_string(),
+            created_ts: 1,
+            updated_ts: None,
+            replies: vec![],
+            emoji_reactions: Default::default(),
+        },
+        new: Post {
+            id: PostIdString("1".to_string()),
+            created_by: "tim".to_string(),
+            nfts: nfts.clone(),
+            words: "".to_string(),
+            created_ts: 1,
+            updated_ts: None,
+            replies: vec![PostReplyIdString("1".to_string())],
+            emoji_reactions: Default::default(),
+        },
+        club_id: "club_1".to_string(),
+    });
+    let street_response_after = get_trending_street_posts(GetTrendingStreetPostRequest {
+        limit: None,
+        cursor: Cursor(None),
+    });
+    let collection_response_after =
+        get_trending_collection_posts(GetTrendingCollectionPostRequest {
+            canister_id: "canister_1".to_string(),
+            limit: None,
+            cursor: Cursor(None),
+        });
+
+    // Assert
+    // First post should be more trending because it has 1 reply
+    assert_eq!(
+        street_response_before.posts[0]
+            .club_post
+            .clone()
+            .unwrap()
+            .post_id,
+        "2"
+    );
+    assert_eq!(
+        street_response_after.posts[0]
+            .club_post
+            .clone()
+            .unwrap()
+            .post_id,
+        "1"
+    );
+    assert_eq!(
+        collection_response_before.posts[0]
+            .club_post
+            .clone()
+            .unwrap()
+            .post_id,
+        "2"
+    );
+    assert_eq!(
+        collection_response_after.posts[0]
+            .club_post
+            .clone()
+            .unwrap()
+            .post_id,
+        "1"
+    );
+}
 /**
 1. 2 reply and 1 emoji to first post
 2. 1 reply and 1 emoji to second post

@@ -111,7 +111,7 @@ pub fn get_post_replies_from_reply_ids(
 }
 
 // Construct a new TrendingPostKey with score = num_replies * 1 + num_emojis * 1
-pub fn get_trending_post_key(post: &Post) -> TrendingPostKey {
+pub fn get_trending_post_key(post: &Post, club_id: Option<String>) -> TrendingPostKey {
     let num_reactions = post.emoji_reactions.iter().fold(0, |acc, (_, v)| acc + v);
     let trending_score = post.replies.len() as u32 + num_reactions;
     TrendingPostKey {
@@ -119,7 +119,7 @@ pub fn get_trending_post_key(post: &Post) -> TrendingPostKey {
         post_id: post.id.0.clone(),
         created_ts: post.created_ts,
         updated_ts: post.created_ts,
-        club_id: None,
+        club_id,
     }
 }
 
@@ -127,9 +127,9 @@ pub fn get_trending_post_key(post: &Post) -> TrendingPostKey {
 Update trending score in trending indexes
 Trending street, trending collection posts
 */
-pub fn update_trending_post_indexes(old_post: &Post, new_post: &Post) {
-    let old_trending_score = get_trending_post_key(old_post);
-    let new_trending_score = get_trending_post_key(new_post);
+pub fn update_trending_post_indexes(old_post: &Post, new_post: &Post, club_id: Option<String>) {
+    let old_trending_score = get_trending_post_key(old_post, club_id.clone());
+    let new_trending_score = get_trending_post_key(new_post, club_id);
 
     // update trending score in street trending
     with_trending_posts_street_mut(|storage| {

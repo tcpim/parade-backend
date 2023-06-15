@@ -152,6 +152,11 @@ type TrendingPostKey = record {
   club_id : opt text;
   trending_score : nat32;
 };
+type UpdateClubPostStreetTrendingScoreRequest = record {
+  new : Post;
+  old : Post;
+  club_id : text;
+};
 type UserPostCreatedTsKey = record {
   post_id : text;
   created_ts : nat64;
@@ -179,5 +184,7 @@ service : {
     ) query;
   react_emoji : (ReactEmojiRequest) -> (DeletePostResponse);
   reply_post : (ReplyPostRequest) -> (ReplyPostResponse);
-  update_club_post_trending_score : () -> ();
+  update_club_post_trending_score : (
+      UpdateClubPostStreetTrendingScoreRequest,
+    ) -> ();
 }
