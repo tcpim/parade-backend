@@ -19,7 +19,7 @@ fn create_and_get_posts_with_pagination() {
 
     // act
     task::block_on(create_post(create_post_request_1));
-    task::block_on( create_post(create_post_request_2));
+    task::block_on(create_post(create_post_request_2));
     task::block_on(create_post(create_post_request_3));
 
     let request = GetPostsRequest {

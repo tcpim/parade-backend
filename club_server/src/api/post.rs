@@ -25,6 +25,7 @@ Create a new post
 2. Add post to post by club and trending posts by club
 3. If this post contains nfts, add post to posts_by_collection and trending posts by collection
 4. If this post is public, add to main server storage
+5. Add to user post storage
  */
 #[update]
 #[candid_method(update)]
@@ -114,39 +115,33 @@ pub async fn create_post(request: CreatePostRequest) -> CreatePostResponse {
         });
     }
 
-    if is_within_canister() {
-        //Async inter-canister calls
-        // TODO: handle error and possible roll back
-        ic_cdk::api::call::call::<(UserPostCreatedTsKey,), ()>(
-            Principal::from_text(MAIN_SERVER_CANISTER_ID).unwrap(),
-            "user_add_post",
-            (UserPostCreatedTsKey {
-                user_id: request.created_by.clone(),
-                post_id: request.post_id.clone(),
-                club_id: Some(request.club_ids[0].clone()),
-                created_ts: request.created_ts,
-            },),
-        )
-        .await
-        .expect("Failed to call user_add_post");
+    call_inter_canister_async(
+        MAIN_SERVER_CANISTER_ID,
+        "add_club_post_to_user",
+        UserPostCreatedTsKey {
+            user_id: request.created_by.clone(),
+            post_id: request.post_id.clone(),
+            club_id: Some(request.club_ids[0].clone()),
+            created_ts: request.created_ts,
+        },
+        "Failed to add post to user storage",
+    )
+    .await;
 
-        if post.in_public {
-            // async call to main server
-            // TODO: handle error and possible roll back
-            ic_cdk::api::call::call::<(AddClubPostToStreetRequest,), ()>(
-                Principal::from_text(MAIN_SERVER_CANISTER_ID).unwrap(),
-                "add_club_post_to_street",
-                (AddClubPostToStreetRequest {
-                    post_id: request.post_id.clone(),
-                    club_id: request.club_ids[0].clone(),
-                    nfts: convert_to_main_server_nfttoken(request.nfts.clone()),
-                    created_ts: request.created_ts,
-                    created_by: request.created_by.clone(),
-                },),
-            )
-            .await
-            .expect("Failed to call add_club_post_to_street");
-        }
+    if post.in_public {
+        call_inter_canister_async(
+            MAIN_SERVER_CANISTER_ID,
+            "add_club_post_to_street",
+            AddClubPostToStreetRequest {
+                post_id: request.post_id.clone(),
+                club_id: request.club_ids[0].clone(),
+                nfts: convert_to_main_server_nfttoken(request.nfts.clone()),
+                created_ts: request.created_ts,
+                created_by: request.created_by.clone(),
+            },
+            "Failed to add post to street storage",
+        )
+        .await;
     }
 
     CreatePostResponse { post, error }

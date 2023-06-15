@@ -5,10 +5,10 @@ use crate::models::post::*;
 use crate::models::trending_post::TrendingPostKey;
 use crate::models::trending_post_collection::TrendingPostCollectionKey;
 use crate::stable_structure::access_helper::*;
+use candid::{CandidType, Principal};
 use ic_stable_structures::memory_manager::VirtualMemory;
 use ic_stable_structures::{BoundedStorable, DefaultMemoryImpl, StableBTreeMap};
 use std::panic;
-
 /**
 Given a btree and a start key, return a page of posts with max len = limit and the next cursor
 */
@@ -160,11 +160,31 @@ pub fn convert_to_main_server_nfttoken(
         .collect()
 }
 
-pub fn is_within_canister() -> bool {
+fn is_within_canister() -> bool {
     let result = panic::catch_unwind(|| {
         // If panic, then it is run by unit test (not within canister)
         println!("Current canister ID is : {}", ic_cdk::api::id());
     });
 
     result.is_ok()
+}
+
+pub async fn call_inter_canister_async<T: CandidType>(
+    canister_id: &str,
+    method_name: &str,
+    request: T,
+    err_msg: &str,
+) {
+    println!("{} is called expectedly!", method_name);
+
+    if is_within_canister() {
+        // If within canister, call directly
+        ic_cdk::api::call::call::<(T,), ()>(
+            Principal::from_text(canister_id).unwrap(),
+            method_name,
+            (request,),
+        )
+        .await
+        .expect(err_msg);
+    }
 }
