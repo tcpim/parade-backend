@@ -5,6 +5,7 @@ use crate::api_interface::posts::*;
 use crate::models::nft::NftToken;
 use crate::models::post::PostCreatedTsKey;
 use crate::models::post_collection::CollectionPostCreatedTsKey;
+use async_std::task;
 
 #[test]
 fn create_and_get_posts_with_pagination() {
@@ -17,9 +18,9 @@ fn create_and_get_posts_with_pagination() {
         generate_create_post_request(2, "hi_3".to_string(), "ryan".to_string(), vec![]);
 
     // act
-    create_post(create_post_request_1);
-    create_post(create_post_request_2);
-    create_post(create_post_request_3);
+    task::block_on(create_post(create_post_request_1));
+    task::block_on( create_post(create_post_request_2));
+    task::block_on(create_post(create_post_request_3));
 
     let request = GetPostsRequest {
         limit: Option::Some(2),
@@ -69,8 +70,8 @@ fn create_and_get_posts_by_collection_pagination() {
         generate_create_post_request(1, "hi_2".to_string(), "tim".to_string(), nft_1.clone());
 
     // act
-    create_post(create_post_request_1);
-    create_post(create_post_request_2);
+    task::block_on(create_post(create_post_request_1));
+    task::block_on(create_post(create_post_request_2));
     let response = get_posts_by_collection(GetCollectionPostsRequest {
         canister_id: "canister_1".to_string(),
         limit: Option::Some(1),

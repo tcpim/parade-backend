@@ -1,6 +1,9 @@
 use crate::api::post::*;
 use crate::api::post_reply::*;
 use crate::api_interface::post_reply::*;
+use std::panic::{self, AssertUnwindSafe};
+use async_std::task;
+
 
 #[test]
 pub fn reply_post_test() {
@@ -11,7 +14,7 @@ pub fn reply_post_test() {
         vec![],
     );
 
-    let create_post_res = create_post(create_post_request);
+    let create_post_res = task::block_on(create_post(create_post_request));
     let post_id_str = create_post_res.post.id.0.clone();
     let reply_post_request_1 = ReplyPostRequest {
         reply_id: "1".to_string(),

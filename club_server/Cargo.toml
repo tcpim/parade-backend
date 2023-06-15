@@ -14,3 +14,6 @@ ic-cdk-macros = "0.6.10"
 ic-stable-structures = "0.5.3"
 prost = "0.11.9"
 serde = "1.0.160"
+
+[dev-dependencies]
+async-std = "1.12.0"

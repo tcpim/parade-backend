@@ -7,7 +7,7 @@ use crate::models::post_collection::CollectionPostCreatedTsKey;
 use candid::CandidType;
 use serde::Deserialize;
 
-#[derive(Debug, CandidType, Deserialize)]
+#[derive(Debug, CandidType, Deserialize, Clone)]
 pub struct CreatePostRequest {
     pub post_id: String,    // the post id, uuid from frontend
     pub created_by: String, // User's principal

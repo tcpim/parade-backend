@@ -10,6 +10,7 @@ use crate::api_interface::post_trending::{
     GetTrendingCollectionPostRequest, GetTrendingPostRequest,
 };
 use crate::models::nft::NftToken;
+use async_std::task;
 
 #[test]
 fn get_trending_posts_pagination() {
@@ -21,9 +22,9 @@ fn get_trending_posts_pagination() {
         generate_create_post_request(1, "hi_2".to_string(), "tim".to_string(), vec![]);
     let create_post_request_3 =
         generate_create_post_request(2, "hi_3".to_string(), "tim".to_string(), vec![]);
-    let post1 = create_post(create_post_request_1);
-    let post2 = create_post(create_post_request_2);
-    let post3 = create_post(create_post_request_3);
+    let post1 = task::block_on(create_post(create_post_request_1));
+    let post2 = task::block_on(create_post(create_post_request_2));
+    let post3 = task::block_on(create_post(create_post_request_3));
 
     // trending list: 2, 3, 1
     make_posts_trending(&post2.post.id.0, &post3.post.id.0, &post1.post.id.0);
@@ -68,9 +69,9 @@ fn get_trending_collection_posts_pagination() {
         generate_create_post_request(1, "hi_2".to_string(), "tim".to_string(), nfts.clone());
     let create_post_request_3 =
         generate_create_post_request(2, "hi_3".to_string(), "tim".to_string(), nfts.clone());
-    let post1 = create_post(create_post_request_1);
-    let post2 = create_post(create_post_request_2);
-    let post3 = create_post(create_post_request_3);
+    let post1 = task::block_on(create_post(create_post_request_1));
+    let post2 = task::block_on(create_post(create_post_request_2));
+    let post3 =task::block_on(create_post(create_post_request_3));
 
     // trending list: 2, 3, 1
     make_posts_trending(&post2.post.id.0, &post3.post.id.0, &post1.post.id.0);

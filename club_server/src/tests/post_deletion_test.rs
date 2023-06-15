@@ -4,6 +4,7 @@ use crate::api::post_deletion::*;
 use crate::api_interface::common::Cursor;
 use crate::api_interface::posts::*;
 use crate::models::nft::NftToken;
+use async_std::task;
 
 #[test]
 fn create_and_delete_posts() {
@@ -34,9 +35,9 @@ fn create_and_delete_posts() {
         vec![nft_1.clone()],
     );
 
-    let post_1 = create_post(create_post_request_1);
-    create_post(create_post_request_2);
-    create_post(create_post_request_3);
+    let post_1 = task::block_on(create_post(create_post_request_1));
+    task::block_on(create_post(create_post_request_2));
+    task::block_on(create_post(create_post_request_3));
 
     delete_post(post_1.post.id.0.clone());
 
