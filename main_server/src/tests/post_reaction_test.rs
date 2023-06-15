@@ -63,10 +63,4 @@ fn react_emoji_to_post_and_its_reply() {
 
     assert_eq!(reply[0].emoji_reactions.len(), 1);
     assert_eq!(reply[0].emoji_reactions.get("🤣").unwrap(), &1);
-
-    // After all reactions, assert the trending score changed
-    assert_ne!(
-        old_post.as_ref().unwrap().trending_score,
-        new_post.as_ref().unwrap().trending_score
-    );
 }

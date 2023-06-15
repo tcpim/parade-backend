@@ -40,7 +40,6 @@ pub fn create_street_post(request: CreateStreetPostRequest) -> CreateStreetPostR
         updated_ts: Some(request.created_ts),
         replies: vec![],
         emoji_reactions: BTreeMap::new(),
-        trending_score: Some(0),
     };
 
     let mut error: Option<ServerError> = None;

@@ -53,12 +53,10 @@ pub fn reply_post(request: ReplyPostRequest) -> ReplyPostResponse {
         let mut new_post = post.clone();
         new_post.updated_ts = Some(request.created_ts);
         new_post.replies.push(post_reply_string_id);
-        let new_trending_score = helpers::get_trending_post_key(&new_post);
-        new_post.trending_score = Some(new_trending_score.trending_score);
         storage.insert(post.id.clone(), new_post.clone());
 
         // Update trending score btree indexes
-        helpers::update_trending_post_indexes(post, &new_trending_score);
+        helpers::update_trending_post_indexes(&post, &new_post);
     });
 
     ReplyPostResponse {

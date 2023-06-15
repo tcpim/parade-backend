@@ -35,15 +35,13 @@ pub fn react_emoji(request: ReactEmojiRequest) -> ReactEmojiResponse {
             }
 
             // Update post content
-            let mut post_new = post.clone();
-            post_new.updated_ts = Some(request.created_ts);
-            post_new.emoji_reactions = emojis;
-            let new_trending_score = helpers::get_trending_post_key(&post_new);
-            post_new.trending_score = Some(new_trending_score.trending_score);
-            storage.insert(post_id_string.clone(), post_new);
+            let mut new_post = post.clone();
+            new_post.updated_ts = Some(request.created_ts);
+            new_post.emoji_reactions = emojis;
+            storage.insert(post_id_string.clone(), new_post.clone());
 
             // Update trending score in btrees
-            helpers::update_trending_post_indexes(post, &new_trending_score);
+            helpers::update_trending_post_indexes(&post, &new_post);
         })
     }
 

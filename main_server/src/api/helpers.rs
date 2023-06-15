@@ -1,13 +1,13 @@
 use crate::api::constants::DEFAULT_PAGE_SIZE;
 use crate::api_interface::common::*;
+use crate::api_interface::posts::PostType;
 use crate::models::post::*;
+use crate::models::post_club::{ClubPost, HasClubId};
 use crate::models::trending_post::TrendingPostKey;
 use crate::models::trending_post_collection::TrendingPostCollectionKey;
 use crate::stable_structure::access_helper::*;
 use ic_stable_structures::memory_manager::VirtualMemory;
 use ic_stable_structures::{BoundedStorable, DefaultMemoryImpl, StableBTreeMap};
-use crate::api_interface::posts::PostType;
-use crate::models::post_club::{ClubPost, HasClubId};
 
 /**
 Given a btree and a start key, return a page of posts with max len = limit and the next cursor
@@ -125,17 +125,17 @@ pub fn get_trending_post_key(post: &Post) -> TrendingPostKey {
 
 /**
 Update trending score in trending indexes
-Trending street, trending collection posts, trending club posts
+Trending street, trending collection posts
 */
-pub fn update_trending_post_indexes(old_post: Post, new_trending_score: &TrendingPostKey) {
-    let old_trending_score = get_trending_post_key(&old_post);
+pub fn update_trending_post_indexes(old_post: &Post, new_post: &Post) {
+    let old_trending_score = get_trending_post_key(old_post);
+    let new_trending_score = get_trending_post_key(new_post);
 
     // update trending score in street trending
     with_trending_posts_street_mut(|storage| {
         storage.remove(&old_trending_score);
         storage.insert(new_trending_score.clone(), ());
     });
-
 
     // update trending score in collection trending
     if !old_post.nfts.is_empty() {

@@ -64,10 +64,4 @@ pub fn reply_post_test() {
     assert_eq!(get_replies_res.post_replies.len(), 1);
     assert_eq!(get_replies_res.offset, 3);
     assert_eq!(get_replies_res.post_replies[0].words, "this is 3rd reply");
-
-    // After all reactions, assert the trending score changed
-    assert_ne!(
-        create_post_res.post.trending_score,
-        get_posts_res.post.as_ref().unwrap().trending_score
-    );
 }
