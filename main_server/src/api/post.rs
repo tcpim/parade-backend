@@ -2,7 +2,6 @@ use candid::candid_method;
 use ic_cdk_macros::{query, update};
 
 use crate::api::constants::DEFAULT_PAGE_SIZE;
-use crate::api::post_user::user_add_post;
 use crate::stable_structure::access_helper::*;
 use std::collections::BTreeMap;
 
@@ -107,11 +106,16 @@ pub fn create_street_post(request: CreateStreetPostRequest) -> CreateStreetPostR
         });
     }
 
-    user_add_post(UserPostCreatedTsKey {
-        user_id: post.created_by.clone(),
-        post_id: post.id.0.clone(),
-        created_ts: post.created_ts,
-        club_id: None,
+    with_user_posts_created_mut(|max_heap| {
+        max_heap.insert(
+            UserPostCreatedTsKey {
+                user_id: post.created_by.clone(),
+                post_id: post.id.0.clone(),
+                created_ts: post.created_ts,
+                club_id: None,
+            },
+            (),
+        );
     });
 
     CreateStreetPostResponse { post, error }

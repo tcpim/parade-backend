@@ -1,4 +1,4 @@
-use crate::api::post_user::{get_posts_by_user, user_add_post};
+use crate::api::post_user::{add_club_post_to_user, get_posts_by_user};
 use crate::api_interface::common::Cursor;
 use crate::api_interface::posts::*;
 use crate::models::post_user::UserPostCreatedTsKey;
@@ -18,8 +18,8 @@ fn add_post_to_user_test() {
         post_id: "2".to_string(),
         club_id: Some("club_1".to_string()),
     };
-    user_add_post(request_1);
-    user_add_post(request_2);
+    add_club_post_to_user(request_1);
+    add_club_post_to_user(request_2);
 
     // act
     let request = GetUserPostsRequest {
@@ -30,8 +30,8 @@ fn add_post_to_user_test() {
     let response = get_posts_by_user(request);
 
     // assert
-    // assert_eq!(response.posts.len(), 2);
-    // assert_eq!(response.next_cursor, Cursor(None));
-    // assert_eq!(response.posts[0].club_post.clone().unwrap().post_id, "2");
-    // assert_eq!(response.posts[1].club_post.clone().unwrap().post_id, "1");
+    assert_eq!(response.posts.len(), 2);
+    assert_eq!(response.next_cursor, Cursor(None));
+    assert_eq!(response.posts[0].club_post.clone().unwrap().post_id, "2");
+    assert_eq!(response.posts[1].club_post.clone().unwrap().post_id, "1");
 }

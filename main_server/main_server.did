@@ -161,6 +161,7 @@ type UserPostCreatedTsKey = record {
 };
 service : {
   add_club_post_to_street : (AddClubPostToStreetRequest) -> ();
+  add_club_post_to_user : (UserPostCreatedTsKey) -> ();
   create_street_post : (CreateStreetPostRequest) -> (CreateStreetPostResponse);
   delete_all_post : () -> ();
   delete_post : (text) -> (DeletePostResponse);
@@ -180,5 +181,4 @@ service : {
   react_emoji : (ReactEmojiRequest) -> (DeletePostResponse);
   reply_post : (ReplyPostRequest) -> (ReplyPostResponse);
   update_club_post_trending_score : () -> ();
-  user_add_post : (UserPostCreatedTsKey) -> ();
 }

@@ -42,7 +42,7 @@ Add street/club post to the user storage
 */
 #[update]
 #[candid_method(update)]
-pub fn user_add_post(request: UserPostCreatedTsKey) {
+pub fn add_club_post_to_user(request: UserPostCreatedTsKey) {
     with_user_posts_created_mut(|max_heap| {
         max_heap.insert(
             UserPostCreatedTsKey {
