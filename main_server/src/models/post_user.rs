@@ -1,8 +1,9 @@
 use crate::models::post::HasPostId;
+use crate::models::post_club::HasClubId;
 use candid::{CandidType, Decode, Encode};
 use ic_stable_structures::{BoundedStorable, Storable};
 use serde::Deserialize;
-use crate::models::post_club::HasClubId;
+use std::fmt;
 
 #[derive(PartialEq, Eq, Clone, CandidType, Deserialize, Debug)]
 pub struct UserPostCreatedTsKey {
@@ -22,6 +23,19 @@ impl Ord for UserPostCreatedTsKey {
             return ord;
         }
         other.created_ts.cmp(&self.created_ts)
+    }
+}
+
+impl fmt::Display for UserPostCreatedTsKey {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "MyStruct {{ user_id: {}, created_ts: {}, post_id: {},club_id: {} }}",
+            self.user_id,
+            self.created_ts,
+            self.post_id,
+            self.club_id.clone().unwrap_or("None".to_string())
+        )
     }
 }
 
