@@ -153,9 +153,8 @@ type TrendingPostKey = record {
   trending_score : nat32;
 };
 type UpdateClubPostStreetTrendingScoreRequest = record {
-  new : Post;
-  old : Post;
-  club_id : text;
+  new : TrendingPostKey;
+  nft_canister_ids : vec text;
 };
 type UserPostCreatedTsKey = record {
   post_id : text;

@@ -36,7 +36,6 @@ pub struct GetTrendingCollectionPostResponse {
 
 #[derive(Debug, CandidType, Deserialize)]
 pub struct UpdateClubPostStreetTrendingScoreRequest {
-    pub old: Post,
-    pub new: Post,
-    pub club_id: String,
+    pub new: TrendingPostKey,
+    pub nft_canister_ids: Vec<String>,
 }

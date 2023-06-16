@@ -14,7 +14,8 @@ pub struct UserPostCreatedTsKey {
 }
 
 impl Ord for UserPostCreatedTsKey {
-    // First compare user id
+    // First compare user id to bucket by user id
+    // Then compare post_id and club id for equality
     // Sort by created ts in descending order
     // Note!!: do reverse compare on created ts, since this is a max heap
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
@@ -22,20 +23,12 @@ impl Ord for UserPostCreatedTsKey {
         if ord != std::cmp::Ordering::Equal {
             return ord;
         }
-        other.created_ts.cmp(&self.created_ts)
-    }
-}
 
-impl fmt::Display for UserPostCreatedTsKey {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "MyStruct {{ user_id: {}, created_ts: {}, post_id: {},club_id: {} }}",
-            self.user_id,
-            self.created_ts,
-            self.post_id,
-            self.club_id.clone().unwrap_or("None".to_string())
-        )
+        if self.post_id == other.post_id && self.club_id == other.club_id {
+            return std::cmp::Ordering::Equal;
+        }
+
+        other.created_ts.cmp(&self.created_ts)
     }
 }
 

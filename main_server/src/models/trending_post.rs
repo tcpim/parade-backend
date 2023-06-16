@@ -1,10 +1,10 @@
 use crate::models::post::HasPostId;
+use crate::models::post_club::HasClubId;
 use candid::{CandidType, Decode, Encode};
 use ic_stable_structures::{BoundedStorable, Storable};
 use serde::Deserialize;
-use crate::models::post_club::HasClubId;
 
-#[derive(Eq, PartialEq, Clone, Debug, CandidType, Deserialize)]
+#[derive(PartialEq, Eq, Debug, CandidType, Deserialize, Clone)]
 pub struct TrendingPostKey {
     pub post_id: String,
     pub trending_score: u32,
@@ -26,10 +26,15 @@ impl TrendingPostKey {
 }
 
 impl Ord for TrendingPostKey {
-    // First check trending score, then updated_ts, finally created_ts
+    // First check post_id and club_id for equality
+    // Then trending score, then updated_ts, finally created_ts
     // If same trending score, whoever is being updated (added new reply) is more trending
     // Note!!: do reverse compare, since this is a max heap
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        if self.post_id == other.post_id && self.club_id == other.club_id {
+            return std::cmp::Ordering::Equal;
+        }
+
         let ord = other.trending_score.cmp(&self.trending_score);
         if ord != std::cmp::Ordering::Equal {
             return ord;

@@ -1,8 +1,8 @@
 use crate::models::post::HasPostId;
+use crate::models::post_club::HasClubId;
 use candid::{CandidType, Decode, Encode};
 use ic_stable_structures::{BoundedStorable, Storable};
 use serde::Deserialize;
-use crate::models::post_club::HasClubId;
 
 #[derive(PartialEq, Eq, Clone, CandidType, Deserialize, Debug)]
 pub struct PostCreatedTsKey {
@@ -12,9 +12,14 @@ pub struct PostCreatedTsKey {
 }
 
 impl Ord for PostCreatedTsKey {
+    // First compare post_id and club_id for equality
     // Sort by created ts in descending order
     // Note!!: do reverse compare, since this is a max heap
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        if self.post_id == other.post_id && self.club_id == other.club_id {
+            return std::cmp::Ordering::Equal;
+        }
+
         other.created_ts.cmp(&self.created_ts)
     }
 }

@@ -1,9 +1,9 @@
 use crate::models::post::HasPostId;
+use crate::models::post_club::HasClubId;
 use crate::models::trending_post::TrendingPostKey;
 use candid::{CandidType, Decode, Encode};
 use ic_stable_structures::{BoundedStorable, Storable};
 use serde::Deserialize;
-use crate::models::post_club::HasClubId;
 
 #[derive(Eq, PartialEq, Clone, Debug, CandidType, Deserialize)]
 pub struct TrendingPostCollectionKey {
@@ -12,7 +12,7 @@ pub struct TrendingPostCollectionKey {
 }
 
 impl Ord for TrendingPostCollectionKey {
-    // First compare canister id
+    // First compare canister id to bucket by collection
     // Then check trending score, then updated_ts, finally created_ts
     // If same trending score, whoever is being updated (added new reply) is more trending
     // Note!!: do reverse compare, since this is a max heap

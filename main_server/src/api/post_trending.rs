@@ -11,7 +11,7 @@ use ic_cdk_macros::{query, update};
 #[update]
 #[candid_method(update)]
 pub fn update_club_post_trending_score(request: UpdateClubPostStreetTrendingScoreRequest) {
-    helpers::update_trending_post_indexes(&request.old, &request.new, Some(request.club_id));
+    helpers::update_trending_club_post_indexes(&request.new, request.nft_canister_ids);
 }
 
 #[query]

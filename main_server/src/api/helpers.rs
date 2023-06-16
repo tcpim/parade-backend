@@ -127,30 +127,63 @@ pub fn get_trending_post_key(post: &Post, club_id: Option<String>) -> TrendingPo
 Update trending score in trending indexes
 Trending street, trending collection posts
 */
-pub fn update_trending_post_indexes(old_post: &Post, new_post: &Post, club_id: Option<String>) {
-    let old_trending_score = get_trending_post_key(old_post, club_id.clone());
-    let new_trending_score = get_trending_post_key(new_post, club_id);
+pub fn update_trending_post_indexes(new_post: &Post, club_id: Option<String>) {
+    let new_key = get_trending_post_key(new_post, club_id);
 
     // update trending score in street trending
     with_trending_posts_street_mut(|storage| {
-        storage.remove(&old_trending_score);
-        storage.insert(new_trending_score.clone(), ());
+        // TODO: the new key's postId and clubId should uniquely identify a post, but the insert should overwrite it
+        storage.remove(&new_key);
+        storage.insert(new_key.clone(), ());
     });
 
     // update trending score in collection trending
-    if !old_post.nfts.is_empty() {
+    if !new_post.nfts.is_empty() {
         // Currently only support one collection per post
-        let canister_id = old_post.nfts[0].canister_id.clone();
+        let canister_id = new_post.nfts[0].canister_id.clone();
 
         with_trending_posts_collection_mut(|max_heap| {
+            // TODO: the new key's postId and clubId should uniquely identify a post, but the insert should overwrite it
             max_heap.remove(&TrendingPostCollectionKey {
                 canister_id: canister_id.clone(),
-                trending_info: old_trending_score.clone(),
+                trending_info: new_key.clone(),
             });
             max_heap.insert(
                 TrendingPostCollectionKey {
                     canister_id: canister_id.clone(),
-                    trending_info: new_trending_score.clone(),
+                    trending_info: new_key.clone(),
+                },
+                (),
+            );
+        })
+    }
+}
+
+/**
+Update trending score in trending indexes for club post
+*/
+pub fn update_trending_club_post_indexes(new_key: &TrendingPostKey, nft_canister_ids: Vec<String>) {
+    // update trending score in street trending
+    with_trending_posts_street_mut(|storage| {
+        // TODO: the new key's postId and clubId should uniquely identify a post, but the insert should overwrite it
+        storage.remove(new_key);
+        storage.insert(new_key.clone(), ());
+    });
+
+    // update trending score in collection trending
+    if !nft_canister_ids.is_empty() {
+        // Currently only support one collection per post
+        let canister_id = nft_canister_ids[0].clone();
+
+        with_trending_posts_collection_mut(|max_heap| {
+            max_heap.remove(&TrendingPostCollectionKey {
+                canister_id: canister_id.clone(),
+                trending_info: new_key.clone(),
+            });
+            max_heap.insert(
+                TrendingPostCollectionKey {
+                    canister_id: canister_id.clone(),
+                    trending_info: new_key.clone(),
                 },
                 (),
             );

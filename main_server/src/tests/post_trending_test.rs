@@ -15,6 +15,7 @@ use crate::api_interface::post_trending::{
 use crate::api_interface::posts::AddClubPostToStreetRequest;
 use crate::models::nft::NftToken;
 use crate::models::post::{Post, PostIdString, PostReplyIdString};
+use crate::models::trending_post::TrendingPostKey;
 
 #[test]
 fn get_trending_street_posts_pagination() {
@@ -147,27 +148,14 @@ fn update_club_post_street_trending_score() {
         });
     // Update trending score of the first post
     update_club_post_trending_score(UpdateClubPostStreetTrendingScoreRequest {
-        old: Post {
-            id: PostIdString("1".to_string()),
-            created_by: "tim".to_string(),
-            nfts: nfts.clone(),
-            words: "".to_string(),
+        new: TrendingPostKey {
+            post_id: "1".to_string(),
+            trending_score: 100,
             created_ts: 1,
-            updated_ts: None,
-            replies: vec![],
-            emoji_reactions: Default::default(),
+            updated_ts: 3,
+            club_id: Some("club_1".to_string()),
         },
-        new: Post {
-            id: PostIdString("1".to_string()),
-            created_by: "tim".to_string(),
-            nfts: nfts.clone(),
-            words: "".to_string(),
-            created_ts: 1,
-            updated_ts: None,
-            replies: vec![PostReplyIdString("1".to_string())],
-            emoji_reactions: Default::default(),
-        },
-        club_id: "club_1".to_string(),
+        nft_canister_ids: vec!["canister_1".to_string()],
     });
     let street_response_after = get_trending_street_posts(GetTrendingStreetPostRequest {
         limit: None,
@@ -181,7 +169,7 @@ fn update_club_post_street_trending_score() {
         });
 
     // Assert
-    // First post should be more trending because it has 1 reply
+    // First post should be more trending after update
     assert_eq!(
         street_response_before.posts[0]
             .club_post
@@ -215,6 +203,7 @@ fn update_club_post_street_trending_score() {
         "1"
     );
 }
+
 /**
 1. 2 reply and 1 emoji to first post
 2. 1 reply and 1 emoji to second post
