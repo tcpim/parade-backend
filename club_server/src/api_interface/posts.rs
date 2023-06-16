@@ -12,8 +12,8 @@ pub struct CreatePostRequest {
     pub post_id: String,    // the post id, uuid from frontend
     pub created_by: String, // User's principal
     pub nfts: Vec<NftToken>,
-    pub in_public: bool,       // whether this post is viewable in public street
-    pub club_ids: Vec<String>, // whether this post is viewable in NFT clubs, if set, store club id list
+    pub in_public: bool, // whether this post is viewable in public street
+    pub club_id: String, // whether this post is viewable in NFT clubs, if set, store club id list
     pub words: String,
     pub created_ts: u64,
 }

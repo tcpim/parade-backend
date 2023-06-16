@@ -13,7 +13,7 @@ pub fn generate_create_post_request(
         created_by,
         nfts,
         in_public: true,
-        club_ids: vec!["clubId".to_string()],
+        club_id: "".to_string(),
         words,
         created_ts,
     }

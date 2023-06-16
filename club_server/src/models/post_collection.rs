@@ -11,7 +11,7 @@ pub struct CollectionPostCreatedTsKey {
 }
 
 impl Ord for CollectionPostCreatedTsKey {
-    // First compare canister id
+    // First compare canister id to group posts by canister
     // Sort by created ts in descending order
     // Note!!: do reverse compare on created ts, since this is a max heap
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
@@ -19,6 +19,11 @@ impl Ord for CollectionPostCreatedTsKey {
         if ord != std::cmp::Ordering::Equal {
             return ord;
         }
+
+        if self.post_id == other.post_id {
+            return std::cmp::Ordering::Equal;
+        }
+
         other.created_ts.cmp(&self.created_ts)
     }
 }

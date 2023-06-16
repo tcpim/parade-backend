@@ -23,10 +23,15 @@ impl TrendingPostKey {
 }
 
 impl Ord for TrendingPostKey {
-    // First check trending score, then updated_ts, finally created_ts
+    // First check post_id and club_id for equality
+    // Then check trending score, then updated_ts, finally created_ts
     // If same trending score, whoever is being updated (added new reply) is more trending
     // Note!!: do reverse compare, since this is a max heap
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        if self.post_id == other.post_id {
+            return std::cmp::Ordering::Equal;
+        }
+
         let ord = other.trending_score.cmp(&self.trending_score);
         if ord != std::cmp::Ordering::Equal {
             return ord;

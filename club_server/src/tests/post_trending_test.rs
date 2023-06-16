@@ -71,7 +71,7 @@ fn get_trending_collection_posts_pagination() {
         generate_create_post_request(2, "hi_3".to_string(), "tim".to_string(), nfts.clone());
     let post1 = task::block_on(create_post(create_post_request_1));
     let post2 = task::block_on(create_post(create_post_request_2));
-    let post3 =task::block_on(create_post(create_post_request_3));
+    let post3 = task::block_on(create_post(create_post_request_3));
 
     // trending list: 2, 3, 1
     make_posts_trending(&post2.post.id.0, &post3.post.id.0, &post1.post.id.0);
@@ -108,53 +108,53 @@ fn get_trending_collection_posts_pagination() {
 */
 fn make_posts_trending(first: &String, second: &String, third: &String) {
     // 2 reply and 1 emoji to first post
-    reply_post(ReplyPostRequest {
+    task::block_on(reply_post(ReplyPostRequest {
         reply_id: "1".to_string(),
         user: "peter".to_string(),
         post_id: first.clone(),
         nfts: vec![],
         created_ts: 1,
         words: "this is 1st reply".to_string(),
-    });
-    reply_post(ReplyPostRequest {
+    }));
+    task::block_on(reply_post(ReplyPostRequest {
         reply_id: "2".to_string(),
         user: "peter".to_string(),
         post_id: first.clone(),
         nfts: vec![],
         created_ts: 2,
         words: "this is 2nd reply".to_string(),
-    });
-    react_emoji(ReactEmojiRequest {
+    }));
+    task::block_on(react_emoji(ReactEmojiRequest {
         post_id: Some(first.clone()),
         reply_id: None,
         emoji: "👍".to_string(),
         user: "ryan".to_string(),
         created_ts: 2,
-    });
+    }));
 
     // 1 reply and 1 emoji to second post
-    reply_post(ReplyPostRequest {
+    task::block_on(reply_post(ReplyPostRequest {
         reply_id: "3".to_string(),
         user: "peter".to_string(),
         post_id: second.clone(),
         nfts: vec![],
         created_ts: 2,
         words: "this is 1st reply".to_string(),
-    });
-    react_emoji(ReactEmojiRequest {
+    }));
+    task::block_on(react_emoji(ReactEmojiRequest {
         post_id: Some(second.clone()),
         reply_id: None,
         emoji: "👍".to_string(),
         user: "ryan".to_string(),
         created_ts: 2,
-    });
+    }));
 
     // 1 emoji to third post
-    react_emoji(ReactEmojiRequest {
+    task::block_on(react_emoji(ReactEmojiRequest {
         post_id: Some(third.clone()),
         reply_id: None,
         emoji: "👍".to_string(),
         user: "ryan".to_string(),
         created_ts: 2,
-    });
+    }));
 }

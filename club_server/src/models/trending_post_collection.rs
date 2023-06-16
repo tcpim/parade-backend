@@ -11,7 +11,7 @@ pub struct TrendingPostCollectionKey {
 }
 
 impl Ord for TrendingPostCollectionKey {
-    // First compare canister id
+    // First compare canister id to make sure all posts from same canister are together
     // Then check trending score, then updated_ts, finally created_ts
     // If same trending score, whoever is being updated (added new reply) is more trending
     // Note!!: do reverse compare, since this is a max heap

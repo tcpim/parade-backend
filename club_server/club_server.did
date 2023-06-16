@@ -5,11 +5,11 @@ type CollectionPostCreatedTsKey = record {
 };
 type CreatePostRequest = record {
   post_id : text;
-  club_ids : vec text;
   nfts : vec NftToken;
   created_by : text;
   created_ts : nat64;
   words : text;
+  club_id : text;
   in_public : bool;
 };
 type CreatePostResponse = record { post : Post; error : opt ServerError };
@@ -73,8 +73,7 @@ type NftToken = record {
 };
 type Post = record {
   id : text;
-  updated_ts : opt nat64;
-  club_ids : vec text;
+  updated_ts : nat64;
   emoji_reactions : vec record { text; nat32 };
   nfts : vec NftToken;
   created_by : text;

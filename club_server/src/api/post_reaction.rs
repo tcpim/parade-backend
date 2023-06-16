@@ -1,21 +1,40 @@
-use crate::api::constants::MAIN_SERVER_CANISTER_ID;
+use crate::api::constants::{CLUB_ID, MAIN_SERVER_CANISTER_ID};
 use crate::api::helpers;
+use crate::api::helpers::call_inter_canister_async;
 use crate::stable_structure::access_helper::*;
 use candid::candid_method;
 use ic_cdk_macros::update;
 
 use crate::api_interface::common::*;
+use crate::api_interface::inter_canister::{
+    TrendingPostKeyExternal, UpdateClubPostStreetTrendingScoreRequest,
+};
 use crate::api_interface::post_reaction::*;
 use crate::models::post::*;
+use crate::models::trending_post::TrendingPostKey;
 
 #[update]
 #[candid_method(update)]
-pub fn react_emoji(request: ReactEmojiRequest) -> ReactEmojiResponse {
+pub async fn react_emoji(request: ReactEmojiRequest) -> ReactEmojiResponse {
     let mut error = None;
 
     // This reaction is for a post
     if request.post_id.is_some() {
         let post_id_string = PostIdString(request.post_id.clone().unwrap());
+        // Fake initial data
+        let mut post_new: Post = Post {
+            id: PostIdString("".to_string()),
+            created_by: "".to_string(),
+            nfts: vec![],
+            in_public: false,
+            words: "".to_string(),
+            created_ts: 0,
+            updated_ts: 0,
+            replies: vec![],
+            emoji_reactions: Default::default(),
+            trending_score: None,
+        };
+
         with_post_by_id_mut(|storage| {
             if storage.get(&post_id_string).is_none() {
                 error = Some(ServerError::ReactEmojiError(format!(
@@ -36,16 +55,36 @@ pub fn react_emoji(request: ReactEmojiRequest) -> ReactEmojiResponse {
             }
 
             // Update post content
-            let mut post_new = post.clone();
-            post_new.updated_ts = Some(request.created_ts);
+            post_new = post.clone();
+            post_new.updated_ts = request.created_ts;
             post_new.emoji_reactions = emojis;
-            let new_trending_score = helpers::get_trending_post_key(&post_new);
-            post_new.trending_score = Some(new_trending_score.trending_score);
-            storage.insert(post_id_string.clone(), post_new);
+            let new_trending_post_key = helpers::get_trending_post_key(&post_new);
+            post_new.trending_score = Some(new_trending_post_key.trending_score);
+            storage.insert(post_id_string.clone(), post_new.clone());
 
             // Update trending score in btrees
-            helpers::update_trending_post_indexes(post, &new_trending_score);
-        })
+            helpers::update_trending_post_indexes(post, &new_trending_post_key);
+        });
+
+        if post_new.in_public {
+            let new_trending_post_key = helpers::get_trending_post_key(&post_new);
+            call_inter_canister_async(
+                MAIN_SERVER_CANISTER_ID,
+                "update_club_post_trending_score",
+                UpdateClubPostStreetTrendingScoreRequest {
+                    new: TrendingPostKeyExternal {
+                        post_id: new_trending_post_key.post_id,
+                        trending_score: new_trending_post_key.trending_score,
+                        created_ts: new_trending_post_key.created_ts,
+                        updated_ts: new_trending_post_key.updated_ts,
+                        club_id: Some(CLUB_ID.to_string()),
+                    },
+                    nft_canister_ids: post_new.nfts.into_iter().map(|x| x.canister_id).collect(),
+                },
+                "update_club_post_trending_score failed",
+            )
+            .await;
+        }
     }
 
     if request.reply_id.is_some() {

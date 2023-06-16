@@ -9,11 +9,10 @@ pub struct Post {
     pub id: PostIdString,
     pub created_by: String, // user principal
     pub nfts: Vec<NftToken>,
-    pub in_public: bool,       // whether this post is seenable in public street
-    pub club_ids: Vec<String>, // whether this post is seenable in NFT clubs, if set, store club id list
+    pub in_public: bool, // whether this post is seenable in public street
     pub words: String,
     pub created_ts: u64,
-    pub updated_ts: Option<u64>,
+    pub updated_ts: u64,
     pub replies: Vec<PostReplyIdString>, // string is reply id with {timestamp}-{user principal}-reply
     pub emoji_reactions: BTreeMap<String, u32>, // emoji reactions on a post, key is emoji, value is count
     pub trending_score: Option<u32>,            // trending score, used for trending posts
@@ -50,6 +49,10 @@ impl Ord for PostCreatedTsKey {
     // Sort by created ts in descending order
     // Note!!: do reverse compare on created ts, since this is a max heap
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        if self.post_id == other.post_id {
+            return std::cmp::Ordering::Equal;
+        }
+
         other.created_ts.cmp(&self.created_ts)
     }
 }

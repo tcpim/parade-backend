@@ -1,14 +1,19 @@
 use candid::candid_method;
 use ic_cdk_macros::{query, update};
 
-use crate::api::helpers::get_post_by_id_from_store;
+use crate::api::constants::{CLUB_ID, MAIN_SERVER_CANISTER_ID};
+use crate::api::helpers::{call_inter_canister_async, get_post_by_id_from_store};
 use crate::stable_structure::access_helper::*;
 use std::collections::BTreeMap;
 
 use super::helpers;
 use crate::api_interface::common::*;
+use crate::api_interface::inter_canister::{
+    TrendingPostKeyExternal, UpdateClubPostStreetTrendingScoreRequest,
+};
 use crate::api_interface::post_reply::*;
 use crate::models::post::*;
+use crate::models::trending_post::TrendingPostKey;
 
 /**
 Add a new reply to a post
@@ -16,11 +21,11 @@ Add a new reply to a post
 2. Modify the existing post with newly added reply and newly updated_ts
 3. Get a new post trending score
     a. update the post_by_id store for the stored trending score
-    b. update the trending storages such as trending_club and trending_collection
+    b. update the trending storages such as trending_street and trending_collection
 */
 #[update]
 #[candid_method(update)]
-pub fn reply_post(request: ReplyPostRequest) -> ReplyPostResponse {
+pub async fn reply_post(request: ReplyPostRequest) -> ReplyPostResponse {
     let mut error = None;
     let post_reply_string_id = PostReplyIdString(request.reply_id);
     let post_reply = PostReply {
@@ -32,6 +37,21 @@ pub fn reply_post(request: ReplyPostRequest) -> ReplyPostResponse {
         nfts: request.nfts.clone(),
         emoji_reactions: BTreeMap::new(),
     };
+
+    // Fake initial data
+    let mut post_new: Post = Post {
+        id: PostIdString("".to_string()),
+        created_by: "".to_string(),
+        nfts: vec![],
+        in_public: false,
+        words: "".to_string(),
+        created_ts: 0,
+        updated_ts: 0,
+        replies: vec![],
+        emoji_reactions: Default::default(),
+        trending_score: None,
+    };
+
     with_post_by_id_mut(|storage| {
         // Get post
         let post_opt = storage.get(&PostIdString(request.post_id.clone()));
@@ -50,16 +70,36 @@ pub fn reply_post(request: ReplyPostRequest) -> ReplyPostResponse {
         }
 
         // Update post content
-        let mut new_post = post.clone();
-        new_post.updated_ts = Some(request.created_ts);
-        new_post.replies.push(post_reply_string_id);
-        let new_trending_score = helpers::get_trending_post_key(&new_post);
-        new_post.trending_score = Some(new_trending_score.trending_score);
-        storage.insert(post.id.clone(), new_post.clone());
+        post_new = post.clone();
+        post_new.updated_ts = request.created_ts;
+        post_new.replies.push(post_reply_string_id);
+        let new_trending_post_key = helpers::get_trending_post_key(&post_new);
+        post_new.trending_score = Some(new_trending_post_key.trending_score);
+        storage.insert(post.id.clone(), post_new.clone());
 
         // Update trending score btree indexes
-        helpers::update_trending_post_indexes(post, &new_trending_score);
+        helpers::update_trending_post_indexes(post, &new_trending_post_key);
     });
+
+    if post_new.in_public {
+        let new_trending_post_key = helpers::get_trending_post_key(&post_new);
+        call_inter_canister_async(
+            MAIN_SERVER_CANISTER_ID,
+            "update_club_post_trending_score",
+            UpdateClubPostStreetTrendingScoreRequest {
+                new: TrendingPostKeyExternal {
+                    post_id: new_trending_post_key.post_id,
+                    trending_score: new_trending_post_key.trending_score,
+                    created_ts: new_trending_post_key.created_ts,
+                    updated_ts: new_trending_post_key.updated_ts,
+                    club_id: Some(CLUB_ID.to_string()),
+                },
+                nft_canister_ids: post_new.nfts.into_iter().map(|x| x.canister_id).collect(),
+            },
+            "update_club_post_trending_score failed",
+        )
+        .await;
+    }
 
     ReplyPostResponse {
         error,

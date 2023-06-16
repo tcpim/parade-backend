@@ -1,5 +1,6 @@
-use crate::api::constants::DEFAULT_PAGE_SIZE;
+use crate::api::constants::{DEFAULT_PAGE_SIZE, MAIN_SERVER_CANISTER_ID};
 use crate::api_interface::common::*;
+use crate::api_interface::inter_canister::TrendingPostKeyExternal;
 use crate::models::nft::NftToken;
 use crate::models::post::*;
 use crate::models::trending_post::TrendingPostKey;
@@ -9,6 +10,7 @@ use candid::{CandidType, Principal};
 use ic_stable_structures::memory_manager::VirtualMemory;
 use ic_stable_structures::{BoundedStorable, DefaultMemoryImpl, StableBTreeMap};
 use std::panic;
+
 /**
 Given a btree and a start key, return a page of posts with max len = limit and the next cursor
 */
@@ -107,7 +109,7 @@ pub fn get_trending_post_key(post: &Post) -> TrendingPostKey {
         trending_score,
         post_id: post.id.0.clone(),
         created_ts: post.created_ts,
-        updated_ts: post.created_ts,
+        updated_ts: post.updated_ts,
     }
 }
 
@@ -116,11 +118,9 @@ Update trending score in trending indexes
 Trending street, trending collection posts, trending club posts
 */
 pub fn update_trending_post_indexes(old_post: Post, new_trending_score: &TrendingPostKey) {
-    let old_trending_score = get_trending_post_key(&old_post);
-
     // update trending score in trending
     with_trending_posts_mut(|max_heap| {
-        max_heap.remove(&old_trending_score);
+        max_heap.remove(&new_trending_score);
         max_heap.insert(new_trending_score.clone(), ());
     });
 
@@ -132,7 +132,7 @@ pub fn update_trending_post_indexes(old_post: Post, new_trending_score: &Trendin
         with_trending_posts_collection_mut(|max_heap| {
             max_heap.remove(&TrendingPostCollectionKey {
                 canister_id: canister_id.clone(),
-                trending_info: old_trending_score.clone(),
+                trending_info: new_trending_score.clone(),
             });
             max_heap.insert(
                 TrendingPostCollectionKey {

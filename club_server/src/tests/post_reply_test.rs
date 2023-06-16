@@ -1,9 +1,8 @@
 use crate::api::post::*;
 use crate::api::post_reply::*;
 use crate::api_interface::post_reply::*;
-use std::panic::{self, AssertUnwindSafe};
 use async_std::task;
-
+use std::panic::{self, AssertUnwindSafe};
 
 #[test]
 pub fn reply_post_test() {
@@ -40,9 +39,9 @@ pub fn reply_post_test() {
         created_ts: 3,
         words: "this is 3rd reply".to_string(),
     };
-    reply_post(reply_post_request_1);
-    reply_post(reply_post_request_2);
-    reply_post(reply_post_request_3);
+    task::block_on(reply_post(reply_post_request_1));
+    task::block_on(reply_post(reply_post_request_2));
+    task::block_on(reply_post(reply_post_request_3));
 
     let get_posts_res = get_post_by_id(post_id_str.clone());
 

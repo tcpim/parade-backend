@@ -36,3 +36,9 @@ pub struct TrendingPostKeyExternal {
     pub updated_ts: u64,
     pub club_id: Option<String>,
 }
+
+#[derive(Debug, CandidType, Deserialize)]
+pub struct UpdateClubPostStreetTrendingScoreRequest {
+    pub new: TrendingPostKeyExternal,
+    pub nft_canister_ids: Vec<String>,
+}
