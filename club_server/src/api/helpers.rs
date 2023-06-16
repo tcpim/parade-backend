@@ -147,9 +147,9 @@ pub fn update_trending_post_indexes(old_post: Post, new_trending_score: &Trendin
 
 pub fn convert_to_main_server_nfttoken(
     a: Vec<NftToken>,
-) -> Vec<crate::api_interface::inter_canister::NftToken> {
+) -> Vec<crate::api_interface::inter_canister::NftTokenExternal> {
     a.into_iter()
-        .map(|x| crate::api_interface::inter_canister::NftToken {
+        .map(|x| crate::api_interface::inter_canister::NftTokenExternal {
             canister_id: x.canister_id,
             token_index: x.token_index,
             token_id: x.token_id,

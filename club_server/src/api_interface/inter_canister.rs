@@ -5,13 +5,13 @@ use serde::Deserialize;
 pub struct AddClubPostToStreetRequest {
     pub post_id: String,
     pub club_id: String,
-    pub nfts: Vec<NftToken>,
+    pub nfts: Vec<NftTokenExternal>,
     pub created_ts: u64,
     pub created_by: String,
 }
 
 #[derive(Debug, Clone, CandidType, Deserialize, PartialEq)]
-pub struct NftToken {
+pub struct NftTokenExternal {
     pub canister_id: String,
     pub token_index: u16,
     pub token_id: String,
@@ -25,5 +25,14 @@ pub struct UserPostCreatedTsKey {
     pub user_id: String,
     pub created_ts: u64,
     pub post_id: String,
+    pub club_id: Option<String>,
+}
+
+#[derive(Debug, CandidType, Deserialize)]
+pub struct TrendingPostKeyExternal {
+    pub post_id: String,
+    pub trending_score: u32,
+    pub created_ts: u64,
+    pub updated_ts: u64,
     pub club_id: Option<String>,
 }
