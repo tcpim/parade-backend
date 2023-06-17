@@ -1,6 +1,11 @@
 import type { Principal } from '@dfinity/principal';
 import type { ActorMethod } from '@dfinity/agent';
 
+export interface ClubInfo {
+  'club_description' : string,
+  'club_name' : string,
+  'club_id' : string,
+}
 export interface CollectionPostCreatedTsKey {
   'post_id' : string,
   'canister_id' : string,
@@ -8,7 +13,6 @@ export interface CollectionPostCreatedTsKey {
 }
 export interface CreatePostRequest {
   'post_id' : string,
-  'club_ids' : Array<string>,
   'nfts' : Array<NftToken>,
   'created_by' : string,
   'created_ts' : bigint,
@@ -82,8 +86,7 @@ export interface NftToken {
 }
 export interface Post {
   'id' : string,
-  'updated_ts' : [] | [bigint],
-  'club_ids' : Array<string>,
+  'updated_ts' : bigint,
   'emoji_reactions' : Array<[string, number]>,
   'nfts' : Array<NftToken>,
   'created_by' : string,
@@ -128,6 +131,7 @@ export type ServerError = { 'GetPostError' : string } |
   { 'ReplyPostError' : string } |
   { 'GetPostRepliesError' : string } |
   { 'DeletePostError' : string };
+export interface SetClubInfoRequest { 'info' : ClubInfo }
 export interface TrendingPostCollectionKey {
   'trending_info' : TrendingPostKey,
   'canister_id' : string,
@@ -142,6 +146,7 @@ export interface _SERVICE {
   'create_post' : ActorMethod<[CreatePostRequest], CreatePostResponse>,
   'delete_all_post' : ActorMethod<[], undefined>,
   'delete_post' : ActorMethod<[string], DeletePostResponse>,
+  'get_club_info' : ActorMethod<[], ClubInfo>,
   'get_post_by_id' : ActorMethod<[string], GetPostByIdResponse>,
   'get_post_replies' : ActorMethod<
     [GetPostRepliesRequest],
@@ -162,4 +167,5 @@ export interface _SERVICE {
   >,
   'react_emoji' : ActorMethod<[ReactEmojiRequest], DeletePostResponse>,
   'reply_post' : ActorMethod<[ReplyPostRequest], ReplyPostResponse>,
+  'set_club_info' : ActorMethod<[SetClubInfoRequest], undefined>,
 }

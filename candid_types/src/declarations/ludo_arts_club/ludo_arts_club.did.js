@@ -9,7 +9,6 @@ export const idlFactory = ({ IDL }) => {
   });
   const CreatePostRequest = IDL.Record({
     'post_id' : IDL.Text,
-    'club_ids' : IDL.Vec(IDL.Text),
     'nfts' : IDL.Vec(NftToken),
     'created_by' : IDL.Text,
     'created_ts' : IDL.Nat64,
@@ -18,8 +17,7 @@ export const idlFactory = ({ IDL }) => {
   });
   const Post = IDL.Record({
     'id' : IDL.Text,
-    'updated_ts' : IDL.Opt(IDL.Nat64),
-    'club_ids' : IDL.Vec(IDL.Text),
+    'updated_ts' : IDL.Nat64,
     'emoji_reactions' : IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat32)),
     'nfts' : IDL.Vec(NftToken),
     'created_by' : IDL.Text,
@@ -42,6 +40,11 @@ export const idlFactory = ({ IDL }) => {
     'error' : IDL.Opt(ServerError),
   });
   const DeletePostResponse = IDL.Record({ 'error' : IDL.Opt(ServerError) });
+  const ClubInfo = IDL.Record({
+    'club_description' : IDL.Text,
+    'club_name' : IDL.Text,
+    'club_id' : IDL.Text,
+  });
   const GetPostByIdResponse = IDL.Record({
     'post' : IDL.Vec(Post),
     'error' : IDL.Opt(ServerError),
@@ -141,10 +144,12 @@ export const idlFactory = ({ IDL }) => {
     'error' : IDL.Opt(ServerError),
     'reply' : PostReply,
   });
+  const SetClubInfoRequest = IDL.Record({ 'info' : ClubInfo });
   return IDL.Service({
     'create_post' : IDL.Func([CreatePostRequest], [CreatePostResponse], []),
     'delete_all_post' : IDL.Func([], [], []),
     'delete_post' : IDL.Func([IDL.Text], [DeletePostResponse], []),
+    'get_club_info' : IDL.Func([], [ClubInfo], ['query']),
     'get_post_by_id' : IDL.Func([IDL.Text], [GetPostByIdResponse], ['query']),
     'get_post_replies' : IDL.Func(
         [GetPostRepliesRequest],
@@ -169,6 +174,7 @@ export const idlFactory = ({ IDL }) => {
       ),
     'react_emoji' : IDL.Func([ReactEmojiRequest], [DeletePostResponse], []),
     'reply_post' : IDL.Func([ReplyPostRequest], [ReplyPostResponse], []),
+    'set_club_info' : IDL.Func([SetClubInfoRequest], [], []),
   });
 };
 export const init = ({ IDL }) => { return []; };
