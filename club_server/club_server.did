@@ -1,3 +1,8 @@
+type ClubInfo = record {
+  club_description : text;
+  club_name : text;
+  club_id : text;
+};
 type CollectionPostCreatedTsKey = record {
   post_id : text;
   canister_id : text;
@@ -9,7 +14,6 @@ type CreatePostRequest = record {
   created_by : text;
   created_ts : nat64;
   words : text;
-  club_id : text;
   in_public : bool;
 };
 type CreatePostResponse = record { post : Post; error : opt ServerError };
@@ -117,6 +121,7 @@ type ServerError = variant {
   GetPostRepliesError : text;
   DeletePostError : text;
 };
+type SetClubInfoRequest = record { info : ClubInfo };
 type TrendingPostCollectionKey = record {
   trending_info : TrendingPostKey;
   canister_id : text;
@@ -131,6 +136,7 @@ service : {
   create_post : (CreatePostRequest) -> (CreatePostResponse);
   delete_all_post : () -> ();
   delete_post : (text) -> (DeletePostResponse);
+  get_club_info : () -> (ClubInfo) query;
   get_post_by_id : (text) -> (GetPostByIdResponse) query;
   get_post_replies : (GetPostRepliesRequest) -> (GetPostRepliesResponse) query;
   get_posts : (GetPostsRequest) -> (GetPostsResponse) query;
@@ -145,4 +151,5 @@ service : {
     ) query;
   react_emoji : (ReactEmojiRequest) -> (DeletePostResponse);
   reply_post : (ReplyPostRequest) -> (ReplyPostResponse);
+  set_club_info : (SetClubInfoRequest) -> ();
 }

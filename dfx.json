@@ -5,7 +5,17 @@
       "package": "main_server",
       "type": "rust"
     },
-    "club_server": {
+    "ludo_arts_club": {
+      "candid": "club_server/club_server.did",
+      "package": "club_server",
+      "type": "rust"
+    },
+    "poked-bots_club": {
+      "candid": "club_server/club_server.did",
+      "package": "club_server",
+      "type": "rust"
+    },
+    "motoko-ghost_club": {
       "candid": "club_server/club_server.did",
       "package": "club_server",
       "type": "rust"

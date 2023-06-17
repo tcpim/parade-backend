@@ -1,9 +1,10 @@
+use crate::models::club::ClubInfo;
 use crate::models::post::{Post, PostCreatedTsKey, PostIdString, PostReply, PostReplyIdString};
 use crate::models::post_collection::CollectionPostCreatedTsKey;
 use crate::models::trending_post::TrendingPostKey;
 use crate::models::trending_post_collection::TrendingPostCollectionKey;
 use ic_stable_structures::memory_manager::{MemoryId, MemoryManager, VirtualMemory};
-use ic_stable_structures::{DefaultMemoryImpl, StableBTreeMap};
+use ic_stable_structures::{DefaultMemoryImpl, StableBTreeMap, StableCell};
 use std::cell::RefCell;
 
 type Memory = VirtualMemory<DefaultMemoryImpl>;
@@ -13,6 +14,7 @@ pub type PostsCreatedHeap = StableBTreeMap<PostCreatedTsKey, (), Memory>;
 pub type CollectionPostsCreatedHeap = StableBTreeMap<CollectionPostCreatedTsKey, (), Memory>;
 pub type TrendingPostClubHeap = StableBTreeMap<TrendingPostKey, (), Memory>;
 pub type TrendingPostCollectionHeap = StableBTreeMap<TrendingPostCollectionKey, (), Memory>;
+pub type ClubInfoCell = StableCell<ClubInfo, Memory>;
 
 pub const POST_BY_ID_MEMORY_ID: MemoryId = MemoryId::new(0);
 pub const POST_REPLIES_MEMORY_ID: MemoryId = MemoryId::new(1);
@@ -20,11 +22,24 @@ pub const POSTS_CREATED_MEMORY_ID: MemoryId = MemoryId::new(2);
 pub const COLLECTION_POSTS_CREATED_MEMORY_ID: MemoryId = MemoryId::new(3);
 pub const TRENDING_POST_MEMORY_ID: MemoryId = MemoryId::new(4);
 pub const TRENDING_POST_COLLECTION_MEMORY_ID: MemoryId = MemoryId::new(5);
+pub const CLUB_INFO_MEMORY_ID: MemoryId = MemoryId::new(6);
 
 thread_local! {
-// initiate a memory manager
+    // initiate a memory manager
     pub static MEMORY_MANAGER: RefCell<MemoryManager<DefaultMemoryImpl>> =
         RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
+
+    // Main storage
+    pub static CLUB_INFO: RefCell<StableCell<ClubInfo, Memory>> =
+        MEMORY_MANAGER.with(|memory_manager|
+            RefCell::new(
+                StableCell::init(memory_manager.borrow().get(CLUB_INFO_MEMORY_ID), ClubInfo {
+                club_id: "".to_string(),
+                club_name: "".to_string(),
+                club_description: "".to_string(),
+            }).expect("Failed to init CLUB_INFO")
+            )
+        );
 
     pub static POST_BY_ID: RefCell<StableBTreeMap<PostIdString, Post, Memory>> =
         MEMORY_MANAGER.with(|memory_manager|
@@ -44,7 +59,7 @@ thread_local! {
             )
         );
 
-    // Database
+    // Indexes
     // Usually store one to many relation in a BTreeMap with composite key
 
     // Store all posts for this club

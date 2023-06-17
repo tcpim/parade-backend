@@ -1,3 +1,4 @@
+pub mod club;
 pub mod common;
 pub mod inter_canister;
 pub mod post_reaction;

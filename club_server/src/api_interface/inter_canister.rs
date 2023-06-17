@@ -21,7 +21,7 @@ pub struct NftTokenExternal {
 }
 
 #[derive(Debug, CandidType, Deserialize)]
-pub struct UserPostCreatedTsKey {
+pub struct UserPostCreatedTsKeyExternal {
     pub user_id: String,
     pub created_ts: u64,
     pub post_id: String,

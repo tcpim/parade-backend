@@ -1,6 +1,6 @@
-use crate::api::constants::{CLUB_ID, MAIN_SERVER_CANISTER_ID};
+use crate::api::constants::MAIN_SERVER_CANISTER_ID;
 use crate::api::helpers;
-use crate::api::helpers::call_inter_canister_async;
+use crate::api::helpers::{call_inter_canister_async, get_club_id};
 use crate::stable_structure::access_helper::*;
 use candid::candid_method;
 use ic_cdk_macros::update;
@@ -11,8 +11,15 @@ use crate::api_interface::inter_canister::{
 };
 use crate::api_interface::post_reaction::*;
 use crate::models::post::*;
-use crate::models::trending_post::TrendingPostKey;
 
+/**
+Add a new emoji to a post
+1. Modify the existing post with newly added reply and newly updated_ts
+2. Get a new post trending score
+    a. update the post_by_id store for the stored trending score
+    b. update the trending storages trending and trending_collection
+    c. update the trending score in the main server
+ */
 #[update]
 #[candid_method(update)]
 pub async fn react_emoji(request: ReactEmojiRequest) -> ReactEmojiResponse {
@@ -77,7 +84,7 @@ pub async fn react_emoji(request: ReactEmojiRequest) -> ReactEmojiResponse {
                         trending_score: new_trending_post_key.trending_score,
                         created_ts: new_trending_post_key.created_ts,
                         updated_ts: new_trending_post_key.updated_ts,
-                        club_id: Some(CLUB_ID.to_string()),
+                        club_id: Some(get_club_id()),
                     },
                     nft_canister_ids: post_new.nfts.into_iter().map(|x| x.canister_id).collect(),
                 },

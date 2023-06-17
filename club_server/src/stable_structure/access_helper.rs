@@ -51,3 +51,11 @@ pub fn with_trending_posts_collection_mut<R>(
 ) -> R {
     TRENDING_POSTS_COLLECTION.with(|s| f(&mut s.borrow_mut()))
 }
+
+pub fn with_club_info<R>(f: impl FnOnce(&ClubInfoCell) -> R) -> R {
+    CLUB_INFO.with(|s| f(&s.borrow()))
+}
+
+pub fn with_club_info_mut<R>(f: impl FnOnce(&mut ClubInfoCell) -> R) -> R {
+    CLUB_INFO.with(|s| f(&mut s.borrow_mut()))
+}

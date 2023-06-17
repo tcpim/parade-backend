@@ -9,11 +9,13 @@ mod tests;
 // Below code is to generate candid file
 // ######################
 // Don't remove following imports!! Needed by candid::export_service
+use crate::api_interface::club::*;
 use crate::api_interface::common::*;
 use crate::api_interface::post_reaction::*;
 use crate::api_interface::post_reply::*;
 use crate::api_interface::post_trending::*;
 use crate::api_interface::posts::*;
+use crate::models::club::*;
 candid::export_service!();
 
 pub fn export_candid() -> String {

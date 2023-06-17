@@ -1,6 +1,5 @@
 use crate::api::constants::{DEFAULT_PAGE_SIZE, MAIN_SERVER_CANISTER_ID};
 use crate::api_interface::common::*;
-use crate::api_interface::inter_canister::TrendingPostKeyExternal;
 use crate::models::nft::NftToken;
 use crate::models::post::*;
 use crate::models::trending_post::TrendingPostKey;
@@ -115,7 +114,7 @@ pub fn get_trending_post_key(post: &Post) -> TrendingPostKey {
 
 /**
 Update trending score in trending indexes
-Trending street, trending collection posts, trending club posts
+trending collection posts, trending club posts
 */
 pub fn update_trending_post_indexes(old_post: Post, new_trending_score: &TrendingPostKey) {
     // update trending score in trending
@@ -160,13 +159,11 @@ pub fn convert_to_main_server_nfttoken(
         .collect()
 }
 
-fn is_within_canister() -> bool {
-    let result = panic::catch_unwind(|| {
-        // If panic, then it is run by unit test (not within canister)
-        println!("Current canister ID is : {}", ic_cdk::api::id());
-    });
-
-    result.is_ok()
+pub fn get_club_id() -> String {
+    with_club_info(|cell| {
+        let club_info = cell.get();
+        club_info.club_id.clone()
+    })
 }
 
 pub async fn call_inter_canister_async<T: CandidType>(
@@ -187,4 +184,13 @@ pub async fn call_inter_canister_async<T: CandidType>(
         .await
         .expect(err_msg);
     }
+}
+
+fn is_within_canister() -> bool {
+    let result = panic::catch_unwind(|| {
+        // If panic, then it is run by unit test (not within canister)
+        println!("Current canister ID is : {}", ic_cdk::api::id());
+    });
+
+    result.is_ok()
 }

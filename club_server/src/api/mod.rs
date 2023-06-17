@@ -1,3 +1,4 @@
+pub mod club;
 mod constants;
 mod helpers;
 pub mod post;

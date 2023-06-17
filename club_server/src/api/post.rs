@@ -13,7 +13,9 @@ use crate::models::post::*;
 use crate::models::post_collection::CollectionPostCreatedTsKey;
 use crate::models::trending_post_collection::TrendingPostCollectionKey;
 
-use crate::api_interface::inter_canister::{AddClubPostToStreetRequest, UserPostCreatedTsKey};
+use crate::api_interface::inter_canister::{
+    AddClubPostToStreetRequest, UserPostCreatedTsKeyExternal,
+};
 
 // ######################
 // APIs
@@ -117,10 +119,10 @@ pub async fn create_post(request: CreatePostRequest) -> CreatePostResponse {
     call_inter_canister_async(
         MAIN_SERVER_CANISTER_ID,
         "add_club_post_to_user",
-        UserPostCreatedTsKey {
+        UserPostCreatedTsKeyExternal {
             user_id: request.created_by.clone(),
             post_id: request.post_id.clone(),
-            club_id: Some(request.club_id.clone()),
+            club_id: Some(get_club_id()),
             created_ts: request.created_ts,
         },
         "Failed to add post to user storage",
@@ -133,7 +135,7 @@ pub async fn create_post(request: CreatePostRequest) -> CreatePostResponse {
             "add_club_post_to_street",
             AddClubPostToStreetRequest {
                 post_id: request.post_id.clone(),
-                club_id: request.club_id.clone(),
+                club_id: get_club_id(),
                 nfts: convert_to_main_server_nfttoken(request.nfts.clone()),
                 created_ts: request.created_ts,
                 created_by: request.created_by.clone(),

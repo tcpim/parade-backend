@@ -1,8 +1,8 @@
 use candid::candid_method;
 use ic_cdk_macros::{query, update};
 
-use crate::api::constants::{CLUB_ID, MAIN_SERVER_CANISTER_ID};
-use crate::api::helpers::{call_inter_canister_async, get_post_by_id_from_store};
+use crate::api::constants::MAIN_SERVER_CANISTER_ID;
+use crate::api::helpers::{call_inter_canister_async, get_club_id, get_post_by_id_from_store};
 use crate::stable_structure::access_helper::*;
 use std::collections::BTreeMap;
 
@@ -13,7 +13,6 @@ use crate::api_interface::inter_canister::{
 };
 use crate::api_interface::post_reply::*;
 use crate::models::post::*;
-use crate::models::trending_post::TrendingPostKey;
 
 /**
 Add a new reply to a post
@@ -21,7 +20,8 @@ Add a new reply to a post
 2. Modify the existing post with newly added reply and newly updated_ts
 3. Get a new post trending score
     a. update the post_by_id store for the stored trending score
-    b. update the trending storages such as trending_street and trending_collection
+    b. update the trending storages trending and trending_collection
+    c. update the trending score in the main server
 */
 #[update]
 #[candid_method(update)]
@@ -92,7 +92,7 @@ pub async fn reply_post(request: ReplyPostRequest) -> ReplyPostResponse {
                     trending_score: new_trending_post_key.trending_score,
                     created_ts: new_trending_post_key.created_ts,
                     updated_ts: new_trending_post_key.updated_ts,
-                    club_id: Some(CLUB_ID.to_string()),
+                    club_id: Some(get_club_id()),
                 },
                 nft_canister_ids: post_new.nfts.into_iter().map(|x| x.canister_id).collect(),
             },
