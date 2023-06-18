@@ -92,7 +92,6 @@ export interface Post {
   'replies' : Array<string>,
   'words' : string,
   'in_public' : boolean,
-  'trending_score' : [] | [number],
 }
 export interface PostCreatedTsKey { 'post_id' : string, 'created_ts' : bigint }
 export interface PostReply {

@@ -25,7 +25,6 @@ export const idlFactory = ({ IDL }) => {
     'replies' : IDL.Vec(IDL.Text),
     'words' : IDL.Text,
     'in_public' : IDL.Bool,
-    'trending_score' : IDL.Opt(IDL.Nat32),
   });
   const ServerError = IDL.Variant({
     'GetPostError' : IDL.Text,
