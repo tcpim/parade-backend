@@ -44,8 +44,11 @@ fn react_emoji_to_post_and_its_reply() {
     }));
 
     let new_post = get_post_by_id(post_id.clone()).post;
-    assert_eq!(new_post.len(), 1);
-    assert_eq!(new_post[0].emoji_reactions.get("👍").unwrap(), &1);
+    assert!(new_post.is_some());
+    assert_eq!(
+        new_post.clone().unwrap().emoji_reactions.get("👍").unwrap(),
+        &1
+    );
 
     let reply = get_post_replies(GetPostRepliesRequest {
         post_id: post_id.clone(),
@@ -58,5 +61,8 @@ fn react_emoji_to_post_and_its_reply() {
     assert_eq!(reply[0].emoji_reactions.get("🤣").unwrap(), &1);
 
     // After all reactions, assert the trending score changed
-    assert_ne!(old_post[0].trending_score, new_post[0].trending_score);
+    assert_ne!(
+        old_post.clone().unwrap().trending_score,
+        new_post.clone().unwrap().trending_score
+    );
 }

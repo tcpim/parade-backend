@@ -28,7 +28,8 @@ type GetCollectionPostsResponse = record {
   next_cursor : opt CollectionPostCreatedTsKey;
   posts : vec Post;
 };
-type GetPostByIdResponse = record { post : vec Post; error : opt ServerError };
+type GetPostByIdResponse = record { post : opt Post };
+type GetPostByIdsResponse = record { posts : vec Post };
 type GetPostRepliesRequest = record {
   post_id : text;
   offset : int32;
@@ -138,6 +139,7 @@ service : {
   delete_post : (text) -> (DeletePostResponse);
   get_club_info : () -> (ClubInfo) query;
   get_post_by_id : (text) -> (GetPostByIdResponse) query;
+  get_post_by_ids : (vec text) -> (GetPostByIdsResponse) query;
   get_post_replies : (GetPostRepliesRequest) -> (GetPostRepliesResponse) query;
   get_posts : (GetPostsRequest) -> (GetPostsResponse) query;
   get_posts_by_collection : (GetCollectionPostsRequest) -> (

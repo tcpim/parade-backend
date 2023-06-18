@@ -25,8 +25,12 @@ pub struct CreatePostResponse {
 
 #[derive(Debug, CandidType, Deserialize)]
 pub struct GetPostByIdResponse {
-    pub post: Vec<Post>,
-    pub error: Option<ServerError>,
+    pub post: Option<Post>,
+}
+
+#[derive(Debug, CandidType, Deserialize)]
+pub struct GetPostByIdsResponse {
+    pub posts: Vec<Post>,
 }
 
 #[derive(Debug, CandidType, Deserialize)]

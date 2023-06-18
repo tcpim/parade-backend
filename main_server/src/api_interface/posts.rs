@@ -56,7 +56,6 @@ pub struct GetStreetPostsResponse {
 #[derive(Debug, CandidType, Deserialize)]
 pub struct GetPostByIdResponse {
     pub post: Option<Post>,
-    pub error: Option<ServerError>,
 }
 
 #[derive(Debug, CandidType, Deserialize)]

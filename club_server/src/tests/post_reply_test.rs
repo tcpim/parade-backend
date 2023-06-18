@@ -43,9 +43,9 @@ pub fn reply_post_test() {
     task::block_on(reply_post(reply_post_request_2));
     task::block_on(reply_post(reply_post_request_3));
 
-    let get_posts_res = get_post_by_id(post_id_str.clone());
+    let get_post_res = get_post_by_id(post_id_str.clone());
 
-    assert_eq!(get_posts_res.post[0].replies.len(), 3);
+    assert_eq!(get_post_res.post.clone().unwrap().replies.len(), 3);
 
     // Get first page
     let get_replies_res = get_post_replies(GetPostRepliesRequest {
@@ -71,6 +71,6 @@ pub fn reply_post_test() {
     // After all reactions, assert the trending score changed
     assert_ne!(
         create_post_res.post.trending_score,
-        get_posts_res.post[0].trending_score
+        get_post_res.post.clone().unwrap().trending_score
     );
 }

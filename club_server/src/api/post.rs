@@ -205,17 +205,22 @@ pub fn get_posts_by_collection(request: GetCollectionPostsRequest) -> GetCollect
 pub fn get_post_by_id(post_id: String) -> GetPostByIdResponse {
     let post = get_post_by_id_from_store(&PostIdString(post_id.clone()));
     if post.is_none() {
-        GetPostByIdResponse {
-            post: vec![],
-            error: Some(ServerError::GetPostError(format!(
-                "Failed to get post by id: {}",
-                post_id
-            ))),
-        }
+        GetPostByIdResponse { post: None }
     } else {
-        GetPostByIdResponse {
-            post: vec![post.unwrap()],
-            error: None,
+        GetPostByIdResponse { post }
+    }
+}
+
+#[query]
+#[candid_method(query)]
+pub fn get_post_by_ids(post_id: Vec<String>) -> GetPostByIdsResponse {
+    let mut posts: Vec<Post> = vec![];
+    for id in post_id {
+        let post = get_post_by_id_from_store(&PostIdString(id.clone()));
+        if post.is_some() {
+            posts.push(post.unwrap());
         }
     }
+
+    GetPostByIdsResponse { posts }
 }

@@ -31,7 +31,7 @@ type GetCollectionPostsResponse = record {
   next_cursor : opt CollectionPostCreatedTsKey;
   posts : vec PostType;
 };
-type GetPostByIdResponse = record { post : opt Post; error : opt ServerError };
+type GetPostByIdResponse = record { post : opt Post };
 type GetPostRepliesRequest = record {
   post_id : text;
   offset : int32;

@@ -238,14 +238,8 @@ pub fn get_posts_by_collection(request: GetCollectionPostsRequest) -> GetCollect
 pub fn get_street_post_by_id(post_id: String) -> GetPostByIdResponse {
     let post = get_post_by_id_from_store(&PostIdString(post_id.clone()));
     if post.is_none() {
-        GetPostByIdResponse {
-            post: None,
-            error: Some(ServerError::GetPostError(format!(
-                "Failed to get post by id: {}",
-                post_id
-            ))),
-        }
+        GetPostByIdResponse { post: None }
     } else {
-        GetPostByIdResponse { post, error: None }
+        GetPostByIdResponse { post }
     }
 }
