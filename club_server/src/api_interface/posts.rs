@@ -30,7 +30,7 @@ pub struct GetPostByIdResponse {
 
 #[derive(Debug, CandidType, Deserialize)]
 pub struct GetPostByIdsResponse {
-    pub posts: Vec<Post>,
+    pub posts: Vec<Option<Post>>,
 }
 
 #[derive(Debug, CandidType, Deserialize)]

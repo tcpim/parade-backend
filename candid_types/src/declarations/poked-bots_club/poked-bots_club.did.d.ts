@@ -35,7 +35,7 @@ export interface GetCollectionPostsResponse {
   'posts' : Array<Post>,
 }
 export interface GetPostByIdResponse { 'post' : [] | [Post] }
-export interface GetPostByIdsResponse { 'posts' : Array<Post> }
+export interface GetPostByIdsResponse { 'posts' : Array<[] | [Post]> }
 export interface GetPostRepliesRequest {
   'post_id' : string,
   'offset' : number,

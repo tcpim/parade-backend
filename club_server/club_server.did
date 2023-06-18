@@ -29,7 +29,7 @@ type GetCollectionPostsResponse = record {
   posts : vec Post;
 };
 type GetPostByIdResponse = record { post : opt Post };
-type GetPostByIdsResponse = record { posts : vec Post };
+type GetPostByIdsResponse = record { posts : vec opt Post };
 type GetPostRepliesRequest = record {
   post_id : text;
   offset : int32;

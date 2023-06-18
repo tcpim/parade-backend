@@ -214,12 +214,10 @@ pub fn get_post_by_id(post_id: String) -> GetPostByIdResponse {
 #[query]
 #[candid_method(query)]
 pub fn get_post_by_ids(post_id: Vec<String>) -> GetPostByIdsResponse {
-    let mut posts: Vec<Post> = vec![];
+    let mut posts: Vec<Option<Post>> = vec![];
     for id in post_id {
         let post = get_post_by_id_from_store(&PostIdString(id.clone()));
-        if post.is_some() {
-            posts.push(post.unwrap());
-        }
+        posts.push(post);
     }
 
     GetPostByIdsResponse { posts }

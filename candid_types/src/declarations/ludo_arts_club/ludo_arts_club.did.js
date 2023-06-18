@@ -46,7 +46,7 @@ export const idlFactory = ({ IDL }) => {
     'club_id' : IDL.Text,
   });
   const GetPostByIdResponse = IDL.Record({ 'post' : IDL.Opt(Post) });
-  const GetPostByIdsResponse = IDL.Record({ 'posts' : IDL.Vec(Post) });
+  const GetPostByIdsResponse = IDL.Record({ 'posts' : IDL.Vec(IDL.Opt(Post)) });
   const GetPostRepliesRequest = IDL.Record({
     'post_id' : IDL.Text,
     'offset' : IDL.Int32,
