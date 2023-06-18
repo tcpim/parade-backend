@@ -104,10 +104,7 @@ export const idlFactory = ({ IDL }) => {
     'next_cursor' : IDL.Opt(UserPostCreatedTsKey),
     'posts' : IDL.Vec(PostType),
   });
-  const GetPostByIdResponse = IDL.Record({
-    'post' : IDL.Opt(Post),
-    'error' : IDL.Opt(ServerError),
-  });
+  const GetPostByIdResponse = IDL.Record({ 'post' : IDL.Opt(Post) });
   const PostCreatedTsKey = IDL.Record({
     'post_id' : IDL.Text,
     'created_ts' : IDL.Nat64,

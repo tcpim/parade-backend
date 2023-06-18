@@ -37,10 +37,7 @@ export interface GetCollectionPostsResponse {
   'next_cursor' : [] | [CollectionPostCreatedTsKey],
   'posts' : Array<PostType>,
 }
-export interface GetPostByIdResponse {
-  'post' : [] | [Post],
-  'error' : [] | [ServerError],
-}
+export interface GetPostByIdResponse { 'post' : [] | [Post] }
 export interface GetPostRepliesRequest {
   'post_id' : string,
   'offset' : number,
