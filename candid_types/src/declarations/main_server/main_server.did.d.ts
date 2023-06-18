@@ -96,7 +96,7 @@ export interface NftToken {
 }
 export interface Post {
   'id' : string,
-  'updated_ts' : [] | [bigint],
+  'updated_ts' : bigint,
   'emoji_reactions' : Array<[string, number]>,
   'nfts' : Array<NftToken>,
   'created_by' : string,

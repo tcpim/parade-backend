@@ -29,7 +29,7 @@ export const idlFactory = ({ IDL }) => {
   });
   const Post = IDL.Record({
     'id' : IDL.Text,
-    'updated_ts' : IDL.Opt(IDL.Nat64),
+    'updated_ts' : IDL.Nat64,
     'emoji_reactions' : IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat32)),
     'nfts' : IDL.Vec(NftToken),
     'created_by' : IDL.Text,
