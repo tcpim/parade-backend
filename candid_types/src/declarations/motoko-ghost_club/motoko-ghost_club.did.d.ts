@@ -91,6 +91,7 @@ export interface Post {
   'created_ts' : bigint,
   'replies' : Array<string>,
   'words' : string,
+  'club_id' : string,
   'in_public' : boolean,
 }
 export interface PostCreatedTsKey { 'post_id' : string, 'created_ts' : bigint }

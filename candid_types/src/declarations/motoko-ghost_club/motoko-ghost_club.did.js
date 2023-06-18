@@ -24,6 +24,7 @@ export const idlFactory = ({ IDL }) => {
     'created_ts' : IDL.Nat64,
     'replies' : IDL.Vec(IDL.Text),
     'words' : IDL.Text,
+    'club_id' : IDL.Text,
     'in_public' : IDL.Bool,
   });
   const ServerError = IDL.Variant({
