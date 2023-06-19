@@ -12,7 +12,7 @@ pub struct Post {
     pub nfts: Vec<NftToken>,
     pub words: String,
     pub created_ts: u64,
-    pub updated_ts: Option<u64>,
+    pub updated_ts: u64,
     pub replies: Vec<PostReplyIdString>, // string is reply id with {timestamp}-{user principal}-reply
     pub emoji_reactions: BTreeMap<String, u32>, // emoji reactions on a post, key is emoji, value is count
 }

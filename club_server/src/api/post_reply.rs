@@ -41,6 +41,7 @@ pub async fn reply_post(request: ReplyPostRequest) -> ReplyPostResponse {
     // Fake initial data
     let mut post_new: Post = Post {
         id: PostIdString("".to_string()),
+        club_id: get_club_id(),
         created_by: "".to_string(),
         nfts: vec![],
         in_public: false,
@@ -49,7 +50,6 @@ pub async fn reply_post(request: ReplyPostRequest) -> ReplyPostResponse {
         updated_ts: 0,
         replies: vec![],
         emoji_reactions: Default::default(),
-        trending_score: None,
     };
 
     with_post_by_id_mut(|storage| {
@@ -74,7 +74,6 @@ pub async fn reply_post(request: ReplyPostRequest) -> ReplyPostResponse {
         post_new.updated_ts = request.created_ts;
         post_new.replies.push(post_reply_string_id);
         let new_trending_post_key = helpers::get_trending_post_key(&post_new);
-        post_new.trending_score = Some(new_trending_post_key.trending_score);
         storage.insert(post.id.clone(), post_new.clone());
 
         // Update trending score btree indexes

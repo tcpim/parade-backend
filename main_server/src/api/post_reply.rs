@@ -51,7 +51,7 @@ pub fn reply_post(request: ReplyPostRequest) -> ReplyPostResponse {
 
         // Update post content
         let mut new_post = post.clone();
-        new_post.updated_ts = Some(request.created_ts);
+        new_post.updated_ts = request.created_ts;
         new_post.replies.push(post_reply_string_id);
         storage.insert(post.id.clone(), new_post.clone());
 

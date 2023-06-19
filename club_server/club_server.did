@@ -85,8 +85,8 @@ type Post = record {
   created_ts : nat64;
   replies : vec text;
   words : text;
+  club_id : text;
   in_public : bool;
-  trending_score : opt nat32;
 };
 type PostCreatedTsKey = record { post_id : text; created_ts : nat64 };
 type PostReply = record {

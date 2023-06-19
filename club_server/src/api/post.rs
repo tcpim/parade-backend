@@ -37,6 +37,7 @@ pub async fn create_post(request: CreatePostRequest) -> CreatePostResponse {
 
     let post = Post {
         id: post_id.clone(),
+        club_id: get_club_id(),
         created_by: user,
         nfts: request.nfts.clone(),
         in_public: request.in_public,
@@ -45,7 +46,6 @@ pub async fn create_post(request: CreatePostRequest) -> CreatePostResponse {
         updated_ts: request.created_ts,
         replies: vec![],
         emoji_reactions: BTreeMap::new(),
-        trending_score: Some(0),
     };
 
     if request.post_id.is_empty() {

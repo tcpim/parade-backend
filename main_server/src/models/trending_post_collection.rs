@@ -53,7 +53,7 @@ impl HasClubId for TrendingPostCollectionKey {
 // 8B created_ts
 // 8B updated_ts
 // 120B total
-const MAX_TRENDING_POST_COLLECTION_KEY_SIZE: u32 = 200;
+const MAX_TRENDING_POST_COLLECTION_KEY_SIZE: u32 = 500;
 
 impl Storable for TrendingPostCollectionKey {
     fn to_bytes(&self) -> std::borrow::Cow<[u8]> {

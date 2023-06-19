@@ -90,7 +90,7 @@ type NftToken = record {
 };
 type Post = record {
   id : text;
-  updated_ts : opt nat64;
+  updated_ts : nat64;
   emoji_reactions : vec record { text; nat32 };
   nfts : vec NftToken;
   created_by : text;

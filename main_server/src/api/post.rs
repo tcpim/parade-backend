@@ -37,7 +37,7 @@ pub fn create_street_post(request: CreateStreetPostRequest) -> CreateStreetPostR
         nfts: request.nfts,
         words: request.words,
         created_ts: request.created_ts,
-        updated_ts: Some(request.created_ts),
+        updated_ts: request.created_ts,
         replies: vec![],
         emoji_reactions: BTreeMap::new(),
     };

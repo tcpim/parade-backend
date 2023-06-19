@@ -7,6 +7,7 @@ use std::collections::BTreeMap;
 #[derive(Debug, Clone, CandidType, Deserialize, PartialEq)]
 pub struct Post {
     pub id: PostIdString,
+    pub club_id: String,
     pub created_by: String, // user principal
     pub nfts: Vec<NftToken>,
     pub in_public: bool, // whether this post is seenable in public street
@@ -15,7 +16,6 @@ pub struct Post {
     pub updated_ts: u64,
     pub replies: Vec<PostReplyIdString>, // string is reply id with {timestamp}-{user principal}-reply
     pub emoji_reactions: BTreeMap<String, u32>, // emoji reactions on a post, key is emoji, value is count
-    pub trending_score: Option<u32>,            // trending score, used for trending posts
 }
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone, CandidType, Deserialize, Debug)]

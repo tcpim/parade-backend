@@ -45,7 +45,7 @@ impl HasClubId for PostCreatedTsKey {
 // ######################
 // Traits implementations for stable structures
 // ######################
-const MAX_POST_CREATED_TS_SIZE: u32 = 150; // 50B for post id and 50B for timestamp
+const MAX_POST_CREATED_TS_SIZE: u32 = 200; // 50B for post id and 50B for timestamp
 
 impl Storable for PostCreatedTsKey {
     fn to_bytes(&self) -> std::borrow::Cow<[u8]> {
