@@ -151,8 +151,8 @@ export const idlFactory = ({ IDL }) => {
     'posts' : IDL.Vec(PostType),
   });
   const User = IDL.Record({
+    'id' : IDL.Text,
     'bio' : IDL.Opt(IDL.Text),
-    'pid' : IDL.Text,
     'user_name' : IDL.Opt(IDL.Text),
     'avatar' : IDL.Opt(IDL.Vec(IDL.Nat8)),
   });

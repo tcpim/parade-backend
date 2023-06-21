@@ -179,8 +179,8 @@ export interface UpdateClubPostStreetTrendingScoreRequest {
   'nft_canister_ids' : Array<string>,
 }
 export interface User {
+  'id' : string,
   'bio' : [] | [string],
-  'pid' : string,
   'user_name' : [] | [string],
   'avatar' : [] | [Uint8Array | number[]],
 }
