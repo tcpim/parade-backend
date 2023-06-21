@@ -9,7 +9,7 @@ fn create_user_test() {
 
     // assert
     let response = get_user_info(user_id.clone());
-    assert_eq!(response.user.unwrap().pid, user_id);
+    assert_eq!(response.user.unwrap().id, user_id);
 }
 
 #[test]
@@ -31,7 +31,7 @@ fn update_user_info() {
 
     // assert
     let response = get_user_info(user_id.clone());
-    assert_eq!(response.user.clone().unwrap().pid, user_id);
+    assert_eq!(response.user.clone().unwrap().id, user_id);
     assert_eq!(
         response.user.clone().unwrap().user_name.unwrap(),
         "test_user_name"

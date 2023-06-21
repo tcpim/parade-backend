@@ -166,8 +166,8 @@ type UpdateClubPostStreetTrendingScoreRequest = record {
   nft_canister_ids : vec text;
 };
 type User = record {
+  id : text;
   bio : opt text;
-  pid : text;
   user_name : opt text;
   avatar : opt vec nat8;
 };

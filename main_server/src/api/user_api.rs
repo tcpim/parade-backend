@@ -13,6 +13,9 @@ use crate::models::user_model::{User, UserNameStringKey, UserPrincipalStringKey}
 // APIs
 // ######################
 
+/**
+Create a user with principal ID. If already exist then ignore
+*/
 #[update]
 #[candid_method(update)]
 pub fn create_user(user_id: String) {
@@ -23,7 +26,7 @@ pub fn create_user(user_id: String) {
             }
             None => {
                 let user = User {
-                    pid: user_id.clone(),
+                    id: user_id.clone(),
                     user_name: None,
                     avatar: None,
                     bio: None,
@@ -66,7 +69,7 @@ pub fn set_user_info(request: SetUserInfoRequest) -> SetUserInfoResponse {
     if error.is_some() {
         return SetUserInfoResponse {
             user: User {
-                pid: request.user_id.clone(),
+                id: request.user_id.clone(),
                 user_name: None,
                 avatar: None,
                 bio: None,
@@ -79,7 +82,7 @@ pub fn set_user_info(request: SetUserInfoRequest) -> SetUserInfoResponse {
         let user_opt = map.get(&UserPrincipalStringKey(request.user_id.clone()));
         if user_opt.is_none() {
             let user = User {
-                pid: request.user_id.clone(),
+                id: request.user_id.clone(),
                 user_name: request.user_name,
                 avatar: request.user_avatar,
                 bio: request.user_bio,

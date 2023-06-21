@@ -5,7 +5,7 @@ use serde::Deserialize;
 
 #[derive(Debug, Clone, CandidType, Deserialize)]
 pub struct User {
-    pub pid: String, // the user principal string
+    pub id: String, // the user principal string
     pub user_name: Option<String>,
     pub avatar: Option<Vec<u8>>,
     pub bio: Option<String>,
