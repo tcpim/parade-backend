@@ -1,6 +1,6 @@
-use crate::api::post::*;
-use crate::api::post_reply::*;
-use crate::api_interface::post_reply::*;
+use crate::api::post_api::*;
+use crate::api::post_reply_api::*;
+use crate::api_interface::post_reply_interface::*;
 use async_std::task;
 use std::panic::{self, AssertUnwindSafe};
 

@@ -1,10 +1,10 @@
-use crate::models::post::{Post, PostIdString, PostReply, PostReplyIdString};
-use crate::models::post_collection::CollectionPostCreatedTsKey;
-use crate::models::post_street::PostCreatedTsKey;
-use crate::models::post_user::UserPostCreatedTsKey;
-use crate::models::trending_post::TrendingPostKey;
-use crate::models::trending_post_collection::TrendingPostCollectionKey;
-use crate::models::user::{User, UserNameStringKey, UserPrincipalStringKey};
+use crate::models::post_collection_model::CollectionPostCreatedTsKey;
+use crate::models::post_model::{Post, PostIdString, PostReply, PostReplyIdString};
+use crate::models::post_street_model::PostCreatedTsKey;
+use crate::models::post_user_model::UserPostCreatedTsKey;
+use crate::models::trending_post_collection_model::TrendingPostCollectionKey;
+use crate::models::trending_post_model::TrendingPostKey;
+use crate::models::user_model::{User, UserNameStringKey, UserPrincipalStringKey};
 use ic_stable_structures::memory_manager::{MemoryId, MemoryManager, VirtualMemory};
 use ic_stable_structures::{DefaultMemoryImpl, StableBTreeMap};
 use std::cell::RefCell;

@@ -1,7 +1,7 @@
-use crate::api::post_user::{add_club_post_to_user, get_posts_by_user};
-use crate::api_interface::common::Cursor;
-use crate::api_interface::posts::*;
-use crate::models::post_user::UserPostCreatedTsKey;
+use crate::api::post_user_api::{add_club_post_to_user, get_posts_by_user};
+use crate::api_interface::common_interface::Cursor;
+use crate::api_interface::posts_interface::*;
+use crate::models::post_user_model::UserPostCreatedTsKey;
 
 #[test]
 fn add_post_to_user_test() {

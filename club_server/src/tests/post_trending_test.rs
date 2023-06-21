@@ -1,15 +1,15 @@
 use super::helpers::*;
-use crate::api::post::*;
-use crate::api::post_reaction::react_emoji;
-use crate::api::post_reply::reply_post;
-use crate::api::post_trending::{get_trending_collection_posts, get_trending_posts};
-use crate::api_interface::common::Cursor;
-use crate::api_interface::post_reaction::ReactEmojiRequest;
-use crate::api_interface::post_reply::ReplyPostRequest;
-use crate::api_interface::post_trending::{
+use crate::api::post_api::*;
+use crate::api::post_reaction_api::react_emoji;
+use crate::api::post_reply_api::reply_post;
+use crate::api::post_trending_api::{get_trending_collection_posts, get_trending_posts};
+use crate::api_interface::common_interface::Cursor;
+use crate::api_interface::post_reaction_interface::ReactEmojiRequest;
+use crate::api_interface::post_reply_interface::ReplyPostRequest;
+use crate::api_interface::post_trending_interface::{
     GetTrendingCollectionPostRequest, GetTrendingPostRequest,
 };
-use crate::models::nft::NftToken;
+use crate::models::nft_model::NftToken;
 use async_std::task;
 
 #[test]

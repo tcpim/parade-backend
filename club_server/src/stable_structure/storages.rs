@@ -1,8 +1,10 @@
-use crate::models::club::ClubInfo;
-use crate::models::post::{Post, PostCreatedTsKey, PostIdString, PostReply, PostReplyIdString};
-use crate::models::post_collection::CollectionPostCreatedTsKey;
-use crate::models::trending_post::TrendingPostKey;
-use crate::models::trending_post_collection::TrendingPostCollectionKey;
+use crate::models::club_model::ClubInfo;
+use crate::models::post_collection_model::CollectionPostCreatedTsKey;
+use crate::models::post_model::{
+    Post, PostCreatedTsKey, PostIdString, PostReply, PostReplyIdString,
+};
+use crate::models::trending_post_collection_model::TrendingPostCollectionKey;
+use crate::models::trending_post_model::TrendingPostKey;
 use ic_stable_structures::memory_manager::{MemoryId, MemoryManager, VirtualMemory};
 use ic_stable_structures::{DefaultMemoryImpl, StableBTreeMap, StableCell};
 use std::cell::RefCell;

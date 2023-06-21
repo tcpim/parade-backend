@@ -1,10 +1,10 @@
 use super::helpers::*;
-use crate::api::post::*;
-use crate::api_interface::common::Cursor;
-use crate::api_interface::posts::*;
-use crate::models::nft::NftToken;
-use crate::models::post::PostCreatedTsKey;
-use crate::models::post_collection::CollectionPostCreatedTsKey;
+use crate::api::post_api::*;
+use crate::api_interface::common_interface::Cursor;
+use crate::api_interface::posts_interface::*;
+use crate::models::nft_model::NftToken;
+use crate::models::post_collection_model::CollectionPostCreatedTsKey;
+use crate::models::post_model::PostCreatedTsKey;
 use async_std::task;
 
 #[test]

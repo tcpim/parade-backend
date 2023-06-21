@@ -1,12 +1,12 @@
 use super::helpers::*;
-use crate::api::post::*;
-use crate::api::post_user::get_posts_by_user;
-use crate::api_interface::common::Cursor;
-use crate::api_interface::posts::*;
-use crate::models::nft::NftToken;
-use crate::models::post_collection::CollectionPostCreatedTsKey;
-use crate::models::post_street::PostCreatedTsKey;
-use crate::models::post_user::UserPostCreatedTsKey;
+use crate::api::post_api::*;
+use crate::api::post_user_api::get_posts_by_user;
+use crate::api_interface::common_interface::Cursor;
+use crate::api_interface::posts_interface::*;
+use crate::models::nft_model::NftToken;
+use crate::models::post_collection_model::CollectionPostCreatedTsKey;
+use crate::models::post_street_model::PostCreatedTsKey;
+use crate::models::post_user_model::UserPostCreatedTsKey;
 
 #[test]
 fn create_and_get_posts_with_pagination() {

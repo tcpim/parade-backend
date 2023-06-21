@@ -1,5 +1,5 @@
-use crate::api::user::{create_user, get_user_info, set_user_info};
-use crate::api_interface::user::SetUserInfoRequest;
+use crate::api::user_api::{create_user, get_user_info, set_user_info};
+use crate::api_interface::user_interface::SetUserInfoRequest;
 
 #[test]
 fn create_user_test() {

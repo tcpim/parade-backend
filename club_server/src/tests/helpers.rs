@@ -1,5 +1,5 @@
-use crate::api_interface::posts::*;
-use crate::models::nft::NftToken;
+use crate::api_interface::posts_interface::*;
+use crate::models::nft_model::NftToken;
 
 // Helper methods for generating requests
 pub fn generate_create_post_request(

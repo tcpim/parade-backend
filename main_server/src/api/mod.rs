@@ -1,9 +1,9 @@
 mod constants;
-mod helpers;
-pub mod post;
-pub mod post_deletion;
-pub mod post_reaction;
-pub mod post_reply;
-pub mod post_trending;
-pub mod post_user;
-pub mod user;
+mod helpers_api;
+pub mod post_api;
+pub mod post_deletion_api;
+pub mod post_reaction_api;
+pub mod post_reply_api;
+pub mod post_trending_api;
+pub mod post_user_api;
+pub mod user_api;

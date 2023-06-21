@@ -1,9 +1,9 @@
 use super::helpers::*;
-use crate::api::post::*;
-use crate::api::post_deletion::*;
-use crate::api_interface::common::Cursor;
-use crate::api_interface::posts::*;
-use crate::models::nft::NftToken;
+use crate::api::post_api::*;
+use crate::api::post_deletion_api::*;
+use crate::api_interface::common_interface::Cursor;
+use crate::api_interface::posts_interface::*;
+use crate::models::nft_model::NftToken;
 
 #[test]
 fn create_and_delete_posts() {

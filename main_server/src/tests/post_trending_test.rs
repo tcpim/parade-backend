@@ -1,21 +1,21 @@
 use super::helpers::*;
-use crate::api::post::*;
-use crate::api::post_reaction::react_emoji;
-use crate::api::post_reply::reply_post;
-use crate::api::post_trending::{
+use crate::api::post_api::*;
+use crate::api::post_reaction_api::react_emoji;
+use crate::api::post_reply_api::reply_post;
+use crate::api::post_trending_api::{
     get_trending_collection_posts, get_trending_street_posts, update_club_post_trending_score,
 };
-use crate::api_interface::common::Cursor;
-use crate::api_interface::post_reaction::ReactEmojiRequest;
-use crate::api_interface::post_reply::ReplyPostRequest;
-use crate::api_interface::post_trending::{
+use crate::api_interface::common_interface::Cursor;
+use crate::api_interface::post_reaction_interface::ReactEmojiRequest;
+use crate::api_interface::post_reply_interface::ReplyPostRequest;
+use crate::api_interface::post_trending_interface::{
     GetTrendingCollectionPostRequest, GetTrendingStreetPostRequest,
     UpdateClubPostStreetTrendingScoreRequest,
 };
-use crate::api_interface::posts::AddClubPostToStreetRequest;
-use crate::models::nft::NftToken;
-use crate::models::post::{Post, PostIdString, PostReplyIdString};
-use crate::models::trending_post::TrendingPostKey;
+use crate::api_interface::posts_interface::AddClubPostToStreetRequest;
+use crate::models::nft_model::NftToken;
+use crate::models::post_model::{Post, PostIdString, PostReplyIdString};
+use crate::models::trending_post_model::TrendingPostKey;
 
 #[test]
 fn get_trending_street_posts_pagination() {

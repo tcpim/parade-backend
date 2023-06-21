@@ -1,6 +1,6 @@
-use crate::api::post::*;
-use crate::api::post_reply::*;
-use crate::api_interface::post_reply::*;
+use crate::api::post_api::*;
+use crate::api::post_reply_api::*;
+use crate::api_interface::post_reply_interface::*;
 
 #[test]
 pub fn reply_post_test() {

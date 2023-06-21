@@ -1,9 +1,9 @@
 use super::helpers::*;
-use crate::api::post::*;
-use crate::api::post_reaction::*;
-use crate::api::post_reply::*;
-use crate::api_interface::post_reaction::*;
-use crate::api_interface::post_reply::*;
+use crate::api::post_api::*;
+use crate::api::post_reaction_api::*;
+use crate::api::post_reply_api::*;
+use crate::api_interface::post_reaction_interface::*;
+use crate::api_interface::post_reply_interface::*;
 
 #[test]
 fn react_emoji_to_post_and_its_reply() {
