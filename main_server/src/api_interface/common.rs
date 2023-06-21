@@ -14,6 +14,7 @@ pub enum ServerError {
     ReactEmojiError(String),
     GetPostRepliesError(String),
     GetTrendingPostsError(String),
+    SetUserInfoError(String),
 }
 
 #[derive(Debug, CandidType, Deserialize)]

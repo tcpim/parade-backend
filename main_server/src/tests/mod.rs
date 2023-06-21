@@ -18,3 +18,6 @@ mod helpers;
 
 #[cfg(test)]
 mod post_user_test;
+
+#[cfg(test)]
+mod user_test;

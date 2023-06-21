@@ -70,6 +70,7 @@ type GetTrendingStreetPostResponse = record {
   next_cursor : opt TrendingPostKey;
   posts : vec PostType;
 };
+type GetUserInfoResponse = record { user : opt User };
 type GetUserPostsRequest = record {
   cursor : opt UserPostCreatedTsKey;
   user_id : text;
@@ -132,6 +133,7 @@ type ReplyPostResponse = record { error : opt ServerError; reply : PostReply };
 type ServerError = variant {
   GetPostError : text;
   GetTrendingPostsError : text;
+  SetUserInfoError : text;
   ReactEmojiError : text;
   CreatePostGeneralError : text;
   GetPostByCollectionError : text;
@@ -141,6 +143,13 @@ type ServerError = variant {
   DeletePostError : text;
   GetPostByUserError : text;
 };
+type SetUserInfoRequest = record {
+  user_name : opt text;
+  user_bio : opt text;
+  user_avatar : opt vec nat8;
+  user_id : text;
+};
+type SetUserInfoResponse = record { user : User; error : opt ServerError };
 type TrendingPostCollectionKey = record {
   trending_info : TrendingPostKey;
   canister_id : text;
@@ -156,6 +165,12 @@ type UpdateClubPostStreetTrendingScoreRequest = record {
   new : TrendingPostKey;
   nft_canister_ids : vec text;
 };
+type User = record {
+  bio : opt text;
+  pid : text;
+  user_name : opt text;
+  avatar : opt vec nat8;
+};
 type UserPostCreatedTsKey = record {
   post_id : text;
   created_ts : nat64;
@@ -166,6 +181,7 @@ service : {
   add_club_post_to_street : (AddClubPostToStreetRequest) -> ();
   add_club_post_to_user : (UserPostCreatedTsKey) -> ();
   create_street_post : (CreateStreetPostRequest) -> (CreateStreetPostResponse);
+  create_user : (text) -> ();
   delete_all_post : () -> ();
   delete_post : (text) -> (DeletePostResponse);
   get_post_replies : (GetPostRepliesRequest) -> (GetPostRepliesResponse) query;
@@ -181,8 +197,10 @@ service : {
   get_trending_street_posts : (GetTrendingStreetPostRequest) -> (
       GetTrendingStreetPostResponse,
     ) query;
+  get_user_info : (text) -> (GetUserInfoResponse) query;
   react_emoji : (ReactEmojiRequest) -> (DeletePostResponse);
   reply_post : (ReplyPostRequest) -> (ReplyPostResponse);
+  set_user_info : (SetUserInfoRequest) -> (SetUserInfoResponse);
   update_club_post_trending_score : (
       UpdateClubPostStreetTrendingScoreRequest,
     ) -> ();

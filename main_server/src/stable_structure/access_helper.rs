@@ -1,5 +1,21 @@
 use super::storages::*;
 
+pub fn with_user_by_id<R>(f: impl FnOnce(&UserByIdMap) -> R) -> R {
+    USER_BY_ID.with(|s| f(&s.borrow()))
+}
+
+pub fn with_user_by_id_mut<R>(f: impl FnOnce(&mut UserByIdMap) -> R) -> R {
+    USER_BY_ID.with(|s| f(&mut s.borrow_mut()))
+}
+
+pub fn with_user_names<R>(f: impl FnOnce(&UserNamesMap) -> R) -> R {
+    USER_NAMES.with(|s| f(&s.borrow()))
+}
+
+pub fn with_user_names_mut<R>(f: impl FnOnce(&mut UserNamesMap) -> R) -> R {
+    USER_NAMES.with(|s| f(&mut s.borrow_mut()))
+}
+
 pub fn with_post_by_id<R>(f: impl FnOnce(&PostByIdMap) -> R) -> R {
     POST_BY_ID.with(|s| f(&s.borrow()))
 }

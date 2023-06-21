@@ -17,4 +17,4 @@ below are APIs that should be called by club canisters
   - This API put the club post reference (postId+clubId) to user storage
 - **update_club_post_trending_score**
   - When the public club post is being reacted (reply / emoji), this API should be called
-  - This API update the trending score of the club post in the street (collection) feed 
+  - This API update the trending score of the club post in the street (collection) feed

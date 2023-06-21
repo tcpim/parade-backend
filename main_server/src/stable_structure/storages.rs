@@ -4,7 +4,7 @@ use crate::models::post_street::PostCreatedTsKey;
 use crate::models::post_user::UserPostCreatedTsKey;
 use crate::models::trending_post::TrendingPostKey;
 use crate::models::trending_post_collection::TrendingPostCollectionKey;
-use crate::models::user::{User, UserPrincipalStringKey};
+use crate::models::user::{User, UserNameStringKey, UserPrincipalStringKey};
 use ic_stable_structures::memory_manager::{MemoryId, MemoryManager, VirtualMemory};
 use ic_stable_structures::{DefaultMemoryImpl, StableBTreeMap};
 use std::cell::RefCell;
@@ -18,6 +18,7 @@ pub type UserPostsCreatedHeap = StableBTreeMap<UserPostCreatedTsKey, (), Memory>
 pub type CollectionPostsCreatedHeap = StableBTreeMap<CollectionPostCreatedTsKey, (), Memory>;
 pub type TrendingPostStreetHeap = StableBTreeMap<TrendingPostKey, (), Memory>;
 pub type TrendingPostCollectionHeap = StableBTreeMap<TrendingPostCollectionKey, (), Memory>;
+pub type UserNamesMap = StableBTreeMap<UserNameStringKey, (), Memory>;
 
 pub const USER_BY_ID_MEMORY_ID: MemoryId = MemoryId::new(0);
 pub const POST_BY_ID_MEMORY_ID: MemoryId = MemoryId::new(1);
@@ -27,13 +28,16 @@ pub const POST_REPLIES_MEMORY_ID: MemoryId = MemoryId::new(4);
 pub const COLLECTION_POSTS_CREATED_MEMORY_ID: MemoryId = MemoryId::new(5);
 pub const TRENDING_POST_STREET_MEMORY_ID: MemoryId = MemoryId::new(6);
 pub const TRENDING_POST_COLLECTION_MEMORY_ID: MemoryId = MemoryId::new(7);
+pub const USER_NAMES_MEMORY_ID: MemoryId = MemoryId::new(8);
 
 thread_local! {
 // initiate a memory manager
     pub static MEMORY_MANAGER: RefCell<MemoryManager<DefaultMemoryImpl>> =
         RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
 
-    // One to One relation between key and value
+    /**
+    One to One relation between key and value
+    */
     pub static USER_BY_ID: RefCell<StableBTreeMap<UserPrincipalStringKey, User, Memory>> =
         MEMORY_MANAGER.with(|memory_manager|
             RefCell::new(
@@ -62,9 +66,22 @@ thread_local! {
         );
 
 
-    // Database
-    // Usually store one to many relation in a BTreeMap with composite key
+    /**
+    Unique values
+    */
+    pub static USER_NAMES: RefCell<StableBTreeMap<UserNameStringKey, (), Memory>> =
+        MEMORY_MANAGER.with(|memory_manager|
+            RefCell::new(
+                StableBTreeMap::init(
+                    memory_manager.borrow().get(USER_NAMES_MEMORY_ID)
+                )
+            )
+        );
 
+    /**
+    Database
+    Usually store one to many relation in a BTreeMap with composite key
+    */
     // Street (public) posts by created time
     pub static STREET_POSTS_CREATED: RefCell<StableBTreeMap<PostCreatedTsKey, (), Memory>> =
         MEMORY_MANAGER.with(|memory_manager|
