@@ -40,6 +40,7 @@ export const idlFactory = ({ IDL }) => {
   const ServerError = IDL.Variant({
     'GetPostError' : IDL.Text,
     'GetTrendingPostsError' : IDL.Text,
+    'SetUserInfoError' : IDL.Text,
     'ReactEmojiError' : IDL.Text,
     'CreatePostGeneralError' : IDL.Text,
     'GetPostByCollectionError' : IDL.Text,
@@ -149,6 +150,13 @@ export const idlFactory = ({ IDL }) => {
     'next_cursor' : IDL.Opt(TrendingPostKey),
     'posts' : IDL.Vec(PostType),
   });
+  const User = IDL.Record({
+    'bio' : IDL.Opt(IDL.Text),
+    'pid' : IDL.Text,
+    'user_name' : IDL.Opt(IDL.Text),
+    'avatar' : IDL.Opt(IDL.Vec(IDL.Nat8)),
+  });
+  const GetUserInfoResponse = IDL.Record({ 'user' : IDL.Opt(User) });
   const ReactEmojiRequest = IDL.Record({
     'post_id' : IDL.Opt(IDL.Text),
     'reply_id' : IDL.Opt(IDL.Text),
@@ -168,6 +176,16 @@ export const idlFactory = ({ IDL }) => {
     'error' : IDL.Opt(ServerError),
     'reply' : PostReply,
   });
+  const SetUserInfoRequest = IDL.Record({
+    'user_name' : IDL.Opt(IDL.Text),
+    'user_bio' : IDL.Opt(IDL.Text),
+    'user_avatar' : IDL.Opt(IDL.Vec(IDL.Nat8)),
+    'user_id' : IDL.Text,
+  });
+  const SetUserInfoResponse = IDL.Record({
+    'user' : User,
+    'error' : IDL.Opt(ServerError),
+  });
   const UpdateClubPostStreetTrendingScoreRequest = IDL.Record({
     'new' : TrendingPostKey,
     'nft_canister_ids' : IDL.Vec(IDL.Text),
@@ -180,6 +198,7 @@ export const idlFactory = ({ IDL }) => {
         [CreateStreetPostResponse],
         [],
       ),
+    'create_user' : IDL.Func([IDL.Text], [], []),
     'delete_all_post' : IDL.Func([], [], []),
     'delete_post' : IDL.Func([IDL.Text], [DeletePostResponse], []),
     'get_post_replies' : IDL.Func(
@@ -217,8 +236,10 @@ export const idlFactory = ({ IDL }) => {
         [GetTrendingStreetPostResponse],
         ['query'],
       ),
+    'get_user_info' : IDL.Func([IDL.Text], [GetUserInfoResponse], ['query']),
     'react_emoji' : IDL.Func([ReactEmojiRequest], [DeletePostResponse], []),
     'reply_post' : IDL.Func([ReplyPostRequest], [ReplyPostResponse], []),
+    'set_user_info' : IDL.Func([SetUserInfoRequest], [SetUserInfoResponse], []),
     'update_club_post_trending_score' : IDL.Func(
         [UpdateClubPostStreetTrendingScoreRequest],
         [],

@@ -1,28 +1,25 @@
 import type { Principal } from '@dfinity/principal';
 import type { ActorMethod } from '@dfinity/agent';
 
-export interface AddClubPostToStreetRequest {
-  'post_id' : string,
-  'nfts' : Array<NftToken>,
-  'created_by' : string,
-  'created_ts' : bigint,
+export interface ClubInfo {
+  'club_description' : string,
+  'club_name' : string,
   'club_id' : string,
 }
-export interface ClubPost { 'post_id' : string, 'club_id' : string }
 export interface CollectionPostCreatedTsKey {
   'post_id' : string,
   'canister_id' : string,
   'created_ts' : bigint,
-  'club_id' : [] | [string],
 }
-export interface CreateStreetPostRequest {
+export interface CreatePostRequest {
   'post_id' : string,
   'nfts' : Array<NftToken>,
   'created_by' : string,
   'created_ts' : bigint,
   'words' : string,
+  'in_public' : boolean,
 }
-export interface CreateStreetPostResponse {
+export interface CreatePostResponse {
   'post' : Post,
   'error' : [] | [ServerError],
 }
@@ -35,9 +32,10 @@ export interface GetCollectionPostsRequest {
 export interface GetCollectionPostsResponse {
   'error' : [] | [ServerError],
   'next_cursor' : [] | [CollectionPostCreatedTsKey],
-  'posts' : Array<PostType>,
+  'posts' : Array<Post>,
 }
 export interface GetPostByIdResponse { 'post' : [] | [Post] }
+export interface GetPostByIdsResponse { 'posts' : Array<[] | [Post]> }
 export interface GetPostRepliesRequest {
   'post_id' : string,
   'offset' : number,
@@ -48,14 +46,14 @@ export interface GetPostRepliesResponse {
   'error' : [] | [ServerError],
   'post_replies' : Array<PostReply>,
 }
-export interface GetStreetPostsRequest {
+export interface GetPostsRequest {
   'cursor' : [] | [PostCreatedTsKey],
   'limit' : [] | [number],
 }
-export interface GetStreetPostsResponse {
+export interface GetPostsResponse {
   'error' : [] | [ServerError],
   'next_cursor' : [] | [PostCreatedTsKey],
-  'posts' : Array<PostType>,
+  'posts' : Array<Post>,
 }
 export interface GetTrendingCollectionPostRequest {
   'cursor' : [] | [TrendingPostCollectionKey],
@@ -65,27 +63,16 @@ export interface GetTrendingCollectionPostRequest {
 export interface GetTrendingCollectionPostResponse {
   'error' : [] | [ServerError],
   'next_cursor' : [] | [TrendingPostCollectionKey],
-  'posts' : Array<PostType>,
+  'posts' : Array<Post>,
 }
-export interface GetTrendingStreetPostRequest {
+export interface GetTrendingPostRequest {
   'cursor' : [] | [TrendingPostKey],
   'limit' : [] | [number],
 }
-export interface GetTrendingStreetPostResponse {
+export interface GetTrendingPostResponse {
   'error' : [] | [ServerError],
   'next_cursor' : [] | [TrendingPostKey],
-  'posts' : Array<PostType>,
-}
-export interface GetUserInfoResponse { 'user' : [] | [User] }
-export interface GetUserPostsRequest {
-  'cursor' : [] | [UserPostCreatedTsKey],
-  'user_id' : string,
-  'limit' : [] | [number],
-}
-export interface GetUserPostsResponse {
-  'error' : [] | [ServerError],
-  'next_cursor' : [] | [UserPostCreatedTsKey],
-  'posts' : Array<PostType>,
+  'posts' : Array<Post>,
 }
 export interface NftToken {
   'token_index' : number,
@@ -104,12 +91,10 @@ export interface Post {
   'created_ts' : bigint,
   'replies' : Array<string>,
   'words' : string,
+  'club_id' : string,
+  'in_public' : boolean,
 }
-export interface PostCreatedTsKey {
-  'post_id' : string,
-  'created_ts' : bigint,
-  'club_id' : [] | [string],
-}
+export interface PostCreatedTsKey { 'post_id' : string, 'created_ts' : bigint }
 export interface PostReply {
   'id' : string,
   'post_id' : string,
@@ -118,10 +103,6 @@ export interface PostReply {
   'created_by' : string,
   'created_ts' : bigint,
   'words' : string,
-}
-export interface PostType {
-  'post' : [] | [Post],
-  'club_post' : [] | [ClubPost],
 }
 export interface ReactEmojiRequest {
   'post_id' : [] | [string],
@@ -143,26 +124,12 @@ export interface ReplyPostResponse {
   'reply' : PostReply,
 }
 export type ServerError = { 'GetPostError' : string } |
-  { 'GetTrendingPostsError' : string } |
-  { 'SetUserInfoError' : string } |
   { 'ReactEmojiError' : string } |
   { 'CreatePostGeneralError' : string } |
-  { 'GetPostByCollectionError' : string } |
   { 'ReplyPostError' : string } |
-  { 'GetStreetPostsError' : string } |
   { 'GetPostRepliesError' : string } |
-  { 'DeletePostError' : string } |
-  { 'GetPostByUserError' : string };
-export interface SetUserInfoRequest {
-  'user_name' : [] | [string],
-  'user_bio' : [] | [string],
-  'user_avatar' : [] | [Uint8Array | number[]],
-  'user_id' : string,
-}
-export interface SetUserInfoResponse {
-  'user' : User,
-  'error' : [] | [ServerError],
-}
+  { 'DeletePostError' : string };
+export interface SetClubInfoRequest { 'info' : ClubInfo }
 export interface TrendingPostCollectionKey {
   'trending_info' : TrendingPostKey,
   'canister_id' : string,
@@ -171,69 +138,33 @@ export interface TrendingPostKey {
   'updated_ts' : bigint,
   'post_id' : string,
   'created_ts' : bigint,
-  'club_id' : [] | [string],
   'trending_score' : number,
 }
-export interface UpdateClubPostStreetTrendingScoreRequest {
-  'new' : TrendingPostKey,
-  'nft_canister_ids' : Array<string>,
-}
-export interface User {
-  'bio' : [] | [string],
-  'pid' : string,
-  'user_name' : [] | [string],
-  'avatar' : [] | [Uint8Array | number[]],
-}
-export interface UserPostCreatedTsKey {
-  'post_id' : string,
-  'created_ts' : bigint,
-  'user_id' : string,
-  'club_id' : [] | [string],
-}
 export interface _SERVICE {
-  'add_club_post_to_street' : ActorMethod<
-    [AddClubPostToStreetRequest],
-    undefined
-  >,
-  'add_club_post_to_user' : ActorMethod<[UserPostCreatedTsKey], undefined>,
-  'create_street_post' : ActorMethod<
-    [CreateStreetPostRequest],
-    CreateStreetPostResponse
-  >,
-  'create_user' : ActorMethod<[string], undefined>,
+  'create_post' : ActorMethod<[CreatePostRequest], CreatePostResponse>,
   'delete_all_post' : ActorMethod<[], undefined>,
   'delete_post' : ActorMethod<[string], DeletePostResponse>,
+  'get_club_info' : ActorMethod<[], ClubInfo>,
+  'get_post_by_id' : ActorMethod<[string], GetPostByIdResponse>,
+  'get_post_by_ids' : ActorMethod<[Array<string>], GetPostByIdsResponse>,
   'get_post_replies' : ActorMethod<
     [GetPostRepliesRequest],
     GetPostRepliesResponse
   >,
+  'get_posts' : ActorMethod<[GetPostsRequest], GetPostsResponse>,
   'get_posts_by_collection' : ActorMethod<
     [GetCollectionPostsRequest],
     GetCollectionPostsResponse
-  >,
-  'get_posts_by_user' : ActorMethod<
-    [GetUserPostsRequest],
-    GetUserPostsResponse
-  >,
-  'get_street_post_by_id' : ActorMethod<[string], GetPostByIdResponse>,
-  'get_street_posts' : ActorMethod<
-    [GetStreetPostsRequest],
-    GetStreetPostsResponse
   >,
   'get_trending_collection_posts' : ActorMethod<
     [GetTrendingCollectionPostRequest],
     GetTrendingCollectionPostResponse
   >,
-  'get_trending_street_posts' : ActorMethod<
-    [GetTrendingStreetPostRequest],
-    GetTrendingStreetPostResponse
+  'get_trending_posts' : ActorMethod<
+    [GetTrendingPostRequest],
+    GetTrendingPostResponse
   >,
-  'get_user_info' : ActorMethod<[string], GetUserInfoResponse>,
   'react_emoji' : ActorMethod<[ReactEmojiRequest], DeletePostResponse>,
   'reply_post' : ActorMethod<[ReplyPostRequest], ReplyPostResponse>,
-  'set_user_info' : ActorMethod<[SetUserInfoRequest], SetUserInfoResponse>,
-  'update_club_post_trending_score' : ActorMethod<
-    [UpdateClubPostStreetTrendingScoreRequest],
-    undefined
-  >,
+  'set_club_info' : ActorMethod<[SetClubInfoRequest], undefined>,
 }
