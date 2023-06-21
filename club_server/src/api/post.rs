@@ -1,7 +1,8 @@
 use candid::{candid_method, Principal};
-use ic_cdk_macros::{query, update};
+use ic_cdk_macros::{init, query, update};
 
 use crate::api::constants::{DEFAULT_PAGE_SIZE, MAIN_SERVER_CANISTER_ID};
+use crate::api_interface::club::SetClubInfoRequest;
 use crate::stable_structure::access_helper::*;
 use std::collections::BTreeMap;
 
@@ -20,6 +21,15 @@ use crate::api_interface::inter_canister::{
 // ######################
 // APIs
 // ######################
+
+#[init]
+#[candid_method(init)]
+fn canister_init(args: SetClubInfoRequest) {
+    with_club_info_mut(|cell| {
+        cell.set(args.info.clone())
+            .expect("Failed to set club info");
+    })
+}
 
 /**
 Create a new post

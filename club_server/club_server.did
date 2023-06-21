@@ -133,7 +133,7 @@ type TrendingPostKey = record {
   created_ts : nat64;
   trending_score : nat32;
 };
-service : {
+service : (SetClubInfoRequest) -> {
   create_post : (CreatePostRequest) -> (CreatePostResponse);
   delete_all_post : () -> ();
   delete_post : (text) -> (DeletePostResponse);
