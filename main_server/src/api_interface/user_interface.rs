@@ -9,11 +9,22 @@ pub struct GetUserInfoResponse {
 }
 
 #[derive(Debug, CandidType, Deserialize)]
-pub struct SetUserInfoRequest {
+pub struct SetUserAvatarRequest {
     pub user_id: String,
-    pub user_name: Option<String>,
-    pub user_avatar: Option<Vec<u8>>,
-    pub user_bio: Option<String>,
+    pub avatar: Vec<u8>,
+    pub mime_type: String,
+}
+
+#[derive(Debug, CandidType, Deserialize)]
+pub struct SetUserNameRequest {
+    pub user_id: String,
+    pub new_name: String,
+}
+
+#[derive(Debug, CandidType, Deserialize)]
+pub struct SetUserBioRequest {
+    pub user_id: String,
+    pub bio: String,
 }
 
 #[derive(Debug, CandidType, Deserialize)]

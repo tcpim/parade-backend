@@ -143,13 +143,14 @@ type ServerError = variant {
   DeletePostError : text;
   GetPostByUserError : text;
 };
-type SetUserInfoRequest = record {
-  user_name : opt text;
-  user_bio : opt text;
-  user_avatar : opt vec nat8;
+type SetUserAvatarRequest = record {
+  mime_type : text;
   user_id : text;
+  avatar : vec nat8;
 };
+type SetUserBioRequest = record { bio : text; user_id : text };
 type SetUserInfoResponse = record { user : User; error : opt ServerError };
+type SetUserNameRequest = record { user_id : text; new_name : text };
 type TrendingPostCollectionKey = record {
   trending_info : TrendingPostKey;
   canister_id : text;
@@ -169,8 +170,9 @@ type User = record {
   id : text;
   bio : opt text;
   user_name : opt text;
-  avatar : opt vec nat8;
+  avatar : opt UserAvatar;
 };
+type UserAvatar = record { data : vec nat8; mime_type : text };
 type UserPostCreatedTsKey = record {
   post_id : text;
   created_ts : nat64;
@@ -183,6 +185,7 @@ service : {
   create_street_post : (CreateStreetPostRequest) -> (CreateStreetPostResponse);
   create_user : (text) -> ();
   delete_all_post : () -> ();
+  delete_all_users : () -> ();
   delete_post : (text) -> (DeletePostResponse);
   get_post_replies : (GetPostRepliesRequest) -> (GetPostRepliesResponse) query;
   get_posts_by_collection : (GetCollectionPostsRequest) -> (
@@ -200,7 +203,9 @@ service : {
   get_user_info : (text) -> (GetUserInfoResponse) query;
   react_emoji : (ReactEmojiRequest) -> (DeletePostResponse);
   reply_post : (ReplyPostRequest) -> (ReplyPostResponse);
-  set_user_info : (SetUserInfoRequest) -> (SetUserInfoResponse);
+  set_user_avatar : (SetUserAvatarRequest) -> (SetUserInfoResponse);
+  set_user_bio : (SetUserBioRequest) -> (SetUserInfoResponse);
+  set_user_name : (SetUserNameRequest) -> (SetUserInfoResponse);
   update_club_post_trending_score : (
       UpdateClubPostStreetTrendingScoreRequest,
     ) -> ();

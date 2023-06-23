@@ -35,7 +35,7 @@ pub fn react_emoji(request: ReactEmojiRequest) -> ReactEmojiResponse {
             }
 
             // Update post content
-            let mut new_post = post.clone();
+            let mut new_post = post;
             new_post.updated_ts = request.created_ts;
             new_post.emoji_reactions = emojis;
             storage.insert(post_id_string.clone(), new_post.clone());

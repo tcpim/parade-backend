@@ -1,4 +1,4 @@
-use candid::{candid_method, Principal};
+use candid::candid_method;
 use ic_cdk_macros::{init, query, update};
 
 use crate::api::constants::{DEFAULT_PAGE_SIZE, MAIN_SERVER_CANISTER_ID};
@@ -213,7 +213,7 @@ pub fn get_posts_by_collection(request: GetCollectionPostsRequest) -> GetCollect
 #[query]
 #[candid_method(query)]
 pub fn get_post_by_id(post_id: String) -> GetPostByIdResponse {
-    let post = get_post_by_id_from_store(&PostIdString(post_id.clone()));
+    let post = get_post_by_id_from_store(&PostIdString(post_id));
     if post.is_none() {
         GetPostByIdResponse { post: None }
     } else {

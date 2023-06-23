@@ -2,7 +2,6 @@ use crate::api::post_api::*;
 use crate::api::post_reply_api::*;
 use crate::api_interface::post_reply_interface::*;
 use async_std::task;
-use std::panic::{self, AssertUnwindSafe};
 
 #[test]
 pub fn reply_post_test() {
@@ -14,7 +13,7 @@ pub fn reply_post_test() {
     );
 
     let create_post_res = task::block_on(create_post(create_post_request));
-    let post_id_str = create_post_res.post.id.0.clone();
+    let post_id_str = create_post_res.post.id.0;
     let reply_post_request_1 = ReplyPostRequest {
         reply_id: "1".to_string(),
         user: "peter".to_string(),
@@ -45,7 +44,7 @@ pub fn reply_post_test() {
 
     let get_post_res = get_post_by_id(post_id_str.clone());
 
-    assert_eq!(get_post_res.post.clone().unwrap().replies.len(), 3);
+    assert_eq!(get_post_res.post.unwrap().replies.len(), 3);
 
     // Get first page
     let get_replies_res = get_post_replies(GetPostRepliesRequest {
@@ -60,7 +59,7 @@ pub fn reply_post_test() {
 
     // Get last page
     let get_replies_res = get_post_replies(GetPostRepliesRequest {
-        post_id: post_id_str.clone(),
+        post_id: post_id_str,
         offset: get_replies_res.offset,
         limit: Some(2),
     });

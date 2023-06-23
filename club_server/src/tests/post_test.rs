@@ -23,7 +23,7 @@ fn create_and_get_posts_with_pagination() {
     task::block_on(create_post(create_post_request_3));
 
     let request = GetPostsRequest {
-        limit: Option::Some(2),
+        limit: Some(2),
         cursor: Cursor(None),
     };
     let response = get_posts(request);
@@ -43,7 +43,7 @@ fn create_and_get_posts_with_pagination() {
 
     // Get second page which is also the last page
     let request = GetPostsRequest {
-        limit: Option::Some(2),
+        limit: Some(2),
         cursor: response.next_cursor,
     };
     let response = get_posts(request);
@@ -67,14 +67,14 @@ fn create_and_get_posts_by_collection_pagination() {
     let create_post_request_1 =
         generate_create_post_request(0, "hi_1".to_string(), "tim".to_string(), nft_1.clone());
     let create_post_request_2 =
-        generate_create_post_request(1, "hi_2".to_string(), "tim".to_string(), nft_1.clone());
+        generate_create_post_request(1, "hi_2".to_string(), "tim".to_string(), nft_1);
 
     // act
     task::block_on(create_post(create_post_request_1));
     task::block_on(create_post(create_post_request_2));
     let response = get_posts_by_collection(GetCollectionPostsRequest {
         canister_id: "canister_1".to_string(),
-        limit: Option::Some(1),
+        limit: Some(1),
         cursor: Cursor(None),
     });
 
@@ -93,7 +93,7 @@ fn create_and_get_posts_by_collection_pagination() {
     // get second page
     let response = get_posts_by_collection(GetCollectionPostsRequest {
         canister_id: "canister_1".to_string(),
-        limit: Option::Some(2),
+        limit: Some(2),
         cursor: response.next_cursor,
     });
     assert_eq!(response.posts.len(), 1);

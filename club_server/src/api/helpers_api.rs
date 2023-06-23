@@ -1,4 +1,4 @@
-use crate::api::constants::{DEFAULT_PAGE_SIZE, MAIN_SERVER_CANISTER_ID};
+use crate::api::constants::DEFAULT_PAGE_SIZE;
 use crate::api_interface::common_interface::*;
 use crate::models::nft_model::NftToken;
 use crate::models::post_model::*;
@@ -119,7 +119,7 @@ trending collection posts, trending club posts
 pub fn update_trending_post_indexes(old_post: Post, new_trending_score: &TrendingPostKey) {
     // update trending score in trending
     with_trending_posts_mut(|max_heap| {
-        max_heap.remove(&new_trending_score);
+        max_heap.remove(new_trending_score);
         max_heap.insert(new_trending_score.clone(), ());
     });
 

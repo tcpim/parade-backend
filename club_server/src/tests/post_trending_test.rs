@@ -31,7 +31,7 @@ fn get_trending_posts_pagination() {
 
     // Act
     let response = get_trending_posts(GetTrendingPostRequest {
-        limit: Option::Some(1),
+        limit: Some(1),
         cursor: Cursor(None),
     });
 
@@ -43,7 +43,7 @@ fn get_trending_posts_pagination() {
 
     // get second page
     let response = get_trending_posts(GetTrendingPostRequest {
-        limit: Option::Some(2),
+        limit: Some(2),
         cursor: response.next_cursor,
     });
     assert_eq!(response.posts.len(), 2);
@@ -79,7 +79,7 @@ fn get_trending_collection_posts_pagination() {
     // Act
     let response = get_trending_collection_posts(GetTrendingCollectionPostRequest {
         canister_id: "canister_1".to_string(),
-        limit: Option::Some(1),
+        limit: Some(1),
         cursor: Cursor(None),
     });
 
@@ -92,7 +92,7 @@ fn get_trending_collection_posts_pagination() {
     // get second page
     let response = get_trending_collection_posts(GetTrendingCollectionPostRequest {
         canister_id: "canister_1".to_string(),
-        limit: Option::Some(2),
+        limit: Some(2),
         cursor: response.next_cursor,
     });
     assert_eq!(response.posts.len(), 2);

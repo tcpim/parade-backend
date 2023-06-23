@@ -1,5 +1,4 @@
 use candid::{CandidType, Decode, Encode};
-use ic_stable_structures::storable::Blob;
 use ic_stable_structures::{BoundedStorable, Storable};
 use serde::Deserialize;
 
@@ -7,8 +6,14 @@ use serde::Deserialize;
 pub struct User {
     pub id: String, // the user principal string
     pub user_name: Option<String>,
-    pub avatar: Option<Vec<u8>>,
+    pub avatar: Option<UserAvatar>,
     pub bio: Option<String>,
+}
+
+#[derive(Debug, Clone, CandidType, Deserialize)]
+pub struct UserAvatar {
+    pub data: Vec<u8>,     // image blob in base64 format
+    pub mime_type: String, // support image/png and image/jpeg
 }
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone, Debug)]

@@ -1,7 +1,6 @@
 use crate::api_interface::common_interface::{Cursor, ServerError};
 
 use crate::api_interface::posts_interface::PostType;
-use crate::models::post_model::Post;
 use crate::models::trending_post_collection_model::TrendingPostCollectionKey;
 use crate::models::trending_post_model::TrendingPostKey;
 use candid::CandidType;

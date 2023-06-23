@@ -26,7 +26,7 @@ pub fn delete_post(post_id: String) -> DeletePostResponse {
 #[candid_method(update)]
 pub fn delete_all_post() {
     // You might run into candid deserialization error if you changed the proto
-    // Solution: you can temporarily modify the proto to fit the ealier version and make the deserilization work
+    // Solution: you can temporarily modify the proto to fit the earlier version and make the deserialization work
     // and then change it back after deletion
     with_post_by_id_mut(|storage| {
         let posts: Vec<_> = storage.range(..).collect();

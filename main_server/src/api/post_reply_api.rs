@@ -54,7 +54,7 @@ pub fn reply_post(request: ReplyPostRequest) -> ReplyPostResponse {
         let mut new_post = post.clone();
         new_post.updated_ts = request.created_ts;
         new_post.replies.push(post_reply_string_id);
-        storage.insert(post.id.clone(), new_post.clone());
+        storage.insert(post.id, new_post.clone());
 
         // Update trending score btree indexes
         helpers_api::update_trending_post_indexes(&new_post, None);

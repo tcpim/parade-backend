@@ -1,5 +1,10 @@
-use crate::api::user_api::{create_user, get_user_info, set_user_info};
-use crate::api_interface::user_interface::SetUserInfoRequest;
+use crate::api::user_api::{
+    create_user, get_user_info, set_user_avatar, set_user_bio, set_user_name,
+};
+use crate::api_interface::user_interface::{
+    SetUserAvatarRequest, SetUserBioRequest, SetUserNameRequest,
+};
+use crate::models::user_model::UserAvatar;
 
 #[test]
 fn create_user_test() {
@@ -13,59 +18,82 @@ fn create_user_test() {
 }
 
 #[test]
-fn update_user_info() {
+fn update_user_name_test() {
     // setup
     let user_id = "test_user_id".to_string();
-    create_user(user_id.clone());
-    let avatar: Vec<u8> = vec![1, 2, 3, 4, 5];
-    let bio = "test_bio".to_string();
+    let name = "test_user_name".to_string();
 
     // act
-    let request = SetUserInfoRequest {
+    let request = SetUserNameRequest {
         user_id: user_id.clone(),
-        user_name: Some("test_user_name".to_string()),
-        user_avatar: Some(avatar.clone()),
-        user_bio: Some(bio.clone()),
+        new_name: name.clone(),
     };
-    set_user_info(request);
+    set_user_name(request);
+
+    // assert
+    let response = get_user_info(user_id.clone());
+    assert_eq!(response.user.clone().unwrap().id, user_id);
+    assert_eq!(response.user.clone().unwrap().user_name.unwrap(), name);
+
+    // Test duplicate name
+    let request = SetUserNameRequest {
+        user_id: user_id.clone(),
+        new_name: name.clone(),
+    };
+    let response = set_user_name(request);
+    assert!(response.error.is_some());
+}
+
+#[test]
+fn update_user_avatar_test() {
+    // setup
+    let user_id = "test_user_id".to_string();
+    let avatar = vec![1, 2, 3];
+    let mime_type = "image/png".to_string();
+
+    // act
+    let request = SetUserAvatarRequest {
+        user_id: user_id.clone(),
+        avatar: avatar.clone(),
+        mime_type: mime_type.clone(),
+    };
+
+    set_user_avatar(request);
 
     // assert
     let response = get_user_info(user_id.clone());
     assert_eq!(response.user.clone().unwrap().id, user_id);
     assert_eq!(
-        response.user.clone().unwrap().user_name.unwrap(),
-        "test_user_name"
+        response.user.clone().unwrap().avatar.unwrap().mime_type,
+        mime_type
     );
-    assert_eq!(response.user.clone().unwrap().avatar.unwrap(), avatar);
-    assert_eq!(response.user.clone().unwrap().bio.unwrap(), bio);
+    assert_eq!(response.user.clone().unwrap().avatar.unwrap().data, avatar);
+
+    // Test invalid mime type
+    let request = SetUserAvatarRequest {
+        user_id: user_id.clone(),
+        avatar: avatar.clone(),
+        mime_type: "image/gif".to_string(),
+    };
+    let response = set_user_avatar(request);
+    assert!(response.error.is_some());
 }
 
 #[test]
-fn update_user_name_duplicate_error() {
-    // set up
-    let user_id_1 = "user_1".to_string();
-    let user_id_2 = "user_2".to_string();
-    create_user(user_id_1.clone());
-    create_user(user_id_2.clone());
-
-    let request = SetUserInfoRequest {
-        user_id: user_id_1.clone(),
-        user_name: Some("user_name_1".to_string()),
-        user_avatar: None,
-        user_bio: None,
-    };
-    set_user_info(request);
+fn update_user_bio_test() {
+    // setup
+    let user_id = "test_user_id".to_string();
+    let bio = "test_user_bio".to_string();
 
     // act
-    let request = SetUserInfoRequest {
-        user_id: user_id_2.clone(),
-        user_name: Some("user_name_1".to_string()),
-        user_avatar: None,
-        user_bio: None,
+    let request = SetUserBioRequest {
+        user_id: user_id.clone(),
+        bio: bio.clone(),
     };
-    let response = set_user_info(request);
+    set_user_bio(request);
 
     // assert
-    println!("{:?}", response.user);
-    assert!(response.error.is_some());
+    let response = get_user_info(user_id.clone());
+    assert_eq!(response.user.clone().unwrap().id, user_id);
+    assert_eq!(response.user.clone().unwrap().bio.unwrap(), bio);
 }

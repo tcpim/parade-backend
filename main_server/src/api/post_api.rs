@@ -236,7 +236,7 @@ pub fn get_posts_by_collection(request: GetCollectionPostsRequest) -> GetCollect
 #[query]
 #[candid_method(query)]
 pub fn get_street_post_by_id(post_id: String) -> GetPostByIdResponse {
-    let post = get_post_by_id_from_store(&PostIdString(post_id.clone()));
+    let post = get_post_by_id_from_store(&PostIdString(post_id));
     if post.is_none() {
         GetPostByIdResponse { post: None }
     } else {
