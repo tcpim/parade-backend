@@ -153,16 +153,17 @@ export type ServerError = { 'GetPostError' : string } |
   { 'GetPostRepliesError' : string } |
   { 'DeletePostError' : string } |
   { 'GetPostByUserError' : string };
-export interface SetUserInfoRequest {
-  'user_name' : [] | [string],
-  'user_bio' : [] | [string],
-  'user_avatar' : [] | [Uint8Array | number[]],
+export interface SetUserAvatarRequest {
+  'mime_type' : string,
   'user_id' : string,
+  'avatar' : Uint8Array | number[],
 }
+export interface SetUserBioRequest { 'bio' : string, 'user_id' : string }
 export interface SetUserInfoResponse {
   'user' : User,
   'error' : [] | [ServerError],
 }
+export interface SetUserNameRequest { 'user_id' : string, 'new_name' : string }
 export interface TrendingPostCollectionKey {
   'trending_info' : TrendingPostKey,
   'canister_id' : string,
@@ -182,7 +183,11 @@ export interface User {
   'id' : string,
   'bio' : [] | [string],
   'user_name' : [] | [string],
-  'avatar' : [] | [Uint8Array | number[]],
+  'avatar' : [] | [UserAvatar],
+}
+export interface UserAvatar {
+  'data' : Uint8Array | number[],
+  'mime_type' : string,
 }
 export interface UserPostCreatedTsKey {
   'post_id' : string,
@@ -202,6 +207,7 @@ export interface _SERVICE {
   >,
   'create_user' : ActorMethod<[string], undefined>,
   'delete_all_post' : ActorMethod<[], undefined>,
+  'delete_all_users' : ActorMethod<[], undefined>,
   'delete_post' : ActorMethod<[string], DeletePostResponse>,
   'get_post_replies' : ActorMethod<
     [GetPostRepliesRequest],
@@ -231,7 +237,9 @@ export interface _SERVICE {
   'get_user_info' : ActorMethod<[string], GetUserInfoResponse>,
   'react_emoji' : ActorMethod<[ReactEmojiRequest], DeletePostResponse>,
   'reply_post' : ActorMethod<[ReplyPostRequest], ReplyPostResponse>,
-  'set_user_info' : ActorMethod<[SetUserInfoRequest], SetUserInfoResponse>,
+  'set_user_avatar' : ActorMethod<[SetUserAvatarRequest], SetUserInfoResponse>,
+  'set_user_bio' : ActorMethod<[SetUserBioRequest], SetUserInfoResponse>,
+  'set_user_name' : ActorMethod<[SetUserNameRequest], SetUserInfoResponse>,
   'update_club_post_trending_score' : ActorMethod<
     [UpdateClubPostStreetTrendingScoreRequest],
     undefined
