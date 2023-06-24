@@ -48,9 +48,10 @@ pub fn create_street_post(request: CreateStreetPostRequest) -> CreateStreetPostR
     with_post_by_id_mut(|post_by_id| {
         match post_by_id.get(&post_id) {
             Some(_) => {
-                error = Some(ServerError::CreatePostGeneralError(
-                    "Post already exists".to_string(),
-                ));
+                error = Some(ServerError {
+                    api_name: "create_street_post".to_string(),
+                    error_message: "Post already exists".to_string(),
+                });
             }
             None => {
                 post_by_id.insert(post_id.clone(), post.clone());

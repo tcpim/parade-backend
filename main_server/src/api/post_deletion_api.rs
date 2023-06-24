@@ -13,10 +13,10 @@ pub fn delete_post(post_id: String) -> DeletePostResponse {
         |post_by_id| match post_by_id.remove(&PostIdString(post_id.clone())) {
             Some(_) => DeletePostResponse { error: None },
             None => DeletePostResponse {
-                error: Some(ServerError::DeletePostError(format!(
-                    "Failed to delete post by id: {}",
-                    post_id
-                ))),
+                error: Some(ServerError {
+                    api_name: "delete_post".to_string(),
+                    error_message: format!("Failed to delete post by id: {}", post_id),
+                }),
             },
         },
     )

@@ -44,10 +44,13 @@ pub async fn react_emoji(request: ReactEmojiRequest) -> ReactEmojiResponse {
 
         with_post_by_id_mut(|storage| {
             if storage.get(&post_id_string).is_none() {
-                error = Some(ServerError::ReactEmojiError(format!(
-                    "Should not happen due to post uuid. Failed to find post in POST_BY_ID with post_id: {:?}",
-                    &post_id_string
-                )))
+                error = Some(ServerError {
+                    api_name: "react_emoji".to_string(),
+                    error_message: format!(
+                        "Failed to find post in POST_BY_ID with post_id: {:?}",
+                        &post_id_string
+                    ),
+                })
             }
 
             let post = storage.get(&post_id_string).unwrap();
@@ -97,10 +100,13 @@ pub async fn react_emoji(request: ReactEmojiRequest) -> ReactEmojiResponse {
         let post_reply_id_string = PostReplyIdString(request.reply_id.clone().unwrap());
         with_post_reply_by_id_mut(|post_reply_by_id| {
             if post_reply_by_id.get(&post_reply_id_string).is_none() {
-                error = Some(ServerError::ReactEmojiError(format!(
-                    "Should not happen due to reply uuid. Failed to find post reply in POST_REPLY_BY_ID with post_reply_id: {:?}",
-                    &post_reply_id_string
-                )))
+                error = Some(ServerError {
+                    api_name: "react_emoji".to_string(),
+                    error_message: format!(
+                        "Failed to find post reply in POST_REPLY_BY_ID with post_reply_id: {:?}",
+                        &post_reply_id_string
+                    ),
+                })
             }
 
             // Update post content

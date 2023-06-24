@@ -130,19 +130,7 @@ type ReplyPostRequest = record {
   words : text;
 };
 type ReplyPostResponse = record { error : opt ServerError; reply : PostReply };
-type ServerError = variant {
-  GetPostError : text;
-  GetTrendingPostsError : text;
-  SetUserInfoError : text;
-  ReactEmojiError : text;
-  CreatePostGeneralError : text;
-  GetPostByCollectionError : text;
-  ReplyPostError : text;
-  GetStreetPostsError : text;
-  GetPostRepliesError : text;
-  DeletePostError : text;
-  GetPostByUserError : text;
-};
+type ServerError = record { error_message : text; api_name : text };
 type SetUserAvatarRequest = record {
   mime_type : text;
   user_id : text;

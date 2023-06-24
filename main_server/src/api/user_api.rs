@@ -1,4 +1,4 @@
-use crate::api_interface::common_interface::ServerError::SetUserInfoError;
+use crate::api_interface::common_interface::ServerError;
 use crate::api_interface::user_interface::{
     GetUserInfoResponse, SetUserAvatarRequest, SetUserBioRequest, SetUserInfoResponse,
     SetUserNameRequest,
@@ -62,9 +62,10 @@ pub fn set_user_avatar(request: SetUserAvatarRequest) -> SetUserInfoResponse {
                 avatar: None,
                 bio: None,
             },
-            error: Some(SetUserInfoError(
-                "avatar mime type not supported".to_string(),
-            )),
+            error: Some(ServerError {
+                api_name: "set_user_avatar".to_string(),
+                error_message: "avatar mime type not supported".to_string(),
+            }),
         };
     }
 
@@ -118,7 +119,10 @@ pub fn set_user_name(request: SetUserNameRequest) -> SetUserInfoResponse {
                 avatar: None,
                 bio: None,
             },
-            error: Some(SetUserInfoError("user name cannot be empty".to_string())),
+            error: Some(ServerError {
+                api_name: "set_user_name".to_string(),
+                error_message: "user name cannot be empty".to_string(),
+            }),
         };
     }
 
@@ -133,7 +137,10 @@ pub fn set_user_name(request: SetUserNameRequest) -> SetUserInfoResponse {
         with_user_names_mut(|user_name_map| {
             if user_name_map.contains_key(&UserNameStringKey(new_name.clone())) {
                 println!("user name already exists {:?}", new_name.clone());
-                error = Some(SetUserInfoError("user name already exists".to_string()));
+                error = Some(ServerError {
+                    api_name: "set_user_name".to_string(),
+                    error_message: "user name already exists".to_string(),
+                });
             } else {
                 user_name_map.insert(UserNameStringKey(new_name.clone()), ());
 

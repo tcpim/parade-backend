@@ -3,13 +3,9 @@ use candid::CandidType;
 use serde::Deserialize;
 
 #[derive(Debug, CandidType, Deserialize, PartialEq)]
-pub enum ServerError {
-    CreatePostGeneralError(String),
-    GetPostError(String),
-    DeletePostError(String),
-    ReplyPostError(String),
-    ReactEmojiError(String),
-    GetPostRepliesError(String),
+pub struct ServerError {
+    pub api_name: String,
+    pub error_message: String,
 }
 
 #[derive(Debug, CandidType, Deserialize)]

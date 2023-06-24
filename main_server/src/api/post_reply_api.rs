@@ -36,10 +36,10 @@ pub fn reply_post(request: ReplyPostRequest) -> ReplyPostResponse {
         // Get post
         let post_opt = storage.get(&PostIdString(request.post_id.clone()));
         if post_opt.is_none() {
-            error = Some(ServerError::ReplyPostError(format!(
-                "Should not happen! Failed to find post by id when reply: {}",
-                request.post_id
-            )));
+            error = Some(ServerError {
+                api_name: "reply_post".to_string(),
+                error_message: format!("Failed to find post by id when reply: {}", request.post_id),
+            })
         }
         let post = post_opt.unwrap();
 
@@ -75,10 +75,13 @@ pub fn get_post_replies(request: GetPostRepliesRequest) -> GetPostRepliesRespons
 
     let post = get_post_by_id_from_store(&PostIdString(request.post_id.clone()));
     if post.is_none() {
-        error = Some(ServerError::GetPostRepliesError(format!(
-            "Should not happen Failed to find post in POST_BY_ID with post_id: {:?}",
-            &request.post_id
-        )));
+        error = Some(ServerError {
+            api_name: "get_post_replies".to_string(),
+            error_message: format!(
+                "Failed to find post in POST_BY_ID with post_id: {:?}",
+                &request.post_id
+            ),
+        })
     } else if let Some(post) = post {
         let reply_ids = post.replies;
         let (result_post_replies, next_offset) =

@@ -42,6 +42,11 @@ fn update_user_name_test() {
     };
     let response = set_user_name(request);
     assert!(response.error.is_some());
+    assert!(response
+        .error
+        .unwrap()
+        .error_message
+        .contains("already exists"));
 }
 
 #[test]
@@ -77,6 +82,11 @@ fn update_user_avatar_test() {
     };
     let response = set_user_avatar(request);
     assert!(response.error.is_some());
+    assert!(response
+        .error
+        .unwrap()
+        .error_message
+        .contains("avatar mime type not supported"));
 }
 
 #[test]

@@ -61,9 +61,10 @@ pub async fn create_post(request: CreatePostRequest) -> CreatePostResponse {
     if request.post_id.is_empty() {
         return CreatePostResponse {
             post,
-            error: Some(ServerError::CreatePostGeneralError(
-                "Post id cannot be empty".to_string(),
-            )),
+            error: Some(ServerError {
+                api_name: "create_post".to_string(),
+                error_message: "Post id cannot be empty".to_string(),
+            }),
         };
     }
 
@@ -72,15 +73,17 @@ pub async fn create_post(request: CreatePostRequest) -> CreatePostResponse {
     with_post_by_id_mut(|post_by_id| {
         match post_by_id.get(&post_id) {
             Some(_) => {
-                error = Some(ServerError::CreatePostGeneralError(
-                    "Post already exists".to_string(),
-                ));
+                error = Some(ServerError {
+                    api_name: "create_post".to_string(),
+                    error_message: "Post already exists".to_string(),
+                });
             }
             None => {
                 post_by_id.insert(post_id.clone(), post.clone());
             }
         };
     });
+
     if error.is_some() {
         return CreatePostResponse { post, error };
     }

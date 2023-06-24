@@ -63,13 +63,12 @@ pub fn add_post_reply_to_reply_store(post_reply: PostReply) -> Option<ServerErro
     with_post_reply_by_id_mut(|post_reply_by_id| {
         let reply_opt = post_reply_by_id.get(&post_reply.id);
         if reply_opt.is_some() {
-            return Some(ServerError::ReplyPostError(format!(
-                "Should not happen due to uuid! Post reply id already exists: {:?}",
-                &post_reply.id
-            )));
+            return Some(ServerError {
+                api_name: "reply_post".to_string(),
+                error_message: format!("Post reply id already exists: {:?}", &post_reply.id),
+            });
         }
         post_reply_by_id.insert(post_reply.id.clone(), post_reply);
-
         None
     })
 }
