@@ -37,18 +37,9 @@ export const idlFactory = ({ IDL }) => {
     'replies' : IDL.Vec(IDL.Text),
     'words' : IDL.Text,
   });
-  const ServerError = IDL.Variant({
-    'GetPostError' : IDL.Text,
-    'GetTrendingPostsError' : IDL.Text,
-    'SetUserInfoError' : IDL.Text,
-    'ReactEmojiError' : IDL.Text,
-    'CreatePostGeneralError' : IDL.Text,
-    'GetPostByCollectionError' : IDL.Text,
-    'ReplyPostError' : IDL.Text,
-    'GetStreetPostsError' : IDL.Text,
-    'GetPostRepliesError' : IDL.Text,
-    'DeletePostError' : IDL.Text,
-    'GetPostByUserError' : IDL.Text,
+  const ServerError = IDL.Record({
+    'error_message' : IDL.Text,
+    'api_name' : IDL.Text,
   });
   const CreateStreetPostResponse = IDL.Record({
     'post' : Post,

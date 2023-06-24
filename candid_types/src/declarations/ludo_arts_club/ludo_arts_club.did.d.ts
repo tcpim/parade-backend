@@ -1,6 +1,14 @@
 import type { Principal } from '@dfinity/principal';
 import type { ActorMethod } from '@dfinity/agent';
 
+export interface ChatClubMessage {
+  'id' : string,
+  'updated_ts' : bigint,
+  'emoji_reactions' : Array<[string, number]>,
+  'created_ts' : bigint,
+  'user_id' : string,
+  'words' : string,
+}
 export interface ClubInfo {
   'club_description' : string,
   'club_name' : string,
@@ -23,7 +31,21 @@ export interface CreatePostResponse {
   'post' : Post,
   'error' : [] | [ServerError],
 }
+export interface DeleteClubMessageRequest {
+  'deleter' : string,
+  'deleted_ts' : bigint,
+  'message_id' : string,
+}
 export interface DeletePostResponse { 'error' : [] | [ServerError] }
+export interface GetClubMessagesRequest {
+  'cursor' : [] | [bigint],
+  'limit' : [] | [number],
+}
+export interface GetClubMessagesResponse {
+  'messages' : Array<ChatClubMessage>,
+  'error' : [] | [ServerError],
+  'next_cursor' : [] | [bigint],
+}
 export interface GetCollectionPostsRequest {
   'cursor' : [] | [CollectionPostCreatedTsKey],
   'canister_id' : string,
@@ -104,6 +126,10 @@ export interface PostReply {
   'created_ts' : bigint,
   'words' : string,
 }
+export interface ReactClubMessageRequest {
+  'emoji' : string,
+  'message_id' : string,
+}
 export interface ReactEmojiRequest {
   'post_id' : [] | [string],
   'reply_id' : [] | [string],
@@ -123,12 +149,13 @@ export interface ReplyPostResponse {
   'error' : [] | [ServerError],
   'reply' : PostReply,
 }
-export type ServerError = { 'GetPostError' : string } |
-  { 'ReactEmojiError' : string } |
-  { 'CreatePostGeneralError' : string } |
-  { 'ReplyPostError' : string } |
-  { 'GetPostRepliesError' : string } |
-  { 'DeletePostError' : string };
+export interface SendClubMessageRequest {
+  'created_ts' : bigint,
+  'sender' : string,
+  'words' : string,
+  'message_id' : string,
+}
+export interface ServerError { 'error_message' : string, 'api_name' : string }
 export interface SetClubInfoRequest { 'info' : ClubInfo }
 export interface TrendingPostCollectionKey {
   'trending_info' : TrendingPostKey,
@@ -140,11 +167,27 @@ export interface TrendingPostKey {
   'created_ts' : bigint,
   'trending_score' : number,
 }
+export interface UpdateClubMessageRequest {
+  'updated_ts' : bigint,
+  'updater' : string,
+  'words' : string,
+  'message_id' : string,
+}
 export interface _SERVICE {
   'create_post' : ActorMethod<[CreatePostRequest], CreatePostResponse>,
+  'delete_all_club_message' : ActorMethod<[], undefined>,
   'delete_all_post' : ActorMethod<[], undefined>,
+  'delete_club_message' : ActorMethod<
+    [DeleteClubMessageRequest],
+    [] | [ServerError]
+  >,
   'delete_post' : ActorMethod<[string], DeletePostResponse>,
   'get_club_info' : ActorMethod<[], ClubInfo>,
+  'get_club_message_by_id' : ActorMethod<[string], [] | [ChatClubMessage]>,
+  'get_club_messages' : ActorMethod<
+    [GetClubMessagesRequest],
+    GetClubMessagesResponse
+  >,
   'get_post_by_id' : ActorMethod<[string], GetPostByIdResponse>,
   'get_post_by_ids' : ActorMethod<[Array<string>], GetPostByIdsResponse>,
   'get_post_replies' : ActorMethod<
@@ -164,7 +207,13 @@ export interface _SERVICE {
     [GetTrendingPostRequest],
     GetTrendingPostResponse
   >,
+  'react_club_message' : ActorMethod<[ReactClubMessageRequest], undefined>,
   'react_emoji' : ActorMethod<[ReactEmojiRequest], DeletePostResponse>,
   'reply_post' : ActorMethod<[ReplyPostRequest], ReplyPostResponse>,
+  'send_club_message' : ActorMethod<[SendClubMessageRequest], undefined>,
   'set_club_info' : ActorMethod<[SetClubInfoRequest], undefined>,
+  'update_club_message' : ActorMethod<
+    [UpdateClubMessageRequest],
+    [] | [ServerError]
+  >,
 }

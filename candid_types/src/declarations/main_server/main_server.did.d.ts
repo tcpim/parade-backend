@@ -142,17 +142,7 @@ export interface ReplyPostResponse {
   'error' : [] | [ServerError],
   'reply' : PostReply,
 }
-export type ServerError = { 'GetPostError' : string } |
-  { 'GetTrendingPostsError' : string } |
-  { 'SetUserInfoError' : string } |
-  { 'ReactEmojiError' : string } |
-  { 'CreatePostGeneralError' : string } |
-  { 'GetPostByCollectionError' : string } |
-  { 'ReplyPostError' : string } |
-  { 'GetStreetPostsError' : string } |
-  { 'GetPostRepliesError' : string } |
-  { 'DeletePostError' : string } |
-  { 'GetPostByUserError' : string };
+export interface ServerError { 'error_message' : string, 'api_name' : string }
 export interface SetUserAvatarRequest {
   'mime_type' : string,
   'user_id' : string,
