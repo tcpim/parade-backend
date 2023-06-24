@@ -16,6 +16,7 @@ use crate::api_interface::post_reaction_interface::*;
 use crate::api_interface::post_reply_interface::*;
 use crate::api_interface::post_trending_interface::*;
 use crate::api_interface::posts_interface::*;
+use crate::models::chat_model::*;
 use crate::models::club_model::*;
 candid::export_service!();
 

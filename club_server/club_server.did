@@ -1,3 +1,11 @@
+type ChatClubMessage = record {
+  id : text;
+  updated_ts : nat64;
+  emoji_reactions : vec record { text; nat32 };
+  created_ts : nat64;
+  user_id : text;
+  words : text;
+};
 type ClubInfo = record {
   club_description : text;
   club_name : text;
@@ -17,8 +25,18 @@ type CreatePostRequest = record {
   in_public : bool;
 };
 type CreatePostResponse = record { post : Post; error : opt ServerError };
+type DeleteClubMessageRequest = record {
+  deleter : text;
+  deleted_ts : nat64;
+  message_id : text;
+};
 type DeletePostResponse = record { error : opt ServerError };
-type GetClubMessagesRequest = record { cursor : opt nat32; limit : opt int32 };
+type GetClubMessagesRequest = record { cursor : opt nat64; limit : opt int32 };
+type GetClubMessagesResponse = record {
+  messages : vec ChatClubMessage;
+  error : opt ServerError;
+  next_cursor : opt nat64;
+};
 type GetCollectionPostsRequest = record {
   cursor : opt CollectionPostCreatedTsKey;
   canister_id : text;
@@ -99,7 +117,7 @@ type PostReply = record {
   created_ts : nat64;
   words : text;
 };
-type ReactClubMessage = record { emoji : text; message_id : text };
+type ReactClubMessageRequest = record { emoji : text; message_id : text };
 type ReactEmojiRequest = record {
   post_id : opt text;
   reply_id : opt text;
@@ -116,7 +134,7 @@ type ReplyPostRequest = record {
   words : text;
 };
 type ReplyPostResponse = record { error : opt ServerError; reply : PostReply };
-type SendClubMessage = record {
+type SendClubMessageRequest = record {
   created_ts : nat64;
   sender : text;
   words : text;
@@ -134,7 +152,7 @@ type TrendingPostKey = record {
   created_ts : nat64;
   trending_score : nat32;
 };
-type UpdateClubMessage = record {
+type UpdateClubMessageRequest = record {
   updated_ts : nat64;
   updater : text;
   words : text;
@@ -142,12 +160,15 @@ type UpdateClubMessage = record {
 };
 service : (SetClubInfoRequest) -> {
   create_post : (CreatePostRequest) -> (CreatePostResponse);
-  delete_all_club_message : (SendClubMessage) -> ();
+  delete_all_club_message : () -> ();
   delete_all_post : () -> ();
-  delete_club_message : (SendClubMessage) -> ();
+  delete_club_message : (DeleteClubMessageRequest) -> (opt ServerError);
   delete_post : (text) -> (DeletePostResponse);
   get_club_info : () -> (ClubInfo) query;
-  get_club_messages : (GetClubMessagesRequest) -> () query;
+  get_club_message_by_id : (text) -> (opt ChatClubMessage) query;
+  get_club_messages : (GetClubMessagesRequest) -> (
+      GetClubMessagesResponse,
+    ) query;
   get_post_by_id : (text) -> (GetPostByIdResponse) query;
   get_post_by_ids : (vec text) -> (GetPostByIdsResponse) query;
   get_post_replies : (GetPostRepliesRequest) -> (GetPostRepliesResponse) query;
@@ -161,10 +182,10 @@ service : (SetClubInfoRequest) -> {
   get_trending_posts : (GetTrendingPostRequest) -> (
       GetTrendingPostResponse,
     ) query;
-  react_club_message : (ReactClubMessage) -> ();
+  react_club_message : (ReactClubMessageRequest) -> ();
   react_emoji : (ReactEmojiRequest) -> (DeletePostResponse);
   reply_post : (ReplyPostRequest) -> (ReplyPostResponse);
-  send_club_message : (SendClubMessage) -> ();
+  send_club_message : (SendClubMessageRequest) -> ();
   set_club_info : (SetClubInfoRequest) -> ();
-  update_club_message : (UpdateClubMessage) -> (opt ServerError);
+  update_club_message : (UpdateClubMessageRequest) -> (opt ServerError);
 }

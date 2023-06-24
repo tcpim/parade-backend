@@ -1,4 +1,4 @@
-pub mod chat;
+pub mod chat_api;
 pub mod club_api;
 mod constants;
 mod helpers_api;
