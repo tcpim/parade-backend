@@ -1,3 +1,4 @@
+use crate::models::chat_model::{ChatClubMessage, ChatClubMessageIdString};
 use crate::models::club_model::ClubInfo;
 use crate::models::post_collection_model::CollectionPostCreatedTsKey;
 use crate::models::post_model::{
@@ -6,7 +7,7 @@ use crate::models::post_model::{
 use crate::models::trending_post_collection_model::TrendingPostCollectionKey;
 use crate::models::trending_post_model::TrendingPostKey;
 use ic_stable_structures::memory_manager::{MemoryId, MemoryManager, VirtualMemory};
-use ic_stable_structures::{DefaultMemoryImpl, StableBTreeMap, StableCell};
+use ic_stable_structures::{DefaultMemoryImpl, StableBTreeMap, StableCell, StableVec};
 use std::cell::RefCell;
 
 type Memory = VirtualMemory<DefaultMemoryImpl>;
@@ -17,6 +18,8 @@ pub type CollectionPostsCreatedHeap = StableBTreeMap<CollectionPostCreatedTsKey,
 pub type TrendingPostClubHeap = StableBTreeMap<TrendingPostKey, (), Memory>;
 pub type TrendingPostCollectionHeap = StableBTreeMap<TrendingPostCollectionKey, (), Memory>;
 pub type ClubInfoCell = StableCell<ClubInfo, Memory>;
+pub type ChatClubMessageById = StableBTreeMap<ChatClubMessageIdString, ChatClubMessage, Memory>;
+pub type ChatClubMessagesVec = StableVec<ChatClubMessageIdString, Memory>;
 
 pub const POST_BY_ID_MEMORY_ID: MemoryId = MemoryId::new(0);
 pub const POST_REPLIES_MEMORY_ID: MemoryId = MemoryId::new(1);
@@ -25,6 +28,8 @@ pub const COLLECTION_POSTS_CREATED_MEMORY_ID: MemoryId = MemoryId::new(3);
 pub const TRENDING_POST_MEMORY_ID: MemoryId = MemoryId::new(4);
 pub const TRENDING_POST_COLLECTION_MEMORY_ID: MemoryId = MemoryId::new(5);
 pub const CLUB_INFO_MEMORY_ID: MemoryId = MemoryId::new(6);
+pub const CHAT_MESSAGE_BY_ID_MEMORY_ID: MemoryId = MemoryId::new(7);
+pub const CHAT_MESSAGES_VEC_MEMORY_ID: MemoryId = MemoryId::new(8);
 
 thread_local! {
     // initiate a memory manager
@@ -43,6 +48,9 @@ thread_local! {
             )
         );
 
+    /**
+    Key Value store. Usually key is ID
+    */
     pub static POST_BY_ID: RefCell<StableBTreeMap<PostIdString, Post, Memory>> =
         MEMORY_MANAGER.with(|memory_manager|
             RefCell::new(
@@ -61,9 +69,20 @@ thread_local! {
             )
         );
 
-    // Indexes
-    // Usually store one to many relation in a BTreeMap with composite key
+    pub static CHAT_CLUB_MESSAGE_BY_ID: RefCell<StableBTreeMap<ChatClubMessageIdString, ChatClubMessage, Memory>> =
+        MEMORY_MANAGER.with(|memory_manager|
+            RefCell::new(
+                StableBTreeMap::init(
+                    memory_manager.borrow().get(CHAT_MESSAGE_BY_ID_MEMORY_ID)
+                )
+            )
+        );
 
+
+    /**
+    Indexes
+    Usually store one to many relation in a BTreeMap with composite key
+    */
     // Store all posts for this club
     pub static CLUB_POSTS_CREATED: RefCell<StableBTreeMap<PostCreatedTsKey, (), Memory>> =
         MEMORY_MANAGER.with(|memory_manager|
@@ -103,6 +122,15 @@ thread_local! {
                 StableBTreeMap::init(
                     memory_manager.borrow().get(TRENDING_POST_COLLECTION_MEMORY_ID)
                 )
+            )
+        );
+
+    pub static CHAT_CLUB_MESSAGES: RefCell<StableVec<ChatClubMessageIdString, Memory>> =
+        MEMORY_MANAGER.with(|memory_manager|
+            RefCell::new(
+                StableVec::init(
+                    memory_manager.borrow().get(CHAT_MESSAGES_VEC_MEMORY_ID)
+                ).expect("Failed to init CHAT_MESSAGES")
             )
         );
 }

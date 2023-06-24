@@ -9,6 +9,7 @@ mod tests;
 // Below code is to generate candid file
 // ######################
 // Don't remove following imports!! Needed by candid::export_service
+use crate::api_interface::chat_interface::*;
 use crate::api_interface::club_interface::*;
 use crate::api_interface::common_interface::*;
 use crate::api_interface::post_reaction_interface::*;

@@ -1,3 +1,4 @@
+pub mod chat;
 pub mod club_api;
 mod constants;
 mod helpers_api;

@@ -59,3 +59,19 @@ pub fn with_club_info<R>(f: impl FnOnce(&ClubInfoCell) -> R) -> R {
 pub fn with_club_info_mut<R>(f: impl FnOnce(&mut ClubInfoCell) -> R) -> R {
     CLUB_INFO.with(|s| f(&mut s.borrow_mut()))
 }
+
+pub fn with_chat_club_message_by_id<R>(f: impl FnOnce(&ChatClubMessageById) -> R) -> R {
+    CHAT_CLUB_MESSAGE_BY_ID.with(|s| f(&s.borrow()))
+}
+
+pub fn with_chat_club_message_by_id_mut<R>(f: impl FnOnce(&mut ChatClubMessageById) -> R) -> R {
+    CHAT_CLUB_MESSAGE_BY_ID.with(|s| f(&mut s.borrow_mut()))
+}
+
+pub fn with_chat_club_messages_vec<R>(f: impl FnOnce(&ChatClubMessagesVec) -> R) -> R {
+    CHAT_CLUB_MESSAGES.with(|s| f(&s.borrow()))
+}
+
+pub fn with_chat_club_messages_vec_mut<R>(f: impl FnOnce(&mut ChatClubMessagesVec) -> R) -> R {
+    CHAT_CLUB_MESSAGES.with(|s| f(&mut s.borrow_mut()))
+}
