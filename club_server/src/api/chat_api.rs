@@ -137,15 +137,11 @@ pub fn get_club_messages(request: GetClubMessagesRequest) -> GetClubMessagesResp
                 };
             }
         }
-        let mut left = right - DEFAULT_CHAT_PAGE_SIZE as i64 + 1;
-        if request.limit.is_some() {
-            left = right - request.limit.unwrap() as i64 + 1;
-            if left < 0 {
-                left = 0;
-            }
-        }
 
-        // right = len - cursor= left
+        let mut left = 0.max(right - DEFAULT_CHAT_PAGE_SIZE as i64 + 1);
+        if request.limit.is_some() {
+            left = 0.max(right - request.limit.unwrap() as i64 + 1);
+        }
 
         for i in (left..=right).rev() {
             res.push(vec.get(i as u64).unwrap());
