@@ -60,8 +60,11 @@ fn get_trending_collection_posts_pagination() {
         token_index: 1,
         token_id: "".to_string(),
         collection_name: "".to_string(),
-        original_image_url: "".to_string(),
-        original_thumbnail_url: "".to_string(),
+        image_url: "".to_string(),
+        image_onchain_url: "".to_string(),
+        image_height_width_ratio: "".to_string(),
+        image_type: "".to_string(),
+        image_thumbnail_url: "".to_string(),
     }];
     let create_post_request_1 =
         generate_create_post_request(0, "hi_1".to_string(), "tim".to_string(), nfts.clone());

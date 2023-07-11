@@ -88,12 +88,15 @@ type GetTrendingPostResponse = record {
   posts : vec Post;
 };
 type NftToken = record {
+  image_height_width_ratio : text;
   token_index : nat16;
   token_id : text;
+  image_url : text;
+  image_thumbnail_url : text;
   canister_id : text;
   collection_name : text;
-  original_image_url : text;
-  original_thumbnail_url : text;
+  image_type : text;
+  image_onchain_url : text;
 };
 type Post = record {
   id : text;
