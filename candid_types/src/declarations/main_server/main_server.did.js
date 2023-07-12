@@ -2,10 +2,10 @@ export const idlFactory = ({ IDL }) => {
   const NftToken = IDL.Record({
     'token_index' : IDL.Nat16,
     'token_id' : IDL.Text,
+    'image_url' : IDL.Text,
+    'image_thumbnail_url' : IDL.Text,
     'canister_id' : IDL.Text,
     'collection_name' : IDL.Text,
-    'original_image_url' : IDL.Text,
-    'original_thumbnail_url' : IDL.Text,
   });
   const AddClubPostToStreetRequest = IDL.Record({
     'post_id' : IDL.Text,

@@ -106,6 +106,7 @@ export interface NftToken {
   'collection_name' : string,
   'image_type' : string,
   'image_onchain_url' : string,
+  'club_id' : string,
 }
 export interface Post {
   'id' : string,

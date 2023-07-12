@@ -90,10 +90,10 @@ export interface GetUserPostsResponse {
 export interface NftToken {
   'token_index' : number,
   'token_id' : string,
+  'image_url' : string,
+  'image_thumbnail_url' : string,
   'canister_id' : string,
   'collection_name' : string,
-  'original_image_url' : string,
-  'original_thumbnail_url' : string,
 }
 export interface Post {
   'id' : string,

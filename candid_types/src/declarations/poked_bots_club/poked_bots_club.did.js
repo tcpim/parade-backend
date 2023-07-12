@@ -15,6 +15,7 @@ export const idlFactory = ({ IDL }) => {
     'collection_name' : IDL.Text,
     'image_type' : IDL.Text,
     'image_onchain_url' : IDL.Text,
+    'club_id' : IDL.Text,
   });
   const CreatePostRequest = IDL.Record({
     'post_id' : IDL.Text,
