@@ -6,12 +6,15 @@ export const idlFactory = ({ IDL }) => {
   });
   const SetClubInfoRequest = IDL.Record({ 'info' : ClubInfo });
   const NftToken = IDL.Record({
+    'image_height_width_ratio' : IDL.Text,
     'token_index' : IDL.Nat16,
     'token_id' : IDL.Text,
+    'image_url' : IDL.Text,
+    'image_thumbnail_url' : IDL.Text,
     'canister_id' : IDL.Text,
     'collection_name' : IDL.Text,
-    'original_image_url' : IDL.Text,
-    'original_thumbnail_url' : IDL.Text,
+    'image_type' : IDL.Text,
+    'image_onchain_url' : IDL.Text,
   });
   const CreatePostRequest = IDL.Record({
     'post_id' : IDL.Text,
