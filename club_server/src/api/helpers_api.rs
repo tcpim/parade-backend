@@ -156,8 +156,8 @@ pub fn convert_to_main_server_nfttoken(
             token_index: x.token_index,
             token_id: x.token_id,
             collection_name: x.collection_name,
-            original_image_url: x.image_url,
-            original_thumbnail_url: x.image_thumbnail_url,
+            image_url: x.image_url,
+            image_thumbnail_url: x.image_thumbnail_url,
         })
         .collect()
 }

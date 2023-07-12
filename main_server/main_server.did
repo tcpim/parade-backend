@@ -84,10 +84,10 @@ type GetUserPostsResponse = record {
 type NftToken = record {
   token_index : nat16;
   token_id : text;
+  image_url : text;
+  image_thumbnail_url : text;
   canister_id : text;
   collection_name : text;
-  original_image_url : text;
-  original_thumbnail_url : text;
 };
 type Post = record {
   id : text;

@@ -119,8 +119,8 @@ fn create_and_get_posts_by_collection_pagination() {
         token_index: 0,
         token_id: "token_1".to_string(),
         collection_name: "collection_1".to_string(),
-        original_image_url: "".to_string(),
-        original_thumbnail_url: "".to_string(),
+        image_url: "".to_string(),
+        image_thumbnail_url: "".to_string(),
     }];
     let create_post_request_1 =
         generate_create_post_request(0, "hi_1".to_string(), "tim".to_string(), nft_1.clone());
