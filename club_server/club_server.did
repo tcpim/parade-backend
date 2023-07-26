@@ -97,6 +97,7 @@ type NftToken = record {
   collection_name : text;
   image_type : text;
   image_onchain_url : text;
+  club_id : text;
 };
 type Post = record {
   id : text;

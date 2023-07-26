@@ -19,7 +19,7 @@ pub struct ChatClubMessageIdString(pub String);
 // ######################
 // Traits implementations for stable structures
 // ######################
-const MAX_CHAT_MESSAGE_SIZE: u32 = 1000; // 1KB
+const MAX_CHAT_MESSAGE_SIZE: u32 = 50000; // 50KB
 const MAX_CHAT_MESSAGE_ID_STRING_KEY_SIZE: u32 = 100; // 100Bytes, usually uuid
 
 impl BoundedStorable for ChatClubMessage {

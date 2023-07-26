@@ -65,6 +65,7 @@ fn get_trending_collection_posts_pagination() {
         image_height_width_ratio: "".to_string(),
         image_type: "".to_string(),
         image_thumbnail_url: "".to_string(),
+        club_id: "".to_string(),
     }];
     let create_post_request_1 =
         generate_create_post_request(0, "hi_1".to_string(), "tim".to_string(), nfts.clone());

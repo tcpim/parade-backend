@@ -12,4 +12,5 @@ pub struct NftToken {
     pub image_height_width_ratio: String,
     pub image_type: String,
     pub image_thumbnail_url: String,
+    pub club_id: String,
 }
