@@ -25,7 +25,7 @@ pub struct UserNameStringKey(pub String);
 // ######################
 // Traits implementations for stable structures
 // ######################
-const MAX_USER_SIZE: u32 = 500 * 1000; // 500KB: 200KB for user avatar
+const MAX_USER_SIZE: u32 = 110 * 1000; // 110KB: 100KB for user avatar
 const MAX_USER_PRINCIPAL_STRING_KEY_SIZE: u32 = 150;
 const MAX_USER_NAME_STRING_KEY: u32 = 100;
 

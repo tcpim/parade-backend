@@ -73,7 +73,7 @@ impl HasPostId for PostCreatedTsKey {
 // Traits implementations for stable structures
 // ######################
 const MAX_POST_SIZE: u32 = 50000; // 50KB
-const MAX_POST_REPLY_SIZE: u32 = 5000; // 2KB
+const MAX_POST_REPLY_SIZE: u32 = 5000; // 5KB
 const MAX_POST_ID_STRING_KEY_SIZE: u32 = 50; // 100Bytes, usually uuid
 const MAX_POST_CREATED_TS_SIZE: u32 = 100; // 50B for post id and 50B for timestamp
 

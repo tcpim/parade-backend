@@ -12,7 +12,7 @@ pub struct ClubInfo {
 // ######################
 // Traits implementations for stable structures
 // ######################
-const MAX_CLUB_INFO_SIZE: u32 = 500; //
+const MAX_CLUB_INFO_SIZE: u32 = 500; //500 bytes
 
 impl BoundedStorable for ClubInfo {
     const MAX_SIZE: u32 = MAX_CLUB_INFO_SIZE;

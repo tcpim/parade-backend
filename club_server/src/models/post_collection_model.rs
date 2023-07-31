@@ -43,7 +43,7 @@ impl HasPostId for CollectionPostCreatedTsKey {
 // ######################
 // Traits implementations for stable structures
 // ######################
-const MAX_CLUB_COLLECTION_CREATED_TS_SIZE: u32 = 150; // 50B for post id and 50B for timestamp and 50B for canister id
+const MAX_CLUB_COLLECTION_CREATED_TS_SIZE: u32 = 200; // 200 Bytes
 
 impl Storable for CollectionPostCreatedTsKey {
     fn to_bytes(&self) -> std::borrow::Cow<[u8]> {

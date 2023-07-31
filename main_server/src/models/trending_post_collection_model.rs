@@ -47,12 +47,7 @@ impl HasClubId for TrendingPostCollectionKey {
 // ######################
 // Traits implementations for stable structures
 // ######################
-// 50B canister id
-// 50B post id
-// 4B trending score
-// 8B created_ts
-// 8B updated_ts
-// 120B total
+
 const MAX_TRENDING_POST_COLLECTION_KEY_SIZE: u32 = 500;
 
 impl Storable for TrendingPostCollectionKey {
