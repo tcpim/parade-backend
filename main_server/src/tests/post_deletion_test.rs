@@ -48,7 +48,7 @@ fn create_and_delete_posts() {
     assert_eq!(get_street_posts_response.posts.len(), 2);
     assert_eq!(get_street_posts_response.next_cursor, Cursor(None));
 
-    delete_all_post();
+    dlp();
 
     let request = GetStreetPostsRequest {
         limit: None,

@@ -32,15 +32,6 @@ pub struct CreateStreetPostResponse {
 }
 
 #[derive(Debug, CandidType, Deserialize)]
-pub struct AddClubPostToStreetRequest {
-    pub post_id: String,
-    pub club_id: String,
-    pub nfts: Vec<NftToken>,
-    pub created_ts: u64,
-    pub created_by: String,
-}
-
-#[derive(Debug, CandidType, Deserialize)]
 pub struct GetStreetPostsRequest {
     pub limit: Option<i32>,
     pub cursor: Cursor<PostCreatedTsKey>,
@@ -83,10 +74,5 @@ pub struct GetCollectionPostsRequest {
 pub struct GetCollectionPostsResponse {
     pub posts: Vec<PostType>,
     pub next_cursor: Cursor<CollectionPostCreatedTsKey>,
-    pub error: Option<ServerError>,
-}
-
-#[derive(Debug, CandidType, Deserialize)]
-pub struct DeletePostResponse {
     pub error: Option<ServerError>,
 }

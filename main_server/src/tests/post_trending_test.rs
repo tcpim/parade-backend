@@ -1,18 +1,18 @@
 use super::helpers::*;
+use crate::api::inter_canister_apis::{add_club_post_to_street, update_club_post_trending_score};
 use crate::api::post_api::*;
 use crate::api::post_reaction_api::react_emoji;
 use crate::api::post_reply_api::reply_post;
-use crate::api::post_trending_api::{
-    get_trending_collection_posts, get_trending_street_posts, update_club_post_trending_score,
-};
+use crate::api::post_trending_api::{get_trending_collection_posts, get_trending_street_posts};
 use crate::api_interface::common_interface::Cursor;
+use crate::api_interface::inter_canister_interface::{
+    AddClubPostToStreetRequest, UpdateClubPostStreetTrendingScoreRequest,
+};
 use crate::api_interface::post_reaction_interface::ReactEmojiRequest;
 use crate::api_interface::post_reply_interface::ReplyPostRequest;
 use crate::api_interface::post_trending_interface::{
     GetTrendingCollectionPostRequest, GetTrendingStreetPostRequest,
-    UpdateClubPostStreetTrendingScoreRequest,
 };
-use crate::api_interface::posts_interface::AddClubPostToStreetRequest;
 use crate::models::nft_model::NftToken;
 use crate::models::post_model::{Post, PostIdString, PostReplyIdString};
 use crate::models::trending_post_model::TrendingPostKey;
@@ -124,6 +124,7 @@ fn update_club_post_street_trending_score() {
         nfts: nfts.clone(),
         created_ts: 1,
         created_by: "tim".to_string(),
+        caller: "caller".to_string(),
     };
     let request_2 = AddClubPostToStreetRequest {
         post_id: "2".to_string(),
@@ -131,6 +132,7 @@ fn update_club_post_street_trending_score() {
         nfts: nfts.clone(),
         created_ts: 2,
         created_by: "tim".to_string(),
+        caller: "caller".to_string(),
     };
     add_club_post_to_street(request_1);
     add_club_post_to_street(request_2);
@@ -156,6 +158,7 @@ fn update_club_post_street_trending_score() {
             club_id: Some("club_1".to_string()),
         },
         nft_canister_ids: vec!["canister_1".to_string()],
+        caller: "caller".to_string(),
     });
     let street_response_after = get_trending_street_posts(GetTrendingStreetPostRequest {
         limit: None,

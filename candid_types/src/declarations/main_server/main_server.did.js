@@ -12,13 +12,22 @@ export const idlFactory = ({ IDL }) => {
     'nfts' : IDL.Vec(NftToken),
     'created_by' : IDL.Text,
     'created_ts' : IDL.Nat64,
+    'caller' : IDL.Text,
     'club_id' : IDL.Text,
+  });
+  const ServerError = IDL.Record({
+    'error_message' : IDL.Text,
+    'api_name' : IDL.Text,
   });
   const UserPostCreatedTsKey = IDL.Record({
     'post_id' : IDL.Text,
     'created_ts' : IDL.Nat64,
     'user_id' : IDL.Text,
     'club_id' : IDL.Opt(IDL.Text),
+  });
+  const AddClubPostToUserRequest = IDL.Record({
+    'user_post_created_key' : UserPostCreatedTsKey,
+    'caller' : IDL.Text,
   });
   const CreateStreetPostRequest = IDL.Record({
     'post_id' : IDL.Text,
@@ -37,15 +46,10 @@ export const idlFactory = ({ IDL }) => {
     'replies' : IDL.Vec(IDL.Text),
     'words' : IDL.Text,
   });
-  const ServerError = IDL.Record({
-    'error_message' : IDL.Text,
-    'api_name' : IDL.Text,
-  });
   const CreateStreetPostResponse = IDL.Record({
     'post' : Post,
     'error' : IDL.Opt(ServerError),
   });
-  const DeletePostResponse = IDL.Record({ 'error' : IDL.Opt(ServerError) });
   const GetPostRepliesRequest = IDL.Record({
     'post_id' : IDL.Text,
     'offset' : IDL.Int32,
@@ -159,6 +163,7 @@ export const idlFactory = ({ IDL }) => {
     'created_ts' : IDL.Nat64,
     'emoji' : IDL.Text,
   });
+  const ReactEmojiResponse = IDL.Record({ 'error' : IDL.Opt(ServerError) });
   const ReplyPostRequest = IDL.Record({
     'post_id' : IDL.Text,
     'reply_id' : IDL.Text,
@@ -191,19 +196,28 @@ export const idlFactory = ({ IDL }) => {
   const UpdateClubPostStreetTrendingScoreRequest = IDL.Record({
     'new' : TrendingPostKey,
     'nft_canister_ids' : IDL.Vec(IDL.Text),
+    'caller' : IDL.Text,
   });
   return IDL.Service({
-    'add_club_post_to_street' : IDL.Func([AddClubPostToStreetRequest], [], []),
-    'add_club_post_to_user' : IDL.Func([UserPostCreatedTsKey], [], []),
+    'add_club_post_to_street' : IDL.Func(
+        [AddClubPostToStreetRequest],
+        [IDL.Opt(ServerError)],
+        [],
+      ),
+    'add_club_post_to_user' : IDL.Func(
+        [AddClubPostToUserRequest],
+        [IDL.Opt(ServerError)],
+        [],
+      ),
     'create_street_post' : IDL.Func(
         [CreateStreetPostRequest],
         [CreateStreetPostResponse],
         [],
       ),
-    'create_user' : IDL.Func([IDL.Text], [], []),
-    'delete_all_post' : IDL.Func([], [], []),
-    'delete_all_users' : IDL.Func([], [], []),
-    'delete_post' : IDL.Func([IDL.Text], [DeletePostResponse], []),
+    'create_user' : IDL.Func([IDL.Text], [IDL.Opt(ServerError)], []),
+    'delete_all_users' : IDL.Func([], [IDL.Opt(ServerError)], []),
+    'delete_post' : IDL.Func([IDL.Text], [IDL.Opt(ServerError)], []),
+    'dlp' : IDL.Func([], [IDL.Opt(ServerError)], []),
     'get_post_replies' : IDL.Func(
         [GetPostRepliesRequest],
         [GetPostRepliesResponse],
@@ -240,7 +254,7 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'get_user_info' : IDL.Func([IDL.Text], [GetUserInfoResponse], ['query']),
-    'react_emoji' : IDL.Func([ReactEmojiRequest], [DeletePostResponse], []),
+    'react_emoji' : IDL.Func([ReactEmojiRequest], [ReactEmojiResponse], []),
     'reply_post' : IDL.Func([ReplyPostRequest], [ReplyPostResponse], []),
     'set_user_avatar' : IDL.Func(
         [SetUserAvatarRequest],

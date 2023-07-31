@@ -43,7 +43,7 @@ pub trait HasPostId {
 // ######################
 const MAX_POST_SIZE: u32 = 50000; // 50KB
 const MAX_POST_REPLY_SIZE: u32 = 5000; // 5KB
-const MAX_POST_ID_STRING_KEY_SIZE: u32 = 50; // 100Bytes, usually uuid
+const MAX_POST_ID_STRING_KEY_SIZE: u32 = 50; // 50Bytes, usually uuid
 
 impl Storable for Post {
     fn to_bytes(&self) -> std::borrow::Cow<[u8]> {

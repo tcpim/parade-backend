@@ -1,5 +1,6 @@
 mod constants;
 mod helpers_api;
+pub mod inter_canister_apis;
 pub mod post_api;
 pub mod post_deletion_api;
 pub mod post_reaction_api;

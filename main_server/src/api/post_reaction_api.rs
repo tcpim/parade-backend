@@ -1,4 +1,5 @@
 use crate::api::helpers_api;
+use crate::api::helpers_api::is_caller_authorized;
 use crate::stable_structure::access_helper::*;
 use candid::candid_method;
 use ic_cdk_macros::update;
@@ -10,6 +11,15 @@ use crate::models::post_model::*;
 #[update]
 #[candid_method(update)]
 pub fn react_emoji(request: ReactEmojiRequest) -> ReactEmojiResponse {
+    if !is_caller_authorized() {
+        return ReactEmojiResponse {
+            error: Some(ServerError {
+                api_name: "react_emoji".to_string(),
+                error_message: "caller not authorized".to_string(),
+            }),
+        };
+    }
+
     let mut error = None;
 
     // This reaction is for a post

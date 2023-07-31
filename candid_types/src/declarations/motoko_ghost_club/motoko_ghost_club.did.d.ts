@@ -36,7 +36,6 @@ export interface DeleteClubMessageRequest {
   'deleted_ts' : bigint,
   'message_id' : string,
 }
-export interface DeletePostResponse { 'error' : [] | [ServerError] }
 export interface GetClubMessagesRequest {
   'cursor' : [] | [bigint],
   'limit' : [] | [number],
@@ -141,6 +140,7 @@ export interface ReactEmojiRequest {
   'created_ts' : bigint,
   'emoji' : string,
 }
+export interface ReactEmojiResponse { 'error' : [] | [ServerError] }
 export interface ReplyPostRequest {
   'post_id' : string,
   'reply_id' : string,
@@ -179,13 +179,13 @@ export interface UpdateClubMessageRequest {
 }
 export interface _SERVICE {
   'create_post' : ActorMethod<[CreatePostRequest], CreatePostResponse>,
-  'delete_all_club_message' : ActorMethod<[], undefined>,
-  'delete_all_post' : ActorMethod<[], undefined>,
   'delete_club_message' : ActorMethod<
     [DeleteClubMessageRequest],
     [] | [ServerError]
   >,
-  'delete_post' : ActorMethod<[string], DeletePostResponse>,
+  'delete_post' : ActorMethod<[string], [] | [ServerError]>,
+  'dlcm' : ActorMethod<[], [] | [ServerError]>,
+  'dlp' : ActorMethod<[], [] | [ServerError]>,
   'get_club_info' : ActorMethod<[], ClubInfo>,
   'get_club_message_by_id' : ActorMethod<[string], [] | [ChatClubMessage]>,
   'get_club_messages' : ActorMethod<
@@ -211,11 +211,17 @@ export interface _SERVICE {
     [GetTrendingPostRequest],
     GetTrendingPostResponse
   >,
-  'react_club_message' : ActorMethod<[ReactClubMessageRequest], undefined>,
-  'react_emoji' : ActorMethod<[ReactEmojiRequest], DeletePostResponse>,
+  'react_club_message' : ActorMethod<
+    [ReactClubMessageRequest],
+    [] | [ServerError]
+  >,
+  'react_emoji' : ActorMethod<[ReactEmojiRequest], ReactEmojiResponse>,
   'reply_post' : ActorMethod<[ReplyPostRequest], ReplyPostResponse>,
-  'send_club_message' : ActorMethod<[SendClubMessageRequest], undefined>,
-  'set_club_info' : ActorMethod<[SetClubInfoRequest], undefined>,
+  'send_club_message' : ActorMethod<
+    [SendClubMessageRequest],
+    [] | [ServerError]
+  >,
+  'set_club_info' : ActorMethod<[SetClubInfoRequest], [] | [ServerError]>,
   'update_club_message' : ActorMethod<
     [UpdateClubMessageRequest],
     [] | [ServerError]

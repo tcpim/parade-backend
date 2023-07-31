@@ -48,11 +48,6 @@ pub struct GetCollectionPostsResponse {
 }
 
 #[derive(Debug, CandidType, Deserialize)]
-pub struct DeletePostResponse {
-    pub error: Option<ServerError>,
-}
-
-#[derive(Debug, CandidType, Deserialize)]
 pub struct GetPostsRequest {
     pub cursor: Cursor<PostCreatedTsKey>,
     pub limit: Option<i32>,

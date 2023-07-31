@@ -62,7 +62,7 @@ impl HasPostId for TrendingPostKey {
 // Traits implementations for stable structures
 // ######################
 // 50Bytes for post id, 4 bytes for trending score, 16 bytes for created_ts, 16 bytes for updated_ts
-const MAX_TRENDING_POST_KEY_SIZE: u32 = 150;
+const MAX_TRENDING_POST_KEY_SIZE: u32 = 500;
 
 impl Storable for TrendingPostKey {
     fn to_bytes(&self) -> std::borrow::Cow<[u8]> {

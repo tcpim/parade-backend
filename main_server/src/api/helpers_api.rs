@@ -1,4 +1,4 @@
-use crate::api::constants::DEFAULT_PAGE_SIZE;
+use crate::api::constants::{DEFAULT_PAGE_SIZE, FRONTEND_CANISTER_ID};
 use crate::api_interface::common_interface::*;
 use crate::api_interface::posts_interface::PostType;
 use crate::models::post_club_model::{ClubPost, HasClubId};
@@ -8,6 +8,7 @@ use crate::models::trending_post_model::TrendingPostKey;
 use crate::stable_structure::access_helper::*;
 use ic_stable_structures::memory_manager::VirtualMemory;
 use ic_stable_structures::{BoundedStorable, DefaultMemoryImpl, StableBTreeMap};
+use std::panic;
 
 /**
 Given a btree and a start key, return a page of posts with max len = limit and the next cursor
@@ -188,4 +189,41 @@ pub fn update_trending_club_post_indexes(new_key: &TrendingPostKey, nft_canister
             );
         })
     }
+}
+
+// If false, then this is used by unit test
+pub fn is_within_canister() -> bool {
+    let result = panic::catch_unwind(|| {
+        // If panic, then it is run by unit test (not within canister)
+        println!("Current canister ID is : {}", ic_cdk::api::caller());
+    });
+
+    result.is_ok()
+}
+
+pub fn is_caller_authorized() -> bool {
+    if is_within_canister() {
+        let caller = ic_cdk::api::caller().to_string();
+        if caller.eq(FRONTEND_CANISTER_ID) {
+            return true;
+        }
+    }
+
+    // ATTENTION!!!
+    // Change to return false when in production
+    // TODO: see if there is a better way to check local running canister and return true if it is local running canister
+    return true;
+}
+
+// Reason for this is because the inter canister call destination canister cannot use ic_cdk::api::caller()
+// See https://forum.dfinity.org/t/canister-violated-contract-ic0-msg-caller-size-cannot-be-executed-in-reply-callback-mode/7890
+pub fn is_inter_canister_caller_authorized(caller: String) -> bool {
+    if caller.eq(FRONTEND_CANISTER_ID) {
+        return true;
+    }
+
+    // ATTENTION!!!
+    // Change to return false when in production
+    // TODO: see if there is a better way to check local running canister and return true if it is local running canister
+    return true;
 }

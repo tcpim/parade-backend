@@ -1,4 +1,5 @@
 use crate::api::constants::DEFAULT_CHAT_PAGE_SIZE;
+use crate::api::helpers_api::is_caller_authorized;
 use crate::api_interface::chat_interface::{
     DeleteClubMessageRequest, GetClubMessagesRequest, GetClubMessagesResponse,
     ReactClubMessageRequest, SendClubMessageRequest, UpdateClubMessageRequest,
@@ -13,7 +14,14 @@ use crate::stable_structure::access_helper::*;
 
 #[update]
 #[candid_method(update)]
-pub fn send_club_message(request: SendClubMessageRequest) {
+pub fn send_club_message(request: SendClubMessageRequest) -> Option<ServerError> {
+    if !is_caller_authorized() {
+        return Some(ServerError {
+            api_name: "send_club_message".to_string(),
+            error_message: "caller not authorized".to_string(),
+        });
+    }
+
     let message = ChatClubMessage {
         id: ChatClubMessageIdString(request.message_id),
         user_id: request.sender,
@@ -31,11 +39,20 @@ pub fn send_club_message(request: SendClubMessageRequest) {
         vec.push(&message.id.clone())
             .expect("Failed to add new club message");
     });
+
+    None
 }
 
 #[update]
 #[candid_method(update)]
 pub fn update_club_message(request: UpdateClubMessageRequest) -> Option<ServerError> {
+    if !is_caller_authorized() {
+        return Some(ServerError {
+            api_name: "update_club_message".to_string(),
+            error_message: "caller not authorized".to_string(),
+        });
+    }
+
     let mut error = None;
     with_chat_club_message_by_id_mut(|map| {
         if let Some(message) = map.get(&ChatClubMessageIdString(request.message_id.clone())) {
@@ -61,6 +78,13 @@ pub fn update_club_message(request: UpdateClubMessageRequest) -> Option<ServerEr
 #[update]
 #[candid_method(update)]
 pub fn delete_club_message(request: DeleteClubMessageRequest) -> Option<ServerError> {
+    if !is_caller_authorized() {
+        return Some(ServerError {
+            api_name: "delete_club_message".to_string(),
+            error_message: "caller not authorized".to_string(),
+        });
+    }
+
     with_chat_club_message_by_id_mut(|map| {
         if let Some(message) = map.get(&ChatClubMessageIdString(request.message_id.clone())) {
             if message.user_id != request.deleter {
@@ -78,7 +102,15 @@ pub fn delete_club_message(request: DeleteClubMessageRequest) -> Option<ServerEr
 
 #[update]
 #[candid_method(update)]
-pub fn delete_all_club_message() {
+// delete all club messages
+pub fn dlcm() -> Option<ServerError> {
+    if !is_caller_authorized() {
+        return Some(ServerError {
+            api_name: "dlcm".to_string(),
+            error_message: "caller not authorized".to_string(),
+        });
+    }
+
     with_chat_club_message_by_id_mut(|storage| {
         let posts: Vec<_> = storage.range(..).collect();
         for (key, _value) in posts {
@@ -91,11 +123,20 @@ pub fn delete_all_club_message() {
             storage.pop().expect("Failed to delete message from vec");
         }
     });
+
+    None
 }
 
 #[update]
 #[candid_method(update)]
-pub fn react_club_message(request: ReactClubMessageRequest) {
+pub fn react_club_message(request: ReactClubMessageRequest) -> Option<ServerError> {
+    if !is_caller_authorized() {
+        return Some(ServerError {
+            api_name: "react_club_message".to_string(),
+            error_message: "caller not authorized".to_string(),
+        });
+    }
+
     with_chat_club_message_by_id_mut(|map| {
         if let Some(message) = map.get(&ChatClubMessageIdString(request.message_id.clone())) {
             let mut emojis = message.emoji_reactions.clone();
@@ -116,6 +157,8 @@ pub fn react_club_message(request: ReactClubMessageRequest) {
             );
         }
     });
+
+    None
 }
 
 #[query]

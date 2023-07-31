@@ -53,7 +53,7 @@ fn create_and_delete_posts() {
     assert_eq!(response.posts.len(), 2);
     assert_eq!(response.next_cursor, Cursor(None));
 
-    delete_all_post();
+    dlp();
 
     let request = GetPostsRequest {
         limit: None,

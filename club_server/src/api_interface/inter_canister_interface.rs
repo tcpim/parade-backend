@@ -8,6 +8,7 @@ pub struct AddClubPostToStreetRequest {
     pub nfts: Vec<NftTokenExternal>,
     pub created_ts: u64,
     pub created_by: String,
+    pub caller: String,
 }
 
 #[derive(Debug, Clone, CandidType, Deserialize, PartialEq)]
@@ -21,11 +22,24 @@ pub struct NftTokenExternal {
 }
 
 #[derive(Debug, CandidType, Deserialize)]
+pub struct AddClubPostToUserRequest {
+    pub user_post_created_key: UserPostCreatedTsKeyExternal,
+    pub caller: String,
+}
+
+#[derive(Debug, CandidType, Deserialize)]
 pub struct UserPostCreatedTsKeyExternal {
     pub user_id: String,
     pub created_ts: u64,
     pub post_id: String,
     pub club_id: Option<String>,
+}
+
+#[derive(Debug, CandidType, Deserialize)]
+pub struct UpdateClubPostStreetTrendingScoreRequest {
+    pub new: TrendingPostKeyExternal,
+    pub nft_canister_ids: Vec<String>,
+    pub caller: String,
 }
 
 #[derive(Debug, CandidType, Deserialize)]
@@ -35,10 +49,4 @@ pub struct TrendingPostKeyExternal {
     pub created_ts: u64,
     pub updated_ts: u64,
     pub club_id: Option<String>,
-}
-
-#[derive(Debug, CandidType, Deserialize)]
-pub struct UpdateClubPostStreetTrendingScoreRequest {
-    pub new: TrendingPostKeyExternal,
-    pub nft_canister_ids: Vec<String>,
 }

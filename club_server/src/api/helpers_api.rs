@@ -1,4 +1,4 @@
-use crate::api::constants::DEFAULT_PAGE_SIZE;
+use crate::api::constants::{DEFAULT_PAGE_SIZE, FRONTEND_CANISTER_ID};
 use crate::api_interface::common_interface::*;
 use crate::models::nft_model::NftToken;
 use crate::models::post_model::*;
@@ -149,16 +149,18 @@ pub fn update_trending_post_indexes(old_post: Post, new_trending_score: &Trendin
 
 pub fn convert_to_main_server_nfttoken(
     a: Vec<NftToken>,
-) -> Vec<crate::api_interface::inter_canister::NftTokenExternal> {
+) -> Vec<crate::api_interface::inter_canister_interface::NftTokenExternal> {
     a.into_iter()
-        .map(|x| crate::api_interface::inter_canister::NftTokenExternal {
-            canister_id: x.canister_id,
-            token_index: x.token_index,
-            token_id: x.token_id,
-            collection_name: x.collection_name,
-            image_url: x.image_url,
-            image_thumbnail_url: x.image_thumbnail_url,
-        })
+        .map(
+            |x| crate::api_interface::inter_canister_interface::NftTokenExternal {
+                canister_id: x.canister_id,
+                token_index: x.token_index,
+                token_id: x.token_id,
+                collection_name: x.collection_name,
+                image_url: x.image_url,
+                image_thumbnail_url: x.image_thumbnail_url,
+            },
+        )
         .collect()
 }
 
@@ -170,6 +172,7 @@ pub fn get_club_id() -> String {
 }
 
 pub async fn call_inter_canister_async<T: CandidType>(
+    caller: String,
     canister_id: &str,
     method_name: &str,
     request: T,
@@ -177,7 +180,7 @@ pub async fn call_inter_canister_async<T: CandidType>(
 ) {
     println!("{} is called expectedly!", method_name);
 
-    if is_within_canister() {
+    if !caller.eq("not_within_canister") {
         // If within canister, call directly
         ic_cdk::api::call::call::<(T,), ()>(
             Principal::from_text(canister_id).unwrap(),
@@ -189,11 +192,32 @@ pub async fn call_inter_canister_async<T: CandidType>(
     }
 }
 
-fn is_within_canister() -> bool {
+pub fn is_within_canister() -> bool {
     let result = panic::catch_unwind(|| {
         // If panic, then it is run by unit test (not within canister)
-        println!("Current canister ID is : {}", ic_cdk::api::id());
+        println!("Current canister ID is : {}", ic_cdk::api::caller());
     });
 
     result.is_ok()
+}
+
+pub fn is_caller_authorized() -> bool {
+    if is_within_canister() {
+        let caller = ic_cdk::api::caller().to_string();
+        if caller.eq(FRONTEND_CANISTER_ID) {
+            return true;
+        }
+    }
+
+    // ATTENTION!!!
+    // Return false when in production
+    return true;
+}
+
+pub fn get_caller_when_within_canister() -> String {
+    if is_within_canister() {
+        return ic_cdk::api::caller().to_string();
+    }
+
+    "not_within_canister".to_string()
 }

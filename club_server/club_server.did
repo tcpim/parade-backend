@@ -30,7 +30,6 @@ type DeleteClubMessageRequest = record {
   deleted_ts : nat64;
   message_id : text;
 };
-type DeletePostResponse = record { error : opt ServerError };
 type GetClubMessagesRequest = record { cursor : opt nat64; limit : opt int32 };
 type GetClubMessagesResponse = record {
   messages : vec ChatClubMessage;
@@ -129,6 +128,7 @@ type ReactEmojiRequest = record {
   created_ts : nat64;
   emoji : text;
 };
+type ReactEmojiResponse = record { error : opt ServerError };
 type ReplyPostRequest = record {
   post_id : text;
   reply_id : text;
@@ -164,10 +164,10 @@ type UpdateClubMessageRequest = record {
 };
 service : (SetClubInfoRequest) -> {
   create_post : (CreatePostRequest) -> (CreatePostResponse);
-  delete_all_club_message : () -> ();
-  delete_all_post : () -> ();
   delete_club_message : (DeleteClubMessageRequest) -> (opt ServerError);
-  delete_post : (text) -> (DeletePostResponse);
+  delete_post : (text) -> (opt ServerError);
+  dlcm : () -> (opt ServerError);
+  dlp : () -> (opt ServerError);
   get_club_info : () -> (ClubInfo) query;
   get_club_message_by_id : (text) -> (opt ChatClubMessage) query;
   get_club_messages : (GetClubMessagesRequest) -> (
@@ -186,10 +186,10 @@ service : (SetClubInfoRequest) -> {
   get_trending_posts : (GetTrendingPostRequest) -> (
       GetTrendingPostResponse,
     ) query;
-  react_club_message : (ReactClubMessageRequest) -> ();
-  react_emoji : (ReactEmojiRequest) -> (DeletePostResponse);
+  react_club_message : (ReactClubMessageRequest) -> (opt ServerError);
+  react_emoji : (ReactEmojiRequest) -> (ReactEmojiResponse);
   reply_post : (ReplyPostRequest) -> (ReplyPostResponse);
-  send_club_message : (SendClubMessageRequest) -> ();
-  set_club_info : (SetClubInfoRequest) -> ();
+  send_club_message : (SendClubMessageRequest) -> (opt ServerError);
+  set_club_info : (SetClubInfoRequest) -> (opt ServerError);
   update_club_message : (UpdateClubMessageRequest) -> (opt ServerError);
 }

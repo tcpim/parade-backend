@@ -50,7 +50,6 @@ export const idlFactory = ({ IDL }) => {
     'deleted_ts' : IDL.Nat64,
     'message_id' : IDL.Text,
   });
-  const DeletePostResponse = IDL.Record({ 'error' : IDL.Opt(ServerError) });
   const ChatClubMessage = IDL.Record({
     'id' : IDL.Text,
     'updated_ts' : IDL.Nat64,
@@ -157,6 +156,7 @@ export const idlFactory = ({ IDL }) => {
     'created_ts' : IDL.Nat64,
     'emoji' : IDL.Text,
   });
+  const ReactEmojiResponse = IDL.Record({ 'error' : IDL.Opt(ServerError) });
   const ReplyPostRequest = IDL.Record({
     'post_id' : IDL.Text,
     'reply_id' : IDL.Text,
@@ -183,14 +183,14 @@ export const idlFactory = ({ IDL }) => {
   });
   return IDL.Service({
     'create_post' : IDL.Func([CreatePostRequest], [CreatePostResponse], []),
-    'delete_all_club_message' : IDL.Func([], [], []),
-    'delete_all_post' : IDL.Func([], [], []),
     'delete_club_message' : IDL.Func(
         [DeleteClubMessageRequest],
         [IDL.Opt(ServerError)],
         [],
       ),
-    'delete_post' : IDL.Func([IDL.Text], [DeletePostResponse], []),
+    'delete_post' : IDL.Func([IDL.Text], [IDL.Opt(ServerError)], []),
+    'dlcm' : IDL.Func([], [IDL.Opt(ServerError)], []),
+    'dlp' : IDL.Func([], [IDL.Opt(ServerError)], []),
     'get_club_info' : IDL.Func([], [ClubInfo], ['query']),
     'get_club_message_by_id' : IDL.Func(
         [IDL.Text],
@@ -229,11 +229,23 @@ export const idlFactory = ({ IDL }) => {
         [GetTrendingPostResponse],
         ['query'],
       ),
-    'react_club_message' : IDL.Func([ReactClubMessageRequest], [], []),
-    'react_emoji' : IDL.Func([ReactEmojiRequest], [DeletePostResponse], []),
+    'react_club_message' : IDL.Func(
+        [ReactClubMessageRequest],
+        [IDL.Opt(ServerError)],
+        [],
+      ),
+    'react_emoji' : IDL.Func([ReactEmojiRequest], [ReactEmojiResponse], []),
     'reply_post' : IDL.Func([ReplyPostRequest], [ReplyPostResponse], []),
-    'send_club_message' : IDL.Func([SendClubMessageRequest], [], []),
-    'set_club_info' : IDL.Func([SetClubInfoRequest], [], []),
+    'send_club_message' : IDL.Func(
+        [SendClubMessageRequest],
+        [IDL.Opt(ServerError)],
+        [],
+      ),
+    'set_club_info' : IDL.Func(
+        [SetClubInfoRequest],
+        [IDL.Opt(ServerError)],
+        [],
+      ),
     'update_club_message' : IDL.Func(
         [UpdateClubMessageRequest],
         [IDL.Opt(ServerError)],

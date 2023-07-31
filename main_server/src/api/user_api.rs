@@ -1,3 +1,4 @@
+use crate::api::helpers_api::is_caller_authorized;
 use crate::api_interface::common_interface::ServerError;
 use crate::api_interface::user_interface::{
     GetUserInfoResponse, SetUserAvatarRequest, SetUserBioRequest, SetUserInfoResponse,
@@ -19,7 +20,14 @@ Create a user with principal ID. If already exist then ignore
 */
 #[update]
 #[candid_method(update)]
-pub fn create_user(user_id: String) {
+pub fn create_user(user_id: String) -> Option<ServerError> {
+    if !is_caller_authorized() {
+        return Some(ServerError {
+            api_name: "create_user".to_string(),
+            error_message: "caller not authorized".to_string(),
+        });
+    }
+
     with_user_by_id_mut(|map| {
         match map.get(&UserPrincipalStringKey(user_id.clone())) {
             Some(_) => {
@@ -35,7 +43,9 @@ pub fn create_user(user_id: String) {
                 map.insert(UserPrincipalStringKey(user_id), user);
             }
         }
-    })
+    });
+
+    None
 }
 
 #[query]
@@ -53,6 +63,21 @@ Check avatar mime type and update avatar
 #[update]
 #[candid_method(update)]
 pub fn set_user_avatar(request: SetUserAvatarRequest) -> SetUserInfoResponse {
+    if !is_caller_authorized() {
+        return SetUserInfoResponse {
+            user: User {
+                id: "".to_string(),
+                user_name: None,
+                avatar: None,
+                bio: None,
+            },
+            error: Some(ServerError {
+                api_name: "set_user_avatar".to_string(),
+                error_message: "caller not authorized".to_string(),
+            }),
+        };
+    }
+
     let mime_type = request.mime_type.clone();
     if mime_type != "image/png" && mime_type != "image/jpeg" {
         return SetUserInfoResponse {
@@ -109,6 +134,21 @@ Check user name uniqueness and update user name
 #[update]
 #[candid_method(update)]
 pub fn set_user_name(request: SetUserNameRequest) -> SetUserInfoResponse {
+    if !is_caller_authorized() {
+        return SetUserInfoResponse {
+            user: User {
+                id: "".to_string(),
+                user_name: None,
+                avatar: None,
+                bio: None,
+            },
+            error: Some(ServerError {
+                api_name: "set_user_name".to_string(),
+                error_message: "caller not authorized".to_string(),
+            }),
+        };
+    }
+
     let mut error = None;
     let new_name = request.new_name.clone();
     if new_name.is_empty() {
@@ -186,6 +226,21 @@ pub fn set_user_name(request: SetUserNameRequest) -> SetUserInfoResponse {
 #[update]
 #[candid_method(update)]
 pub fn set_user_bio(request: SetUserBioRequest) -> SetUserInfoResponse {
+    if !is_caller_authorized() {
+        return SetUserInfoResponse {
+            user: User {
+                id: "".to_string(),
+                user_name: None,
+                avatar: None,
+                bio: None,
+            },
+            error: Some(ServerError {
+                api_name: "set_user_bio".to_string(),
+                error_message: "caller not authorized".to_string(),
+            }),
+        };
+    }
+
     with_user_by_id_mut(|map| {
         match map.get(&UserPrincipalStringKey(request.user_id.clone())) {
             Some(existing_user) => {
@@ -219,7 +274,14 @@ pub fn set_user_bio(request: SetUserBioRequest) -> SetUserInfoResponse {
 
 #[update]
 #[candid_method(update)]
-pub fn delete_all_users() {
+pub fn delete_all_users() -> Option<ServerError> {
+    if !is_caller_authorized() {
+        return Some(ServerError {
+            api_name: "set_user_bio".to_string(),
+            error_message: "caller not authorized".to_string(),
+        });
+    }
+
     // You might run into candid deserialization error if you changed the proto
     // Solution: you can temporarily modify the proto to fit the earlier version and make the deserialization work
     // and then change it back after deletion
@@ -236,4 +298,6 @@ pub fn delete_all_users() {
             storage.remove(&key);
         }
     });
+
+    None
 }

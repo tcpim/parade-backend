@@ -1,12 +1,14 @@
 use crate::api::constants::MAIN_SERVER_CANISTER_ID;
 use crate::api::helpers_api;
-use crate::api::helpers_api::{call_inter_canister_async, get_club_id};
+use crate::api::helpers_api::{
+    call_inter_canister_async, get_caller_when_within_canister, get_club_id, is_caller_authorized,
+};
 use crate::stable_structure::access_helper::*;
 use candid::candid_method;
 use ic_cdk_macros::update;
 
 use crate::api_interface::common_interface::*;
-use crate::api_interface::inter_canister::{
+use crate::api_interface::inter_canister_interface::{
     TrendingPostKeyExternal, UpdateClubPostStreetTrendingScoreRequest,
 };
 use crate::api_interface::post_reaction_interface::*;
@@ -23,6 +25,16 @@ Add a new emoji to a post
 #[update]
 #[candid_method(update)]
 pub async fn react_emoji(request: ReactEmojiRequest) -> ReactEmojiResponse {
+    let caller = get_caller_when_within_canister();
+    if !is_caller_authorized() {
+        return ReactEmojiResponse {
+            error: Some(ServerError {
+                api_name: "react_emoji".to_string(),
+                error_message: "caller not authorized".to_string(),
+            }),
+        };
+    }
+
     let mut error = None;
 
     // This reaction is for a post
@@ -78,6 +90,7 @@ pub async fn react_emoji(request: ReactEmojiRequest) -> ReactEmojiResponse {
         if post_new.in_public {
             let new_trending_post_key = helpers_api::get_trending_post_key(&post_new);
             call_inter_canister_async(
+                caller.clone(),
                 MAIN_SERVER_CANISTER_ID,
                 "update_club_post_trending_score",
                 UpdateClubPostStreetTrendingScoreRequest {
@@ -89,6 +102,7 @@ pub async fn react_emoji(request: ReactEmojiRequest) -> ReactEmojiResponse {
                         club_id: Some(get_club_id()),
                     },
                     nft_canister_ids: post_new.nfts.into_iter().map(|x| x.canister_id).collect(),
+                    caller: caller.clone(),
                 },
                 "update_club_post_trending_score failed",
             )

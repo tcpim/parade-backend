@@ -10,12 +10,13 @@ mod tests;
 // ######################
 // Don't remove following imports!! Needed by candid::export_service
 
+use crate::api_interface::common_interface::*;
+use crate::api_interface::inter_canister_interface::*;
 use crate::api_interface::post_reaction_interface::*;
 use crate::api_interface::post_reply_interface::*;
 use crate::api_interface::post_trending_interface::*;
 use crate::api_interface::posts_interface::*;
 use crate::api_interface::user_interface::*;
-use crate::models::post_user_model::UserPostCreatedTsKey;
 candid::export_service!();
 
 pub fn export_candid() -> String {

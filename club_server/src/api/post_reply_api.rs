@@ -2,13 +2,16 @@ use candid::candid_method;
 use ic_cdk_macros::{query, update};
 
 use crate::api::constants::MAIN_SERVER_CANISTER_ID;
-use crate::api::helpers_api::{call_inter_canister_async, get_club_id, get_post_by_id_from_store};
+use crate::api::helpers_api::{
+    call_inter_canister_async, get_caller_when_within_canister, get_club_id,
+    get_post_by_id_from_store, is_caller_authorized,
+};
 use crate::stable_structure::access_helper::*;
 use std::collections::BTreeMap;
 
 use super::helpers_api;
 use crate::api_interface::common_interface::*;
-use crate::api_interface::inter_canister::{
+use crate::api_interface::inter_canister_interface::{
     TrendingPostKeyExternal, UpdateClubPostStreetTrendingScoreRequest,
 };
 use crate::api_interface::post_reply_interface::*;
@@ -27,6 +30,7 @@ Add a new reply to a post
 #[candid_method(update)]
 pub async fn reply_post(request: ReplyPostRequest) -> ReplyPostResponse {
     let mut error = None;
+    let caller = get_caller_when_within_canister();
     let post_reply_string_id = PostReplyIdString(request.reply_id);
     let post_reply = PostReply {
         id: post_reply_string_id.clone(),
@@ -37,6 +41,16 @@ pub async fn reply_post(request: ReplyPostRequest) -> ReplyPostResponse {
         nfts: request.nfts.clone(),
         emoji_reactions: BTreeMap::new(),
     };
+
+    if !is_caller_authorized() {
+        return ReplyPostResponse {
+            reply: post_reply,
+            error: Some(ServerError {
+                api_name: "reply_post".to_string(),
+                error_message: "caller not authorized".to_string(),
+            }),
+        };
+    }
 
     // Fake initial data
     let mut post_new: Post = Post {
@@ -85,6 +99,7 @@ pub async fn reply_post(request: ReplyPostRequest) -> ReplyPostResponse {
     if post_new.in_public {
         let new_trending_post_key = helpers_api::get_trending_post_key(&post_new);
         call_inter_canister_async(
+            caller.clone(),
             MAIN_SERVER_CANISTER_ID,
             "update_club_post_trending_score",
             UpdateClubPostStreetTrendingScoreRequest {
@@ -96,6 +111,7 @@ pub async fn reply_post(request: ReplyPostRequest) -> ReplyPostResponse {
                     club_id: Some(get_club_id()),
                 },
                 nft_canister_ids: post_new.nfts.into_iter().map(|x| x.canister_id).collect(),
+                caller: caller.clone(),
             },
             "update_club_post_trending_score failed",
         )

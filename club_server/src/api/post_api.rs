@@ -14,8 +14,8 @@ use crate::models::post_model::PostCreatedTsKey;
 use crate::models::post_model::*;
 use crate::models::trending_post_collection_model::TrendingPostCollectionKey;
 
-use crate::api_interface::inter_canister::{
-    AddClubPostToStreetRequest, UserPostCreatedTsKeyExternal,
+use crate::api_interface::inter_canister_interface::{
+    AddClubPostToStreetRequest, AddClubPostToUserRequest, UserPostCreatedTsKeyExternal,
 };
 
 // ######################
@@ -44,6 +44,7 @@ Create a new post
 pub async fn create_post(request: CreatePostRequest) -> CreatePostResponse {
     let post_id = PostIdString(request.post_id.clone());
     let user = request.created_by.clone();
+    let caller = get_caller_when_within_canister();
 
     let post = Post {
         id: post_id.clone(),
@@ -57,6 +58,16 @@ pub async fn create_post(request: CreatePostRequest) -> CreatePostResponse {
         replies: vec![],
         emoji_reactions: BTreeMap::new(),
     };
+
+    if !is_caller_authorized() {
+        return CreatePostResponse {
+            post: post.clone(),
+            error: Some(ServerError {
+                api_name: "create_post".to_string(),
+                error_message: "caller not authorized".to_string(),
+            }),
+        };
+    }
 
     if request.post_id.is_empty() {
         return CreatePostResponse {
@@ -130,13 +141,17 @@ pub async fn create_post(request: CreatePostRequest) -> CreatePostResponse {
     }
 
     call_inter_canister_async(
+        caller.clone(),
         MAIN_SERVER_CANISTER_ID,
         "add_club_post_to_user",
-        UserPostCreatedTsKeyExternal {
-            user_id: request.created_by.clone(),
-            post_id: request.post_id.clone(),
-            club_id: Some(get_club_id()),
-            created_ts: request.created_ts,
+        AddClubPostToUserRequest {
+            user_post_created_key: UserPostCreatedTsKeyExternal {
+                user_id: request.created_by.clone(),
+                post_id: request.post_id.clone(),
+                club_id: Some(get_club_id()),
+                created_ts: request.created_ts,
+            },
+            caller: caller.clone(),
         },
         "Failed to add post to user storage",
     )
@@ -144,6 +159,7 @@ pub async fn create_post(request: CreatePostRequest) -> CreatePostResponse {
 
     if post.in_public {
         call_inter_canister_async(
+            caller.clone(),
             MAIN_SERVER_CANISTER_ID,
             "add_club_post_to_street",
             AddClubPostToStreetRequest {
@@ -152,6 +168,7 @@ pub async fn create_post(request: CreatePostRequest) -> CreatePostResponse {
                 nfts: convert_to_main_server_nfttoken(request.nfts.clone()),
                 created_ts: request.created_ts,
                 created_by: request.created_by.clone(),
+                caller: caller.clone(),
             },
             "Failed to add post to street storage",
         )

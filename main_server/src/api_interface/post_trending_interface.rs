@@ -32,9 +32,3 @@ pub struct GetTrendingCollectionPostResponse {
     pub next_cursor: Cursor<TrendingPostCollectionKey>,
     pub error: Option<ServerError>,
 }
-
-#[derive(Debug, CandidType, Deserialize)]
-pub struct UpdateClubPostStreetTrendingScoreRequest {
-    pub new: TrendingPostKey,
-    pub nft_canister_ids: Vec<String>,
-}

@@ -13,7 +13,6 @@ use crate::models::post_model::*;
 use crate::models::post_street_model::PostCreatedTsKey;
 use crate::models::post_user_model::UserPostCreatedTsKey;
 use crate::models::trending_post_collection_model::TrendingPostCollectionKey;
-use crate::models::trending_post_model::TrendingPostKey;
 
 // ######################
 // APIs
@@ -41,6 +40,16 @@ pub fn create_street_post(request: CreateStreetPostRequest) -> CreateStreetPostR
         replies: vec![],
         emoji_reactions: BTreeMap::new(),
     };
+
+    if !is_caller_authorized() {
+        return CreateStreetPostResponse {
+            post: post,
+            error: Some(ServerError {
+                api_name: "create_street_post".to_string(),
+                error_message: "Unauthorized".to_string(),
+            }),
+        };
+    }
 
     let mut error: Option<ServerError> = None;
 
@@ -119,64 +128,6 @@ pub fn create_street_post(request: CreateStreetPostRequest) -> CreateStreetPostR
     });
 
     CreateStreetPostResponse { post, error }
-}
-
-/**
-Add a club post to the street storage with post id and club id
-1. Add to street storage and trending
-2. If there is nft, add to collection storage and trending
-*/
-#[update]
-#[candid_method(update)]
-pub fn add_club_post_to_street(request: AddClubPostToStreetRequest) {
-    with_street_posts_created_mut(|max_heap| {
-        max_heap.insert(
-            PostCreatedTsKey {
-                post_id: request.post_id.clone(),
-                created_ts: request.created_ts,
-                club_id: Some(request.club_id.clone()),
-            },
-            (),
-        );
-    });
-
-    let trending_key = TrendingPostKey {
-        post_id: request.post_id.clone(),
-        created_ts: request.created_ts,
-        updated_ts: request.created_ts,
-        trending_score: 0,
-        club_id: Some(request.club_id.clone()),
-    };
-    with_trending_posts_street_mut(|trending_posts_street| {
-        trending_posts_street.insert(trending_key.clone(), ());
-    });
-
-    if !request.nfts.is_empty() {
-        // currently only support one NFT per post
-        let canister_id = request.nfts[0].clone().canister_id;
-
-        with_collection_posts_created_mut(|max_heap| {
-            max_heap.insert(
-                CollectionPostCreatedTsKey {
-                    canister_id: canister_id.clone(),
-                    post_id: request.post_id.clone(),
-                    created_ts: request.created_ts,
-                    club_id: Some(request.club_id.clone()),
-                },
-                (),
-            );
-        });
-
-        with_trending_posts_collection_mut(|max_heap| {
-            max_heap.insert(
-                TrendingPostCollectionKey {
-                    canister_id: canister_id.clone(),
-                    trending_info: trending_key.clone(),
-                },
-                (),
-            );
-        });
-    }
 }
 
 #[query]

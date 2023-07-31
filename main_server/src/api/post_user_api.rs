@@ -1,5 +1,5 @@
 use candid::candid_method;
-use ic_cdk_macros::{query, update};
+use ic_cdk_macros::query;
 
 use crate::api::constants::DEFAULT_PAGE_SIZE;
 use crate::stable_structure::access_helper::*;
@@ -35,23 +35,4 @@ pub fn get_posts_by_user(request: GetUserPostsRequest) -> GetUserPostsResponse {
             error: None,
         }
     })
-}
-
-/**
-Add street/club post to the user storage
-*/
-#[update]
-#[candid_method(update)]
-pub fn add_club_post_to_user(request: UserPostCreatedTsKey) {
-    with_user_posts_created_mut(|max_heap| {
-        max_heap.insert(
-            UserPostCreatedTsKey {
-                user_id: request.user_id.clone(),
-                created_ts: request.created_ts,
-                post_id: request.post_id.clone(),
-                club_id: request.club_id.clone(),
-            },
-            (),
-        );
-    });
 }

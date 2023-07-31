@@ -1,7 +1,7 @@
 use candid::candid_method;
 use ic_cdk_macros::{query, update};
 
-use crate::api::helpers_api::get_post_by_id_from_store;
+use crate::api::helpers_api::{get_post_by_id_from_store, is_caller_authorized};
 use crate::stable_structure::access_helper::*;
 use std::collections::BTreeMap;
 
@@ -32,6 +32,17 @@ pub fn reply_post(request: ReplyPostRequest) -> ReplyPostResponse {
         nfts: request.nfts.clone(),
         emoji_reactions: BTreeMap::new(),
     };
+
+    if !is_caller_authorized() {
+        return ReplyPostResponse {
+            reply: post_reply,
+            error: Some(ServerError {
+                api_name: "react_emoji".to_string(),
+                error_message: "caller not authorized".to_string(),
+            }),
+        };
+    }
+
     with_post_by_id_mut(|storage| {
         // Get post
         let post_opt = storage.get(&PostIdString(request.post_id.clone()));

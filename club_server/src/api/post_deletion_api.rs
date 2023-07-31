@@ -1,30 +1,43 @@
+use crate::api::helpers_api::is_caller_authorized;
 use crate::stable_structure::access_helper::*;
 use candid::candid_method;
 use ic_cdk_macros::update;
 
 use crate::api_interface::common_interface::*;
-use crate::api_interface::posts_interface::*;
 use crate::models::post_model::*;
 
 #[update]
 #[candid_method(update)]
-pub fn delete_post(post_id: String) -> DeletePostResponse {
+pub fn delete_post(post_id: String) -> Option<ServerError> {
+    if !is_caller_authorized() {
+        return Some(ServerError {
+            api_name: "delete_post".to_string(),
+            error_message: "caller not authorized".to_string(),
+        });
+    }
+
     with_post_by_id_mut(
         |post_by_id| match post_by_id.remove(&PostIdString(post_id.clone())) {
-            Some(_) => DeletePostResponse { error: None },
-            None => DeletePostResponse {
-                error: Some(ServerError {
-                    api_name: "delete_post".to_string(),
-                    error_message: format!("Failed to delete post by id: {}", post_id),
-                }),
-            },
+            Some(_) => None,
+            None => Some(ServerError {
+                api_name: "delete_post".to_string(),
+                error_message: format!("Failed to delete post by id: {}", post_id),
+            }),
         },
     )
 }
 
 #[update]
 #[candid_method(update)]
-pub fn delete_all_post() {
+// delete all post
+pub fn dlp() -> Option<ServerError> {
+    if !is_caller_authorized() {
+        return Some(ServerError {
+            api_name: "dlp".to_string(),
+            error_message: "caller not authorized".to_string(),
+        });
+    }
+
     // You might run into candid deserialization error if you changed the proto
     // Solution: you can temporarily modify the proto to fit the earlier version and make the deserialization work
     // and then change it back after deletion
@@ -62,4 +75,6 @@ pub fn delete_all_post() {
             storage.remove(&key);
         }
     });
+
+    None
 }

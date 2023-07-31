@@ -6,7 +6,12 @@ export interface AddClubPostToStreetRequest {
   'nfts' : Array<NftToken>,
   'created_by' : string,
   'created_ts' : bigint,
+  'caller' : string,
   'club_id' : string,
+}
+export interface AddClubPostToUserRequest {
+  'user_post_created_key' : UserPostCreatedTsKey,
+  'caller' : string,
 }
 export interface ClubPost { 'post_id' : string, 'club_id' : string }
 export interface CollectionPostCreatedTsKey {
@@ -26,7 +31,6 @@ export interface CreateStreetPostResponse {
   'post' : Post,
   'error' : [] | [ServerError],
 }
-export interface DeletePostResponse { 'error' : [] | [ServerError] }
 export interface GetCollectionPostsRequest {
   'cursor' : [] | [CollectionPostCreatedTsKey],
   'canister_id' : string,
@@ -130,6 +134,7 @@ export interface ReactEmojiRequest {
   'created_ts' : bigint,
   'emoji' : string,
 }
+export interface ReactEmojiResponse { 'error' : [] | [ServerError] }
 export interface ReplyPostRequest {
   'post_id' : string,
   'reply_id' : string,
@@ -168,6 +173,7 @@ export interface TrendingPostKey {
 export interface UpdateClubPostStreetTrendingScoreRequest {
   'new' : TrendingPostKey,
   'nft_canister_ids' : Array<string>,
+  'caller' : string,
 }
 export interface User {
   'id' : string,
@@ -188,17 +194,20 @@ export interface UserPostCreatedTsKey {
 export interface _SERVICE {
   'add_club_post_to_street' : ActorMethod<
     [AddClubPostToStreetRequest],
-    undefined
+    [] | [ServerError]
   >,
-  'add_club_post_to_user' : ActorMethod<[UserPostCreatedTsKey], undefined>,
+  'add_club_post_to_user' : ActorMethod<
+    [AddClubPostToUserRequest],
+    [] | [ServerError]
+  >,
   'create_street_post' : ActorMethod<
     [CreateStreetPostRequest],
     CreateStreetPostResponse
   >,
-  'create_user' : ActorMethod<[string], undefined>,
-  'delete_all_post' : ActorMethod<[], undefined>,
-  'delete_all_users' : ActorMethod<[], undefined>,
-  'delete_post' : ActorMethod<[string], DeletePostResponse>,
+  'create_user' : ActorMethod<[string], [] | [ServerError]>,
+  'delete_all_users' : ActorMethod<[], [] | [ServerError]>,
+  'delete_post' : ActorMethod<[string], [] | [ServerError]>,
+  'dlp' : ActorMethod<[], [] | [ServerError]>,
   'get_post_replies' : ActorMethod<
     [GetPostRepliesRequest],
     GetPostRepliesResponse
@@ -225,7 +234,7 @@ export interface _SERVICE {
     GetTrendingStreetPostResponse
   >,
   'get_user_info' : ActorMethod<[string], GetUserInfoResponse>,
-  'react_emoji' : ActorMethod<[ReactEmojiRequest], DeletePostResponse>,
+  'react_emoji' : ActorMethod<[ReactEmojiRequest], ReactEmojiResponse>,
   'reply_post' : ActorMethod<[ReplyPostRequest], ReplyPostResponse>,
   'set_user_avatar' : ActorMethod<[SetUserAvatarRequest], SetUserInfoResponse>,
   'set_user_bio' : ActorMethod<[SetUserBioRequest], SetUserInfoResponse>,

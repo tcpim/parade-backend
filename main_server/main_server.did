@@ -3,7 +3,12 @@ type AddClubPostToStreetRequest = record {
   nfts : vec NftToken;
   created_by : text;
   created_ts : nat64;
+  caller : text;
   club_id : text;
+};
+type AddClubPostToUserRequest = record {
+  user_post_created_key : UserPostCreatedTsKey;
+  caller : text;
 };
 type ClubPost = record { post_id : text; club_id : text };
 type CollectionPostCreatedTsKey = record {
@@ -20,7 +25,6 @@ type CreateStreetPostRequest = record {
   words : text;
 };
 type CreateStreetPostResponse = record { post : Post; error : opt ServerError };
-type DeletePostResponse = record { error : opt ServerError };
 type GetCollectionPostsRequest = record {
   cursor : opt CollectionPostCreatedTsKey;
   canister_id : text;
@@ -121,6 +125,7 @@ type ReactEmojiRequest = record {
   created_ts : nat64;
   emoji : text;
 };
+type ReactEmojiResponse = record { error : opt ServerError };
 type ReplyPostRequest = record {
   post_id : text;
   reply_id : text;
@@ -153,6 +158,7 @@ type TrendingPostKey = record {
 type UpdateClubPostStreetTrendingScoreRequest = record {
   new : TrendingPostKey;
   nft_canister_ids : vec text;
+  caller : text;
 };
 type User = record {
   id : text;
@@ -168,13 +174,13 @@ type UserPostCreatedTsKey = record {
   club_id : opt text;
 };
 service : {
-  add_club_post_to_street : (AddClubPostToStreetRequest) -> ();
-  add_club_post_to_user : (UserPostCreatedTsKey) -> ();
+  add_club_post_to_street : (AddClubPostToStreetRequest) -> (opt ServerError);
+  add_club_post_to_user : (AddClubPostToUserRequest) -> (opt ServerError);
   create_street_post : (CreateStreetPostRequest) -> (CreateStreetPostResponse);
-  create_user : (text) -> ();
-  delete_all_post : () -> ();
-  delete_all_users : () -> ();
-  delete_post : (text) -> (DeletePostResponse);
+  create_user : (text) -> (opt ServerError);
+  delete_all_users : () -> (opt ServerError);
+  delete_post : (text) -> (opt ServerError);
+  dlp : () -> (opt ServerError);
   get_post_replies : (GetPostRepliesRequest) -> (GetPostRepliesResponse) query;
   get_posts_by_collection : (GetCollectionPostsRequest) -> (
       GetCollectionPostsResponse,
@@ -189,7 +195,7 @@ service : {
       GetTrendingStreetPostResponse,
     ) query;
   get_user_info : (text) -> (GetUserInfoResponse) query;
-  react_emoji : (ReactEmojiRequest) -> (DeletePostResponse);
+  react_emoji : (ReactEmojiRequest) -> (ReactEmojiResponse);
   reply_post : (ReplyPostRequest) -> (ReplyPostResponse);
   set_user_avatar : (SetUserAvatarRequest) -> (SetUserInfoResponse);
   set_user_bio : (SetUserBioRequest) -> (SetUserInfoResponse);
