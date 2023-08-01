@@ -12,6 +12,7 @@ mod tests;
 use crate::api_interface::chat_interface::*;
 use crate::api_interface::club_interface::*;
 use crate::api_interface::common_interface::*;
+use crate::api_interface::init_interface::*;
 use crate::api_interface::post_reaction_interface::*;
 use crate::api_interface::post_reply_interface::*;
 use crate::api_interface::post_trending_interface::*;

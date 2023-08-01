@@ -1,5 +1,6 @@
 use crate::models::chat_model::{ChatClubMessage, ChatClubMessageIdString};
 use crate::models::club_model::ClubInfo;
+use crate::models::init_model::CanisterArgs;
 use crate::models::post_collection_model::CollectionPostCreatedTsKey;
 use crate::models::post_model::{
     Post, PostCreatedTsKey, PostIdString, PostReply, PostReplyIdString,
@@ -20,6 +21,7 @@ pub type TrendingPostCollectionHeap = StableBTreeMap<TrendingPostCollectionKey, 
 pub type ClubInfoCell = StableCell<ClubInfo, Memory>;
 pub type ChatClubMessageById = StableBTreeMap<ChatClubMessageIdString, ChatClubMessage, Memory>;
 pub type ChatClubMessagesVec = StableVec<ChatClubMessageIdString, Memory>;
+pub type CanisterArgsCell = StableCell<CanisterArgs, Memory>;
 
 pub const POST_BY_ID_MEMORY_ID: MemoryId = MemoryId::new(0);
 pub const POST_REPLIES_MEMORY_ID: MemoryId = MemoryId::new(1);
@@ -30,6 +32,7 @@ pub const TRENDING_POST_COLLECTION_MEMORY_ID: MemoryId = MemoryId::new(5);
 pub const CLUB_INFO_MEMORY_ID: MemoryId = MemoryId::new(6);
 pub const CHAT_MESSAGE_BY_ID_MEMORY_ID: MemoryId = MemoryId::new(7);
 pub const CHAT_MESSAGES_VEC_MEMORY_ID: MemoryId = MemoryId::new(8);
+pub const CANISTER_ARGS_MEMORY_ID: MemoryId = MemoryId::new(9);
 
 thread_local! {
     // initiate a memory manager
@@ -45,6 +48,15 @@ thread_local! {
                 club_name: "".to_string(),
                 club_description: "".to_string(),
             }).expect("Failed to init CLUB_INFO")
+            )
+        );
+
+    pub static CANISTER_ARGS: RefCell<StableCell<CanisterArgs, Memory>> =
+        MEMORY_MANAGER.with(|memory_manager|
+            RefCell::new(
+                StableCell::init(memory_manager.borrow().get(CANISTER_ARGS_MEMORY_ID), CanisterArgs {
+                env: "".to_string(),
+            }).expect("Failed to init CANISTER_ARGS")
             )
         );
 

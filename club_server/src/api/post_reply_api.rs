@@ -99,7 +99,6 @@ pub async fn reply_post(request: ReplyPostRequest) -> ReplyPostResponse {
     if post_new.in_public {
         let new_trending_post_key = helpers_api::get_trending_post_key(&post_new);
         call_inter_canister_async(
-            caller.clone(),
             MAIN_SERVER_CANISTER_ID,
             "update_club_post_trending_score",
             UpdateClubPostStreetTrendingScoreRequest {

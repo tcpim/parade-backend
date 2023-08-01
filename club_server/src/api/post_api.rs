@@ -1,8 +1,7 @@
 use candid::candid_method;
-use ic_cdk_macros::{init, query, update};
+use ic_cdk_macros::{query, update};
 
 use crate::api::constants::{DEFAULT_PAGE_SIZE, MAIN_SERVER_CANISTER_ID};
-use crate::api_interface::club_interface::SetClubInfoRequest;
 use crate::stable_structure::access_helper::*;
 use std::collections::BTreeMap;
 
@@ -21,16 +20,6 @@ use crate::api_interface::inter_canister_interface::{
 // ######################
 // APIs
 // ######################
-
-#[init]
-#[candid_method(init)]
-fn canister_init(args: SetClubInfoRequest) {
-    with_club_info_mut(|cell| {
-        cell.set(args.info.clone())
-            .expect("Failed to set club info");
-    })
-}
-
 /**
 Create a new post
 1. Add post to post by id
@@ -141,7 +130,6 @@ pub async fn create_post(request: CreatePostRequest) -> CreatePostResponse {
     }
 
     call_inter_canister_async(
-        caller.clone(),
         MAIN_SERVER_CANISTER_ID,
         "add_club_post_to_user",
         AddClubPostToUserRequest {
@@ -159,7 +147,6 @@ pub async fn create_post(request: CreatePostRequest) -> CreatePostResponse {
 
     if post.in_public {
         call_inter_canister_async(
-            caller.clone(),
             MAIN_SERVER_CANISTER_ID,
             "add_club_post_to_street",
             AddClubPostToStreetRequest {

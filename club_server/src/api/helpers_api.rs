@@ -172,16 +172,20 @@ pub fn get_club_id() -> String {
 }
 
 pub async fn call_inter_canister_async<T: CandidType>(
-    caller: String,
     canister_id: &str,
     method_name: &str,
     request: T,
     err_msg: &str,
 ) {
-    println!("{} is called expectedly!", method_name);
+    let mut is_test = false;
+    with_canister_args(|args| {
+        if args.get().env.eq("") {
+            is_test = true;
+        }
+    });
 
-    if !caller.eq("not_within_canister") {
-        // If within canister, call directly
+    // skip call inter canister when testing
+    if !is_test {
         ic_cdk::api::call::call::<(T,), ()>(
             Principal::from_text(canister_id).unwrap(),
             method_name,
