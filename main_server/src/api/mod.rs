@@ -8,3 +8,4 @@ pub mod post_reply_api;
 pub mod post_trending_api;
 pub mod post_user_api;
 pub mod user_api;
+pub mod init_api;

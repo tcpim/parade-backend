@@ -1,8 +1,6 @@
 use crate::api::constants::MAIN_SERVER_CANISTER_ID;
 use crate::api::helpers_api;
-use crate::api::helpers_api::{
-    call_inter_canister_async, get_caller_when_within_canister, get_club_id, is_caller_authorized,
-};
+use crate::api::helpers_api::{call_inter_canister, get_caller, get_club_id, is_caller_authorized};
 use crate::stable_structure::access_helper::*;
 use candid::candid_method;
 use ic_cdk_macros::update;
@@ -25,7 +23,7 @@ Add a new emoji to a post
 #[update]
 #[candid_method(update)]
 pub async fn react_emoji(request: ReactEmojiRequest) -> ReactEmojiResponse {
-    let caller = get_caller_when_within_canister();
+    let caller = get_caller();
     if !is_caller_authorized() {
         return ReactEmojiResponse {
             error: Some(ServerError {
@@ -89,8 +87,7 @@ pub async fn react_emoji(request: ReactEmojiRequest) -> ReactEmojiResponse {
 
         if post_new.in_public {
             let new_trending_post_key = helpers_api::get_trending_post_key(&post_new);
-            call_inter_canister_async(
-                caller.clone(),
+            call_inter_canister(
                 MAIN_SERVER_CANISTER_ID,
                 "update_club_post_trending_score",
                 UpdateClubPostStreetTrendingScoreRequest {

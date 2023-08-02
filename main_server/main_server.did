@@ -85,6 +85,7 @@ type GetUserPostsResponse = record {
   next_cursor : opt UserPostCreatedTsKey;
   posts : vec PostType;
 };
+type InitCanisterRequest = record { env : text };
 type NftToken = record {
   token_index : nat16;
   token_id : text;
@@ -173,7 +174,7 @@ type UserPostCreatedTsKey = record {
   user_id : text;
   club_id : opt text;
 };
-service : {
+service : (InitCanisterRequest) -> {
   add_club_post_to_street : (AddClubPostToStreetRequest) -> (opt ServerError);
   add_club_post_to_user : (AddClubPostToUserRequest) -> (opt ServerError);
   create_street_post : (CreateStreetPostRequest) -> (CreateStreetPostResponse);

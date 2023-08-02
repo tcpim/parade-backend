@@ -11,6 +11,7 @@ mod tests;
 // Don't remove following imports!! Needed by candid::export_service
 
 use crate::api_interface::common_interface::*;
+use crate::api_interface::init_interface::*;
 use crate::api_interface::inter_canister_interface::*;
 use crate::api_interface::post_reaction_interface::*;
 use crate::api_interface::post_reply_interface::*;

@@ -86,6 +86,7 @@ type GetTrendingPostResponse = record {
   next_cursor : opt TrendingPostKey;
   posts : vec Post;
 };
+type InitClubCanisterRequest = record { env : text; info : ClubInfo };
 type NftToken = record {
   image_height_width_ratio : text;
   token_index : nat16;
@@ -162,12 +163,13 @@ type UpdateClubMessageRequest = record {
   words : text;
   message_id : text;
 };
-service : (SetClubInfoRequest) -> {
+service : (InitClubCanisterRequest) -> {
   create_post : (CreatePostRequest) -> (CreatePostResponse);
   delete_club_message : (DeleteClubMessageRequest) -> (opt ServerError);
   delete_post : (text) -> (opt ServerError);
   dlcm : () -> (opt ServerError);
   dlp : () -> (opt ServerError);
+  get_canister_args : () -> (text) query;
   get_club_info : () -> (ClubInfo) query;
   get_club_message_by_id : (text) -> (opt ChatClubMessage) query;
   get_club_messages : (GetClubMessagesRequest) -> (

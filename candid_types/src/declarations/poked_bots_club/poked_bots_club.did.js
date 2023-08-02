@@ -1,10 +1,4 @@
 export const idlFactory = ({ IDL }) => {
-  const ClubInfo = IDL.Record({
-    'club_description' : IDL.Text,
-    'club_name' : IDL.Text,
-    'club_id' : IDL.Text,
-  });
-  const SetClubInfoRequest = IDL.Record({ 'info' : ClubInfo });
   const NftToken = IDL.Record({
     'image_height_width_ratio' : IDL.Text,
     'token_index' : IDL.Nat16,
@@ -49,6 +43,11 @@ export const idlFactory = ({ IDL }) => {
     'deleter' : IDL.Text,
     'deleted_ts' : IDL.Nat64,
     'message_id' : IDL.Text,
+  });
+  const ClubInfo = IDL.Record({
+    'club_description' : IDL.Text,
+    'club_name' : IDL.Text,
+    'club_id' : IDL.Text,
   });
   const ChatClubMessage = IDL.Record({
     'id' : IDL.Text,
@@ -175,6 +174,7 @@ export const idlFactory = ({ IDL }) => {
     'words' : IDL.Text,
     'message_id' : IDL.Text,
   });
+  const SetClubInfoRequest = IDL.Record({ 'info' : ClubInfo });
   const UpdateClubMessageRequest = IDL.Record({
     'updated_ts' : IDL.Nat64,
     'updater' : IDL.Text,
@@ -253,12 +253,4 @@ export const idlFactory = ({ IDL }) => {
       ),
   });
 };
-export const init = ({ IDL }) => {
-  const ClubInfo = IDL.Record({
-    'club_description' : IDL.Text,
-    'club_name' : IDL.Text,
-    'club_id' : IDL.Text,
-  });
-  const SetClubInfoRequest = IDL.Record({ 'info' : ClubInfo });
-  return [SetClubInfoRequest];
-};
+export const init = ({ IDL }) => { return []; };

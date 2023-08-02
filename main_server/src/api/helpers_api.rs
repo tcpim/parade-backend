@@ -191,39 +191,50 @@ pub fn update_trending_club_post_indexes(new_key: &TrendingPostKey, nft_canister
     }
 }
 
-// If false, then this is used by unit test
-pub fn is_within_canister() -> bool {
-    let result = panic::catch_unwind(|| {
-        // If panic, then it is run by unit test (not within canister)
-        println!("Current canister ID is : {}", ic_cdk::api::caller());
-    });
-
-    result.is_ok()
-}
-
 pub fn is_caller_authorized() -> bool {
-    if is_within_canister() {
-        let caller = ic_cdk::api::caller().to_string();
-        if caller.eq(FRONTEND_CANISTER_ID) {
-            return true;
-        }
+    if is_run_in_dev() || is_run_in_unit_test() {
+        return true;
     }
 
-    // ATTENTION!!!
-    // Change to return false when in production
-    // TODO: see if there is a better way to check local running canister and return true if it is local running canister
-    return true;
+    let caller = ic_cdk::api::caller().to_string();
+    if caller.eq(FRONTEND_CANISTER_ID) {
+        return true;
+    }
+
+    return false;
 }
 
 // Reason for this is because the inter canister call destination canister cannot use ic_cdk::api::caller()
 // See https://forum.dfinity.org/t/canister-violated-contract-ic0-msg-caller-size-cannot-be-executed-in-reply-callback-mode/7890
 pub fn is_inter_canister_caller_authorized(caller: String) -> bool {
+    if is_run_in_dev() || is_run_in_unit_test() {
+        return true;
+    }
+
     if caller.eq(FRONTEND_CANISTER_ID) {
         return true;
     }
 
-    // ATTENTION!!!
-    // Change to return false when in production
-    // TODO: see if there is a better way to check local running canister and return true if it is local running canister
-    return true;
+    return false;
+}
+
+fn is_run_in_unit_test() -> bool {
+    with_canister_args(|cell| {
+        let canister_args = cell.get();
+        canister_args.env.eq("")
+    })
+}
+
+fn is_run_in_dev() -> bool {
+    with_canister_args(|cell| {
+        let canister_args = cell.get();
+        canister_args.env.eq("dev")
+    })
+}
+
+fn is_run_in_prod() -> bool {
+    with_canister_args(|cell| {
+        let canister_args = cell.get();
+        canister_args.env.eq("prod")
+    })
 }

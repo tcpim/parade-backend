@@ -8,3 +8,4 @@ pub mod post_user_model;
 pub mod trending_post_collection_model;
 pub mod trending_post_model;
 pub mod user_model;
+pub mod init_model;

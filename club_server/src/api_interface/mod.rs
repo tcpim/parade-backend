@@ -1,6 +1,7 @@
 pub mod chat_interface;
 pub mod club_interface;
 pub mod common_interface;
+pub mod init_interface;
 pub mod inter_canister_interface;
 pub mod post_reaction_interface;
 pub mod post_reply_interface;

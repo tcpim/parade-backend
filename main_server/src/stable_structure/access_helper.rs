@@ -75,3 +75,11 @@ pub fn with_trending_posts_collection_mut<R>(
 ) -> R {
     TRENDING_POSTS_COLLECTION.with(|s| f(&mut s.borrow_mut()))
 }
+
+pub fn with_canister_args<R>(f: impl FnOnce(&CanisterArgsCell) -> R) -> R {
+    CANISTER_ARGS.with(|s| f(&s.borrow()))
+}
+
+pub fn with_canister_args_mut<R>(f: impl FnOnce(&mut CanisterArgsCell) -> R) -> R {
+    CANISTER_ARGS.with(|s| f(&mut s.borrow_mut()))
+}

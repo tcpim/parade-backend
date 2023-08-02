@@ -171,53 +171,65 @@ pub fn get_club_id() -> String {
     })
 }
 
-pub async fn call_inter_canister_async<T: CandidType>(
-    caller: String,
+pub async fn call_inter_canister<T: CandidType>(
     canister_id: &str,
     method_name: &str,
     request: T,
     err_msg: &str,
 ) {
-    println!("{} is called expectedly!", method_name);
-
-    if !caller.eq("not_within_canister") {
-        // If within canister, call directly
-        ic_cdk::api::call::call::<(T,), ()>(
-            Principal::from_text(canister_id).unwrap(),
-            method_name,
-            (request,),
-        )
-        .await
-        .expect(err_msg);
+    // skip inter canister call when running unit test
+    if is_run_in_unit_test() {
+        return;
     }
-}
 
-pub fn is_within_canister() -> bool {
-    let result = panic::catch_unwind(|| {
-        // If panic, then it is run by unit test (not within canister)
-        println!("Current canister ID is : {}", ic_cdk::api::caller());
-    });
-
-    result.is_ok()
+    ic_cdk::api::call::call::<(T,), ()>(
+        Principal::from_text(canister_id).unwrap(),
+        method_name,
+        (request,),
+    )
+    .await
+    .expect(err_msg);
 }
 
 pub fn is_caller_authorized() -> bool {
-    if is_within_canister() {
-        let caller = ic_cdk::api::caller().to_string();
-        if caller.eq(FRONTEND_CANISTER_ID) {
-            return true;
-        }
+    // Skip authorization check when running unit test or dev
+    if is_run_in_unit_test() || is_run_in_dev() {
+        return true;
     }
 
-    // ATTENTION!!!
-    // Return false when in production
-    return true;
+    let caller = ic_cdk::api::caller().to_string();
+    if caller.eq(FRONTEND_CANISTER_ID) {
+        return true;
+    }
+
+    return false;
 }
 
-pub fn get_caller_when_within_canister() -> String {
-    if is_within_canister() {
-        return ic_cdk::api::caller().to_string();
+pub fn get_caller() -> String {
+    if is_run_in_unit_test() {
+        return "no_caller_in_unit_test".to_string();
     }
 
-    "not_within_canister".to_string()
+    return ic_cdk::caller().to_string();
+}
+
+fn is_run_in_unit_test() -> bool {
+    with_canister_args(|cell| {
+        let canister_args = cell.get();
+        canister_args.env.eq("")
+    })
+}
+
+fn is_run_in_dev() -> bool {
+    with_canister_args(|cell| {
+        let canister_args = cell.get();
+        canister_args.env.eq("dev")
+    })
+}
+
+fn is_run_in_prod() -> bool {
+    with_canister_args(|cell| {
+        let canister_args = cell.get();
+        canister_args.env.eq("prod")
+    })
 }

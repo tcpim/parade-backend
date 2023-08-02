@@ -6,8 +6,9 @@ use crate::models::trending_post_collection_model::TrendingPostCollectionKey;
 use crate::models::trending_post_model::TrendingPostKey;
 use crate::models::user_model::{User, UserNameStringKey, UserPrincipalStringKey};
 use ic_stable_structures::memory_manager::{MemoryId, MemoryManager, VirtualMemory};
-use ic_stable_structures::{DefaultMemoryImpl, StableBTreeMap};
+use ic_stable_structures::{DefaultMemoryImpl, StableBTreeMap, StableCell};
 use std::cell::RefCell;
+use crate::models::init_model::CanisterArgs;
 
 type Memory = VirtualMemory<DefaultMemoryImpl>;
 pub type UserByIdMap = StableBTreeMap<UserPrincipalStringKey, User, Memory>;
@@ -19,6 +20,7 @@ pub type CollectionPostsCreatedHeap = StableBTreeMap<CollectionPostCreatedTsKey,
 pub type TrendingPostStreetHeap = StableBTreeMap<TrendingPostKey, (), Memory>;
 pub type TrendingPostCollectionHeap = StableBTreeMap<TrendingPostCollectionKey, (), Memory>;
 pub type UserNamesMap = StableBTreeMap<UserNameStringKey, (), Memory>;
+pub type CanisterArgsCell = StableCell<CanisterArgs, Memory>;
 
 pub const USER_BY_ID_MEMORY_ID: MemoryId = MemoryId::new(0);
 pub const POST_BY_ID_MEMORY_ID: MemoryId = MemoryId::new(1);
@@ -29,12 +31,21 @@ pub const COLLECTION_POSTS_CREATED_MEMORY_ID: MemoryId = MemoryId::new(5);
 pub const TRENDING_POST_STREET_MEMORY_ID: MemoryId = MemoryId::new(6);
 pub const TRENDING_POST_COLLECTION_MEMORY_ID: MemoryId = MemoryId::new(7);
 pub const USER_NAMES_MEMORY_ID: MemoryId = MemoryId::new(8);
+pub const CANISTER_ARGS_MEMORY_ID: MemoryId = MemoryId::new(9);
 
 thread_local! {
 // initiate a memory manager
     pub static MEMORY_MANAGER: RefCell<MemoryManager<DefaultMemoryImpl>> =
         RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
 
+    pub static CANISTER_ARGS: RefCell<StableCell<CanisterArgs, Memory>> =
+        MEMORY_MANAGER.with(|memory_manager|
+            RefCell::new(
+                StableCell::init(memory_manager.borrow().get(CANISTER_ARGS_MEMORY_ID), CanisterArgs {
+                env: "".to_string(),
+            }).expect("Failed to init CANISTER_ARGS")
+            )
+        );
     /**
     One to One relation between key and value
     */
