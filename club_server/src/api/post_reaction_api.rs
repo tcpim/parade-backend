@@ -1,4 +1,3 @@
-use crate::api::constants::MAIN_SERVER_CANISTER_ID;
 use crate::api::helpers_api;
 use crate::api::helpers_api::{call_inter_canister, get_caller, get_club_id, is_caller_authorized};
 use crate::stable_structure::access_helper::*;
@@ -28,7 +27,7 @@ pub async fn react_emoji(request: ReactEmojiRequest) -> ReactEmojiResponse {
         return ReactEmojiResponse {
             error: Some(ServerError {
                 api_name: "react_emoji".to_string(),
-                error_message: "caller not authorized".to_string(),
+                error_message: format!("Unauthorized caller: {}", ic_cdk::caller().to_string()),
             }),
         };
     }
@@ -88,7 +87,6 @@ pub async fn react_emoji(request: ReactEmojiRequest) -> ReactEmojiResponse {
         if post_new.in_public {
             let new_trending_post_key = helpers_api::get_trending_post_key(&post_new);
             call_inter_canister(
-                MAIN_SERVER_CANISTER_ID,
                 "update_club_post_trending_score",
                 UpdateClubPostStreetTrendingScoreRequest {
                     new: TrendingPostKeyExternal {

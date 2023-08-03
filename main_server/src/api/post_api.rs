@@ -46,7 +46,7 @@ pub fn create_street_post(request: CreateStreetPostRequest) -> CreateStreetPostR
             post: post,
             error: Some(ServerError {
                 api_name: "create_street_post".to_string(),
-                error_message: "Unauthorized".to_string(),
+                error_message: format!("Unauthorized caller: {}", ic_cdk::caller().to_string()),
             }),
         };
     }

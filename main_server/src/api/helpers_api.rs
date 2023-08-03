@@ -1,4 +1,4 @@
-use crate::api::constants::{DEFAULT_PAGE_SIZE, FRONTEND_CANISTER_ID};
+use crate::api::constants::DEFAULT_PAGE_SIZE;
 use crate::api_interface::common_interface::*;
 use crate::api_interface::posts_interface::PostType;
 use crate::models::post_club_model::{ClubPost, HasClubId};
@@ -8,7 +8,8 @@ use crate::models::trending_post_model::TrendingPostKey;
 use crate::stable_structure::access_helper::*;
 use ic_stable_structures::memory_manager::VirtualMemory;
 use ic_stable_structures::{BoundedStorable, DefaultMemoryImpl, StableBTreeMap};
-use std::panic;
+
+use super::constants::FRONTEND_CANISTER_ID_PROD;
 
 /**
 Given a btree and a start key, return a page of posts with max len = limit and the next cursor
@@ -192,16 +193,17 @@ pub fn update_trending_club_post_indexes(new_key: &TrendingPostKey, nft_canister
 }
 
 pub fn is_caller_authorized() -> bool {
-    if is_run_in_dev() || is_run_in_unit_test() {
-        return true;
-    }
+    // TODO: this doesn;t work. See https://forum.dfinity.org/t/only-allow-update-call-from-frontend-canister/21936
+    // if is_run_in_prod() {
+    //     let caller = ic_cdk::api::caller().to_string();
+    //     if caller.eq(FRONTEND_CANISTER_ID_PROD) {
+    //         return true;
+    //     } else {
+    //         return false;
+    //     }
+    // }
 
-    let caller = ic_cdk::api::caller().to_string();
-    if caller.eq(FRONTEND_CANISTER_ID) {
-        return true;
-    }
-
-    return false;
+    return true;
 }
 
 // Reason for this is because the inter canister call destination canister cannot use ic_cdk::api::caller()
@@ -211,11 +213,14 @@ pub fn is_inter_canister_caller_authorized(caller: String) -> bool {
         return true;
     }
 
-    if caller.eq(FRONTEND_CANISTER_ID) {
-        return true;
-    }
+    // TODO: this doesn;t work. See https://forum.dfinity.org/t/only-allow-update-call-from-frontend-canister/21936
+    // if caller.eq(FRONTEND_CANISTER_ID_PROD) {
+    //     return true;
+    // }
 
-    return false;
+    // return false;
+
+    return true;
 }
 
 fn is_run_in_unit_test() -> bool {

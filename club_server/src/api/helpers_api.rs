@@ -1,4 +1,4 @@
-use crate::api::constants::{DEFAULT_PAGE_SIZE, FRONTEND_CANISTER_ID};
+use crate::api::constants::{DEFAULT_PAGE_SIZE, FRONTEND_CANISTER_ID_PROD};
 use crate::api_interface::common_interface::*;
 use crate::models::nft_model::NftToken;
 use crate::models::post_model::*;
@@ -8,7 +8,8 @@ use crate::stable_structure::access_helper::*;
 use candid::{CandidType, Principal};
 use ic_stable_structures::memory_manager::VirtualMemory;
 use ic_stable_structures::{BoundedStorable, DefaultMemoryImpl, StableBTreeMap};
-use std::panic;
+
+use super::constants::{MAIN_SERVER_CANISTER_ID_DEV, MAIN_SERVER_CANISTER_ID_PROD};
 
 /**
 Given a btree and a start key, return a page of posts with max len = limit and the next cursor
@@ -171,19 +172,20 @@ pub fn get_club_id() -> String {
     })
 }
 
-pub async fn call_inter_canister<T: CandidType>(
-    canister_id: &str,
-    method_name: &str,
-    request: T,
-    err_msg: &str,
-) {
+pub async fn call_inter_canister<T: CandidType>(method_name: &str, request: T, err_msg: &str) {
     // skip inter canister call when running unit test
     if is_run_in_unit_test() {
         return;
     }
 
+    let main_canister_id = if is_run_in_prod() {
+        MAIN_SERVER_CANISTER_ID_PROD
+    } else {
+        MAIN_SERVER_CANISTER_ID_DEV
+    };
+
     ic_cdk::api::call::call::<(T,), ()>(
-        Principal::from_text(canister_id).unwrap(),
+        Principal::from_text(main_canister_id).unwrap(),
         method_name,
         (request,),
     )
@@ -192,17 +194,17 @@ pub async fn call_inter_canister<T: CandidType>(
 }
 
 pub fn is_caller_authorized() -> bool {
-    // Skip authorization check when running unit test or dev
-    if is_run_in_unit_test() || is_run_in_dev() {
-        return true;
-    }
+    // TODO: this doesn;t work. See https://forum.dfinity.org/t/only-allow-update-call-from-frontend-canister/21936
+    // if is_run_in_prod() {
+    //     let caller = ic_cdk::api::caller().to_string();
+    //     if caller.eq(FRONTEND_CANISTER_ID_PROD) {
+    //         return true;
+    //     } else {
+    //         return false;
+    //     }
+    // }
 
-    let caller = ic_cdk::api::caller().to_string();
-    if caller.eq(FRONTEND_CANISTER_ID) {
-        return true;
-    }
-
-    return false;
+    return true;
 }
 
 pub fn get_caller() -> String {
@@ -227,7 +229,7 @@ fn is_run_in_dev() -> bool {
     })
 }
 
-fn is_run_in_prod() -> bool {
+pub fn is_run_in_prod() -> bool {
     with_canister_args(|cell| {
         let canister_args = cell.get();
         canister_args.env.eq("prod")

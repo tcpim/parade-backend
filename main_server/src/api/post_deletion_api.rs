@@ -12,7 +12,7 @@ pub fn delete_post(post_id: String) -> Option<ServerError> {
     if !is_caller_authorized() {
         return Some(ServerError {
             api_name: "delete_post".to_string(),
-            error_message: "Unauthorized".to_string(),
+            error_message: format!("Unauthorized caller: {}", ic_cdk::caller().to_string()),
         });
     }
 
@@ -33,7 +33,7 @@ pub fn dlp() -> Option<ServerError> {
     if !is_caller_authorized() {
         return Some(ServerError {
             api_name: "dlp".to_string(),
-            error_message: "Unauthorized".to_string(),
+            error_message: format!("Unauthorized caller: {}", ic_cdk::caller().to_string()),
         });
     }
 

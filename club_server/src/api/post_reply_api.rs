@@ -1,7 +1,6 @@
 use candid::candid_method;
 use ic_cdk_macros::{query, update};
 
-use crate::api::constants::MAIN_SERVER_CANISTER_ID;
 use crate::api::helpers_api::{
     call_inter_canister, get_caller, get_club_id, get_post_by_id_from_store, is_caller_authorized,
 };
@@ -46,7 +45,7 @@ pub async fn reply_post(request: ReplyPostRequest) -> ReplyPostResponse {
             reply: post_reply,
             error: Some(ServerError {
                 api_name: "reply_post".to_string(),
-                error_message: "caller not authorized".to_string(),
+                error_message: format!("Unauthorized caller: {}", ic_cdk::caller().to_string()),
             }),
         };
     }
@@ -98,7 +97,6 @@ pub async fn reply_post(request: ReplyPostRequest) -> ReplyPostResponse {
     if post_new.in_public {
         let new_trending_post_key = helpers_api::get_trending_post_key(&post_new);
         call_inter_canister(
-            MAIN_SERVER_CANISTER_ID,
             "update_club_post_trending_score",
             UpdateClubPostStreetTrendingScoreRequest {
                 new: TrendingPostKeyExternal {

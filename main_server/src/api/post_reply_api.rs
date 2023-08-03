@@ -38,7 +38,7 @@ pub fn reply_post(request: ReplyPostRequest) -> ReplyPostResponse {
             reply: post_reply,
             error: Some(ServerError {
                 api_name: "react_emoji".to_string(),
-                error_message: "caller not authorized".to_string(),
+                error_message: format!("Unauthorized caller: {}", ic_cdk::caller().to_string()),
             }),
         };
     }

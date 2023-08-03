@@ -24,7 +24,7 @@ pub fn create_user(user_id: String) -> Option<ServerError> {
     if !is_caller_authorized() {
         return Some(ServerError {
             api_name: "create_user".to_string(),
-            error_message: "caller not authorized".to_string(),
+            error_message: format!("Unauthorized caller: {}", ic_cdk::caller().to_string()),
         });
     }
 
@@ -73,7 +73,7 @@ pub fn set_user_avatar(request: SetUserAvatarRequest) -> SetUserInfoResponse {
             },
             error: Some(ServerError {
                 api_name: "set_user_avatar".to_string(),
-                error_message: "caller not authorized".to_string(),
+                error_message: format!("Unauthorized caller: {}", ic_cdk::caller().to_string()),
             }),
         };
     }
@@ -144,7 +144,7 @@ pub fn set_user_name(request: SetUserNameRequest) -> SetUserInfoResponse {
             },
             error: Some(ServerError {
                 api_name: "set_user_name".to_string(),
-                error_message: "caller not authorized".to_string(),
+                error_message: format!("Unauthorized caller: {}", ic_cdk::caller().to_string()),
             }),
         };
     }
@@ -236,7 +236,7 @@ pub fn set_user_bio(request: SetUserBioRequest) -> SetUserInfoResponse {
             },
             error: Some(ServerError {
                 api_name: "set_user_bio".to_string(),
-                error_message: "caller not authorized".to_string(),
+                error_message: format!("Unauthorized caller: {}", ic_cdk::caller().to_string()),
             }),
         };
     }
@@ -278,7 +278,7 @@ pub fn delete_all_users() -> Option<ServerError> {
     if !is_caller_authorized() {
         return Some(ServerError {
             api_name: "set_user_bio".to_string(),
-            error_message: "caller not authorized".to_string(),
+            error_message: format!("Unauthorized caller: {}", ic_cdk::caller().to_string()),
         });
     }
 

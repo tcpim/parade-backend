@@ -182,6 +182,7 @@ service : (InitCanisterRequest) -> {
   delete_all_users : () -> (opt ServerError);
   delete_post : (text) -> (opt ServerError);
   dlp : () -> (opt ServerError);
+  get_canister_args : () -> (text) query;
   get_post_replies : (GetPostRepliesRequest) -> (GetPostRepliesResponse) query;
   get_posts_by_collection : (GetCollectionPostsRequest) -> (
       GetCollectionPostsResponse,

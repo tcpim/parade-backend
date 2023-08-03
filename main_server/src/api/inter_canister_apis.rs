@@ -26,7 +26,7 @@ pub fn add_club_post_to_user(request: AddClubPostToUserRequest) -> Option<Server
     if !is_inter_canister_caller_authorized(request.caller) {
         return Some(ServerError {
             api_name: "add_club_post_to_user".to_string(),
-            error_message: "caller not authorized".to_string(),
+            error_message: format!("Unauthorized caller: {}", ic_cdk::caller().to_string()),
         });
     }
 
@@ -57,7 +57,7 @@ pub fn add_club_post_to_street(request: AddClubPostToStreetRequest) -> Option<Se
     if !is_inter_canister_caller_authorized(request.caller) {
         return Some(ServerError {
             api_name: "add_club_post_to_street".to_string(),
-            error_message: "caller not authorized".to_string(),
+            error_message: format!("Unauthorized caller: {}", ic_cdk::caller().to_string()),
         });
     }
 

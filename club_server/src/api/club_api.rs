@@ -13,7 +13,7 @@ pub fn set_club_info(request: SetClubInfoRequest) -> Option<ServerError> {
     if !is_caller_authorized() {
         return Some(ServerError {
             api_name: "set_club_info".to_string(),
-            error_message: "caller not authorized".to_string(),
+            error_message: format!("Unauthorized caller: {}", ic_cdk::caller().to_string()),
         });
     }
     with_club_info_mut(|cell| {

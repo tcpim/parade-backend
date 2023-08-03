@@ -15,7 +15,7 @@ pub fn react_emoji(request: ReactEmojiRequest) -> ReactEmojiResponse {
         return ReactEmojiResponse {
             error: Some(ServerError {
                 api_name: "react_emoji".to_string(),
-                error_message: "caller not authorized".to_string(),
+                error_message: format!("Unauthorized caller: {}", ic_cdk::caller().to_string()),
             }),
         };
     }

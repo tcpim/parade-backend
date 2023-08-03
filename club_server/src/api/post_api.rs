@@ -1,17 +1,16 @@
 use candid::candid_method;
 use ic_cdk_macros::{query, update};
 
-use crate::api::constants::{DEFAULT_PAGE_SIZE, MAIN_SERVER_CANISTER_ID};
-use crate::stable_structure::access_helper::*;
-use std::collections::BTreeMap;
-
 use super::helpers_api::*;
+use crate::api::constants::DEFAULT_PAGE_SIZE;
 use crate::api_interface::common_interface::*;
 use crate::api_interface::posts_interface::*;
 use crate::models::post_collection_model::CollectionPostCreatedTsKey;
 use crate::models::post_model::PostCreatedTsKey;
 use crate::models::post_model::*;
 use crate::models::trending_post_collection_model::TrendingPostCollectionKey;
+use crate::stable_structure::access_helper::*;
+use std::collections::BTreeMap;
 
 use crate::api_interface::inter_canister_interface::{
     AddClubPostToStreetRequest, AddClubPostToUserRequest, UserPostCreatedTsKeyExternal,
@@ -54,7 +53,7 @@ pub async fn create_post(request: CreatePostRequest) -> CreatePostResponse {
             post: post.clone(),
             error: Some(ServerError {
                 api_name: "create_post".to_string(),
-                error_message: "caller not authorized".to_string(),
+                error_message: format!("Unauthorized caller: {}", ic_cdk::caller().to_string()),
             }),
         };
     }
@@ -131,7 +130,6 @@ pub async fn create_post(request: CreatePostRequest) -> CreatePostResponse {
     }
 
     call_inter_canister(
-        MAIN_SERVER_CANISTER_ID,
         "add_club_post_to_user",
         AddClubPostToUserRequest {
             user_post_created_key: UserPostCreatedTsKeyExternal {
@@ -148,7 +146,6 @@ pub async fn create_post(request: CreatePostRequest) -> CreatePostResponse {
 
     if post.in_public {
         call_inter_canister(
-            MAIN_SERVER_CANISTER_ID,
             "add_club_post_to_street",
             AddClubPostToStreetRequest {
                 post_id: request.post_id.clone(),

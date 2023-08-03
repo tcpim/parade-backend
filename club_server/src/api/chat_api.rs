@@ -18,7 +18,7 @@ pub fn send_club_message(request: SendClubMessageRequest) -> Option<ServerError>
     if !is_caller_authorized() {
         return Some(ServerError {
             api_name: "send_club_message".to_string(),
-            error_message: "caller not authorized".to_string(),
+            error_message: format!("Unauthorized caller: {}", ic_cdk::caller().to_string()),
         });
     }
 
@@ -49,7 +49,7 @@ pub fn update_club_message(request: UpdateClubMessageRequest) -> Option<ServerEr
     if !is_caller_authorized() {
         return Some(ServerError {
             api_name: "update_club_message".to_string(),
-            error_message: "caller not authorized".to_string(),
+            error_message: format!("Unauthorized caller: {}", ic_cdk::caller().to_string()),
         });
     }
 
@@ -81,7 +81,7 @@ pub fn delete_club_message(request: DeleteClubMessageRequest) -> Option<ServerEr
     if !is_caller_authorized() {
         return Some(ServerError {
             api_name: "delete_club_message".to_string(),
-            error_message: "caller not authorized".to_string(),
+            error_message: format!("Unauthorized caller: {}", ic_cdk::caller().to_string()),
         });
     }
 
@@ -107,7 +107,7 @@ pub fn dlcm() -> Option<ServerError> {
     if !is_caller_authorized() {
         return Some(ServerError {
             api_name: "dlcm".to_string(),
-            error_message: "caller not authorized".to_string(),
+            error_message: format!("Unauthorized caller: {}", ic_cdk::caller().to_string()),
         });
     }
 
@@ -133,7 +133,7 @@ pub fn react_club_message(request: ReactClubMessageRequest) -> Option<ServerErro
     if !is_caller_authorized() {
         return Some(ServerError {
             api_name: "react_club_message".to_string(),
-            error_message: "caller not authorized".to_string(),
+            error_message: format!("Unauthorized caller: {}", ic_cdk::caller().to_string()),
         });
     }
 
