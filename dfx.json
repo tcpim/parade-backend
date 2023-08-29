@@ -19,6 +19,26 @@
       "candid": "club_server/club_server.did",
       "package": "club_server",
       "type": "rust"
+    },
+    "boxy-dude_club": {
+      "candid": "club_server/club_server.did",
+      "package": "club_server",
+      "type": "rust"
+    },
+    "dscvr-airdrop_club": {
+      "candid": "club_server/club_server.did",
+      "package": "club_server",
+      "type": "rust"
+    },
+    "cubetopia_club": {
+      "candid": "club_server/club_server.did",
+      "package": "club_server",
+      "type": "rust"
+    },
+    "ic-punks_club": {
+      "candid": "club_server/club_server.did",
+      "package": "club_server",
+      "type": "rust"
     }
   },
   "defaults": {

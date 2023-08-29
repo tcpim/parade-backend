@@ -194,6 +194,12 @@ pub async fn call_inter_canister<T: CandidType>(method_name: &str, request: T, e
 }
 
 pub fn is_caller_authorized() -> bool {
+    let caller = ic_cdk::api::caller().to_string();
+    if caller == "" || caller == "2vxsx-fae" {
+        return false;
+    }
+
+    true
     // TODO: this doesn;t work. See https://forum.dfinity.org/t/only-allow-update-call-from-frontend-canister/21936
     // if is_run_in_prod() {
     //     let caller = ic_cdk::api::caller().to_string();
@@ -203,8 +209,6 @@ pub fn is_caller_authorized() -> bool {
     //         return false;
     //     }
     // }
-
-    return true;
 }
 
 pub fn get_caller() -> String {

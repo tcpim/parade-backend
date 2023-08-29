@@ -48,15 +48,6 @@ pub fn create_user(user_id: String) -> Option<ServerError> {
     None
 }
 
-#[query]
-#[candid_method(query)]
-pub fn get_user_info(user_id: String) -> GetUserInfoResponse {
-    with_user_by_id(|map| match map.get(&UserPrincipalStringKey(user_id)) {
-        Some(user) => GetUserInfoResponse { user: Some(user) },
-        None => GetUserInfoResponse { user: None },
-    })
-}
-
 /**
 Check avatar mime type and update avatar
 */
@@ -300,4 +291,13 @@ pub fn delete_all_users() -> Option<ServerError> {
     });
 
     None
+}
+
+#[query]
+#[candid_method(query)]
+pub fn get_user_info(user_id: String) -> GetUserInfoResponse {
+    with_user_by_id(|map| match map.get(&UserPrincipalStringKey(user_id)) {
+        Some(user) => GetUserInfoResponse { user: Some(user) },
+        None => GetUserInfoResponse { user: None },
+    })
 }
