@@ -194,6 +194,10 @@ pub fn update_trending_club_post_indexes(new_key: &TrendingPostKey, nft_canister
 
 // If the caller is anonymous, return false
 pub fn is_caller_authorized() -> bool {
+    if is_run_in_dev() || is_run_in_unit_test() {
+        return true;
+    }
+
     let caller = ic_cdk::api::caller().to_string();
     if caller == "" || caller == "2vxsx-fae" {
         return false;

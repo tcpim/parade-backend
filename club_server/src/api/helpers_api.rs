@@ -194,6 +194,10 @@ pub async fn call_inter_canister<T: CandidType>(method_name: &str, request: T, e
 }
 
 pub fn is_caller_authorized() -> bool {
+    if is_run_in_dev() || is_run_in_unit_test() {
+        return true;
+    }
+
     let caller = ic_cdk::api::caller().to_string();
     if caller == "" || caller == "2vxsx-fae" {
         return false;
