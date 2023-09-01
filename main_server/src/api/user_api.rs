@@ -54,21 +54,6 @@ Check avatar mime type and update avatar
 #[update]
 #[candid_method(update)]
 pub fn set_user_avatar(request: SetUserAvatarRequest) -> SetUserInfoResponse {
-    if !is_caller_authorized() {
-        return SetUserInfoResponse {
-            user: User {
-                id: "".to_string(),
-                user_name: None,
-                avatar: None,
-                bio: None,
-            },
-            error: Some(ServerError {
-                api_name: "set_user_avatar".to_string(),
-                error_message: format!("Unauthorized caller: {}", ic_cdk::caller().to_string()),
-            }),
-        };
-    }
-
     let mime_type = request.mime_type.clone();
     if mime_type != "image/png" && mime_type != "image/jpeg" {
         return SetUserInfoResponse {

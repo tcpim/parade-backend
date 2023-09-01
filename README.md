@@ -36,14 +36,10 @@ chmod +x start_club_server.sh
 ## Deploy to prod
 
 ```
-  dfx deploy main_server --argument='(record {env = "prod"})' --network=ic
-  dfx deploy ludo_arts_club --argument='(record {info = record { club_description = ""; club_name = ""; club_id = "ludo-arts"}; env="prod"})'  --network=ic
-  dfx deploy motoko_ghost_club --argument='(record {info = record { club_description = ""; club_name = ""; club_id = "motoko-ghost"}; env = "prod"})'  --network=ic
-  dfx deploy poked_bots_club --argument='(record {info = record { club_description = ""; club_name = ""; club_id = "poked-bots"}; env = "prod"})' --network=ic
-  dfx deploy boxy-dude_club --argument='(record {info = record { club_description = ""; club_name = ""; club_id = "boxy-dude"}; env = "prod"})' --network=ic
-  dfx deploy dscvr-airdrop_club --argument='(record {info = record { club_description = ""; club_name = ""; club_id = "dscvr-airdrop"}; env = "prod"})' --network=ic
-  dfx deploy cubetopia_club --argument='(record {info = record { club_description = ""; club_name = ""; club_id = "cubetopia"}; env = "prod"})' --network=ic
-  dfx deploy ic-punks_club --argument='(record {info = record { club_description = ""; club_name = ""; club_id = "ic-punks"}; env = "prod"})' --network=ic
+
+./start_main_server_prod.sh
+./start_club_server_prod.sh
+
 ```
 
 ### Update candid types
